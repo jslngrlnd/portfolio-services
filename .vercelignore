@@ -1,4 +1,5 @@
-site/
-screenshots/
-.thumbnail/
+/site/
+/screenshots/
+.thumbnail
 .DS_Store
+.env*
