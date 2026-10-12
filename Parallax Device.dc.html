@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div ref="{{ trackRef }}" style="position:relative;width:100%;max-width:100%;min-width:0;height:420vh">
+  <div style="position:sticky;top:0;height:100vh;width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding-bottom:76px;perspective:2000px;perspective-origin:50% 45%;overflow:hidden">
+    <div ref="{{ deviceRef }}" style="position:absolute;left:50%;top:calc(50% - 38px);transform-style:preserve-3d;transform-origin:50% 50%;will-change:transform;flex:none;padding:13px;border-radius:44px;background:#120A08;box-shadow:0 50px 110px -45px rgba(18,10,8,0.6),inset 0 0 0 1.5px rgba(241,239,238,0.14);transition:width 760ms cubic-bezier(0.65,0.02,0.2,1),height 760ms cubic-bezier(0.65,0.02,0.2,1),border-radius 760ms cubic-bezier(0.65,0.02,0.2,1),padding 760ms cubic-bezier(0.65,0.02,0.2,1)">
+      <div ref="{{ screenRef }}" style="position:relative;width:100%;height:100%;overflow:hidden;border-radius:32px;background:#FFFFFF;transition:border-radius 760ms cubic-bezier(0.65,0.02,0.2,1)">
+        <iframe ref="{{ frameRef }}" title="Interactive prototype" scrolling="no" style="display:block;border:0;width:100%;height:100%;background:#FFFFFF"></iframe>
+        <img ref="{{ shotRef }}" alt="" style="position:absolute;inset:0;display:none;width:100%;height:100%;object-fit:cover;object-position:top center;background:#FFFFFF">
+        <div aria-hidden="true" ref="{{ veilRef }}" style="position:absolute;inset:0;background:#120A08;opacity:0;transition:opacity 260ms linear;pointer-events:none"></div>
+      </div>
+    </div>
+    <p ref="{{ labelRef }}" style="position:absolute;left:0;right:0;bottom:clamp(18px,4vh,44px);margin:0;min-height:1.2em;font:500 0.74rem/1.5 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:rgba(241,239,238,0.82);text-align:center"></p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;src&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;video&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;init&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;labelColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;rgba(241,239,238,0.82)&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;spin&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:30,&quot;min&quot;:0,&quot;max&quot;:60,&quot;step&quot;:1,&quot;unit&quot;:&quot;deg&quot;,&quot;tsType&quot;:&quot;number&quot;},&quot;beats&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;{at:number;w:number;h:number;radius?:number;label?:string;js?:string}[]&quot;}}">
+class Component extends DCLogic {
+  trackRef = React.createRef();
+  deviceRef = React.createRef();
+  screenRef = React.createRef();
+  frameRef = React.createRef();
+  shotRef = React.createRef();
+  labelRef = React.createRef();
+  veilRef = React.createRef();
+  bgRef = React.createRef();
+
+  // Each beat: { at: 0..1 scroll position, w, h, radius, label, js }
+  beats() {
+    const b = this.props.beats;
+    return Array.isArray(b) && b.length ? b : [{ at: 0, w: 390, h: 844, label: '', js: '' }];
+  }
+
+  componentDidMount() {
+    this.index = -1;
+    if (this.labelRef.current && this.props.labelColor) this.labelRef.current.style.color = this.props.labelColor;
+    this.reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const f = this.frameRef.current;
+    const shot = this.shotRef.current;
+    if (this.props.poster && shot) { shot.src = this.props.poster; shot.style.display = 'block'; shot.alt = ''; }
+    if (f && this.props.passthrough) { f.style.pointerEvents = 'none'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true'); }
+    if (f) {
+      f.addEventListener('load', () => {
+        this.frameLoaded = true;
+        this.frameReady = true;
+        this.hideChrome();
+        this.runBeat(this.props.init);
+        this.index = -1;
+        this.update();
+      });
+      if (this.props.src) f.src = this.props.src; else { f.style.display = 'none'; this.frameReady = true; }
+    }
+
+    this.onScroll = () => {
+      if (this.raf) return;
+      this.raf = requestAnimationFrame(() => { this.raf = null; this.update(); });
+    };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('resize', this.onScroll);
+    this.update();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('resize', this.onScroll);
+    if (this.raf) cancelAnimationFrame(this.raf);
+  }
+
+  // Suppress the prototype's own demo toolbar and scrollbars so it reads as a shipped screen.
+  hideChrome() {
+    try {
+      const doc = this.frameRef.current.contentDocument;
+      if (!doc || doc.getElementById('__om-frame-chrome')) return;
+      const s = doc.createElement('style');
+      s.id = '__om-frame-chrome';
+      s.textContent = '.demo-bar,.state-strip,#ca-stage-banner{display:none !important}' +
+        'html,body{overflow:hidden !important;overflow-anchor:none !important}' +
+        '::-webkit-scrollbar{width:0;height:0}';
+      doc.head.appendChild(s);
+      // Neutralise focus-driven scrolling at the source.
+      const win = this.frameRef.current.contentWindow;
+      const orig = win.HTMLElement.prototype.focus;
+      win.HTMLElement.prototype.focus = function (opts) {
+        orig.call(this, Object.assign({}, opts, { preventScroll: true }));
+      };
+    } catch (e) { /* cross-origin — skip */ }
+  }
+
+  // Beats re-render the prototype, which focuses elements; focusing inside an
+  // off-screen iframe makes the browser scroll the host page to reveal them.
+  // Pin the host scroll across the call and restore it for a few frames after.
+  runBeat(js) {
+    if (!js || !this.frameReady) return;
+    const x = window.scrollX, y = window.scrollY;
+    try { this.frameRef.current.contentWindow.eval(js); } catch (e) { console.warn('beat failed', e); }
+    // Single synchronous correction only: anything the eval did to the host scroll
+    // has already happened. No multi-frame hold — that would swallow user input.
+    if (window.scrollX !== x || window.scrollY !== y) window.scrollTo(x, y);
+  }
+
+  update() {
+    const track = this.trackRef.current, device = this.deviceRef.current;
+    if (!track || !device) return;
+    const r = track.getBoundingClientRect();
+    const stage = device.parentElement;
+    // Fit against the sticky stage, not the window — this component is also used
+    // inside narrow columns, where the device is absolutely positioned and scaled.
+    const vh = stage.clientHeight || window.innerHeight || 1;
+    const vw = stage.clientWidth || window.innerWidth || 1;
+    const span = Math.max(1, r.height - vh);
+    const p = Math.max(0, Math.min(1, -r.top / span));
+
+    const beats = this.beats();
+    let i = 0;
+    for (let k = 0; k < beats.length; k++) if (p >= beats[k].at) i = k;
+    const cur = beats[i], next = beats[i + 1];
+
+    if (i !== this.index) {
+      this.index = i;
+      const pad = cur.w > 700 ? 16 : 13;
+      // box-sizing is border-box, so add the bezel back — the screen must equal the authored size.
+      device.style.width = (cur.w + pad * 2) + 'px';
+      device.style.height = (cur.h + pad * 2) + 'px';
+      device.style.padding = pad + 'px';
+      device.style.borderRadius = (cur.radius ?? (cur.w > 700 ? 34 : 44)) + 'px';
+      if (this.screenRef.current) {
+        this.screenRef.current.style.borderRadius = Math.max(8, (cur.radius ?? (cur.w > 700 ? 34 : 44)) - 12) + 'px';
+      }
+      if (this.labelRef.current) this.labelRef.current.textContent = cur.label || '';
+      const shot = this.shotRef.current;
+      if (shot) {
+        if (cur.img) { if (shot.getAttribute('src') !== cur.img) shot.src = cur.img; shot.style.display = 'block'; }
+        else if (this.props.poster && !this.frameLoaded) { if (shot.getAttribute('src') !== this.props.poster) shot.src = this.props.poster; shot.style.display = 'block'; }
+        else shot.style.display = 'none';
+      }
+      // Veil the reflow: the inner app relayouts across a breakpoint, which is ugly mid-frame.
+      const veil = this.veilRef.current;
+      if (veil) {
+        veil.style.opacity = '0.35';
+        clearTimeout(this.veilTimer);
+        this.veilTimer = setTimeout(() => { veil.style.opacity = '0'; }, 700);
+      }
+      // Only drive the prototype while the pinned area is actually on screen.
+      this.pendingJs = cur.js;
+      if (r.top < vh && r.bottom > 0) { this.runBeat(cur.js); this.pendingJs = null; }
+    }
+    // A beat committed while the track was off-screen never ran its js — run it on entry.
+    if (this.pendingJs && r.top < vh && r.bottom > 0) { this.runBeat(this.pendingJs); this.pendingJs = null; }
+
+    // Fit the device into the viewport, then spin between beats and land flat on each one.
+    const bez = (cur.w > 700 ? 16 : 13) * 2;
+    let spin = 0, tiltX = 0, tiltZ = 0, lift = 0;
+    if (!this.reduced) {
+      // One slow sweep across the whole track: start angled one way, cross through
+      // to the opposite side by two-thirds, then settle square for the last beat.
+      const max = this.props.spin ?? 30;
+      const turn = 2 / 3;
+      let swing;
+      if (p <= turn) {
+        swing = Math.cos(Math.PI * (p / turn));
+      } else {
+        const u = (p - turn) / (1 - turn);
+        swing = -Math.cos(Math.PI * u * 0.5);
+      }
+      spin = swing * max;
+      tiltX = -Math.abs(swing) * max * 0.22;
+      tiltZ = swing * max * 0.1;
+      lift = Math.abs(swing) * 18;
+    }
+
+    // Fit against the box the rotation actually projects, not the flat one: project the four
+    // corners through Rx·Ry·Rz and measure the extents, then reserve the caption band and lift.
+    const W = (cur.w + bez) / 2, H = (cur.h + bez) / 2;
+    const a = tiltX * Math.PI / 180, b = spin * Math.PI / 180, c = tiltZ * Math.PI / 180;
+    let ex = 0, ey = 0;
+    for (const [sx, sy] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+      const x0 = sx * W, y0 = sy * H;
+      const x1 = x0 * Math.cos(c) - y0 * Math.sin(c);
+      const y1 = x0 * Math.sin(c) + y0 * Math.cos(c);
+      const x2 = x1 * Math.cos(b), z2 = -x1 * Math.sin(b);
+      const y3 = y1 * Math.cos(a) - z2 * Math.sin(a);
+      ex = Math.max(ex, Math.abs(x2));
+      ey = Math.max(ey, Math.abs(y3));
+    }
+    const captionBand = 24, persp = 1.08; // perspective divide widens the near face slightly
+    const availH = vh - captionBand - 2 * Math.abs(lift) - 24;
+    const availW = vw - 32;
+    const fit = Math.min(availH / (2 * ey * persp), availW / (2 * ex * persp), 1);
+    device.style.transform =
+      'translate(-50%, -50%) translateY(' + lift.toFixed(2) + 'px) rotateX(' + tiltX.toFixed(2) +
+      'deg) rotateY(' + spin.toFixed(2) + 'deg) rotateZ(' + tiltZ.toFixed(2) +
+      'deg) scale(' + fit.toFixed(3) + ')';
+  }
+
+  renderVals() {
+    return {
+      trackRef: this.trackRef,
+      deviceRef: this.deviceRef,
+      screenRef: this.screenRef,
+      frameRef: this.frameRef,
+      shotRef: this.shotRef,
+      labelRef: this.labelRef,
+      veilRef: this.veilRef,
+      bgRef: this.bgRef
+    };
+  }
+}
+</script>
+</body>
+</html>

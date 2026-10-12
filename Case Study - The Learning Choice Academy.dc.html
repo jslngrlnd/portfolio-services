@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>The Learning Choice Academy — Case study | John Blanco-Slingerland</title>
+<meta name="description" content="Case study: The Learning Choice Academy. UX architecture, brand and product design by John Blanco-Slingerland.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Chakra+Petch:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: #F1EFEE; color: #120A08; font-family: 'Chakra Petch', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, h4, h5, p, figure, blockquote, dl, dd { margin: 0; }
+  ul, ol { margin: 0; padding: 0; list-style: none; }
+  img, video { display: block; max-width: 100%; }
+  button { font-family: inherit; }
+  a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.25em; }
+  a:hover { color: #F4290C; }
+  ::selection { background: #F4290C; color: #FFFFFF; }
+  :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+</style>
+<script src="gate.js"></script>
+  <script src="lazy-media.js"></script>
+<script src="nav-autohide.js"></script>
+</helmet>
+
+<div style="background:#F1EFEE;color:#120A08;font-family:'Chakra Petch',system-ui,sans-serif;overflow-x:clip">
+
+  <header id="jsl-nav" style="position:sticky;top:0;z-index:40;background:#F4290C;color:#FFFFFF;transition:transform 260ms cubic-bezier(0.4,0,0.2,1),background 220ms ease;will-change:transform">
+    <nav aria-label="Primary" style="max-width:1680px;margin:0 auto;padding:18px clamp(20px,4vw,56px) 0;display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px clamp(20px,4vw,64px)">
+      <a href="John Slingerland Services.dc.html" style="text-decoration:none;font-family:Anton,Impact,sans-serif;font-size:clamp(1rem,1.5vw,1.35rem);letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px;flex:0 0 auto">// John Blanco-Slingerland</a>
+      <ul style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px clamp(18px,3vw,56px);margin-left:auto;font:500 0.84rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">
+        <li style="flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px"><a href="John Slingerland Services.dc.html#services" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px" style-hover="color:#FFE9DB"><span aria-hidden="true" style="width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:inline-block"></span>Services</a></li>
+        <li style="flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px"><a href="John Slingerland Services.dc.html#work" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px" style-hover="color:#FFE9DB"><span aria-hidden="true" style="width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:inline-block"></span>Work</a></li>
+        <li style="flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px"><a href="John Slingerland Services.dc.html#process" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px" style-hover="color:#FFE9DB"><span aria-hidden="true" style="width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:inline-block"></span>Process</a></li>
+        <li style="flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px"><a href="John Slingerland Services.dc.html#engage" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px" style-hover="color:#FFE9DB"><span aria-hidden="true" style="width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:inline-block"></span>Pricing</a></li>
+        <li style="flex:0 0 auto;padding-bottom:4px"><a href="John Slingerland Services.dc.html#contact" style="text-decoration:none;display:inline-flex;align-items:center;min-height:40px;padding:0 20px;border-radius:999px;background:#FFFFFF;color:#120A08;font-family:Anton,Impact,sans-serif;font-size:0.84rem;letter-spacing:0.1em" style-hover="background:#FFE9DB;color:#120A08">Start a project</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+
+  <section data-screen-label="Intro" style="position:relative;isolation:isolate;overflow:hidden;background:#9E2F12;color:#FFFFFF">
+    <div aria-hidden="true" style="position:absolute;inset:0;z-index:-1;pointer-events:none;background:#ee5b36">
+      <video src="uploads/kids.mp4" poster="assets/poster-kids.jpg" preload="none" autoplay="autoplay" muted="muted" loop="loop" playsinline="playsinline" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:luminosity;opacity:0.9"></video>
+      <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(150,42,14,0.93) 0%,rgba(190,62,28,0.72) 45%,rgba(238,91,54,0.35) 100%)"></div>
+    </div>
+    <div style="max-width:1680px;margin:0 auto;padding:clamp(48px,9vh,120px) clamp(20px,4vw,56px) clamp(40px,7vh,88px)">
+    <ul style="display:flex;flex-wrap:wrap;gap:10px">
+      <li style="border:1.5px solid #FFFFFF;border-radius:999px;padding:9px 20px;font:600 0.72rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase">Education</li>
+      <li style="border:1.5px solid #FFFFFF;border-radius:999px;padding:9px 20px;font:600 0.72rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase">Research &amp; UX</li>
+      <li style="border:1.5px solid #FFFFFF;border-radius:999px;padding:9px 20px;font:600 0.72rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase">Brand</li>
+      <li style="border:1.5px solid #FFFFFF;border-radius:999px;padding:9px 20px;font:600 0.72rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase">Website</li>
+    </ul>
+    <h1 style="margin-top:clamp(22px,3.5vh,40px);font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(2.2rem,6.4vw,5.6rem);line-height:0.94;letter-spacing:-0.005em;text-transform:uppercase;max-width:19ch;text-wrap:balance">Four resource centers, one school</h1>
+    <p style="margin-top:clamp(18px,3vh,32px);max-width:48ch;font:400 clamp(1.05rem,1.5vw,1.5rem)/1.45 'Chakra Petch',sans-serif;text-wrap:pretty">Redesigning a San Diego charter home–school's website around wayfinding, community and enrollment.</p>
+    <dl style="margin-top:clamp(28px,5vh,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr));gap:clamp(18px,3vw,40px);max-width:1180px">
+      <div>
+        <dt style="font:700 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Client</dt>
+        <dd style="margin-top:10px;font:400 clamp(0.92rem,1vw,1.02rem)/1.45 'Chakra Petch',sans-serif">The Learning Choice Academy, K–12 public charter home–school</dd>
+      </div>
+      <div>
+        <dt style="font:700 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Delivered</dt>
+        <dd style="margin-top:10px;font:400 clamp(0.92rem,1vw,1.02rem)/1.45 'Chakra Petch',sans-serif">Research, UX, art direction, homepage design</dd>
+      </div>
+    </dl>
+    <div style="margin-top:clamp(28px,4.5vh,52px);display:flex;flex-wrap:wrap;gap:12px 16px">
+      <a href="#prototype" style="text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#9E2F12;background:#FFFFFF;border:1.5px solid #FFFFFF;border-radius:999px;padding:0 32px;min-height:58px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#120A08;border-color:#120A08;color:#FFFFFF"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>Try the prototype</a>
+      <a href="John Slingerland Services.dc.html#contact" style="text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#FFFFFF;border:1.5px solid #FFFFFF;border-radius:999px;padding:0 32px;min-height:58px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#FFFFFF;color:#9E2F12"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>Start a similar project</a>
+    </div>
+    </div>
+  </section>
+
+  <section data-screen-label="Redesign device" style="background:#DCDBE8;padding:0 clamp(12px,3vw,40px)">
+    <div style="max-width:1680px;margin:0 auto">
+      <dc-import name="Parallax Device" src="tlc/TLC Home Playful.dc.html" poster="tlc/assets/v/hero-poster.jpg" beats="{{ heroBeats }}" passthrough="true" label-color="rgba(18,10,8,0.6)" spin="16" hint-size="100%,460vh"></dc-import>
+    </div>
+  </section>
+
+  <section data-screen-label="Deliverables" style="background:#120A08;color:#F1EFEE;padding:clamp(56px,10vh,120px) clamp(20px,4vw,56px)">
+    <div style="max-width:1680px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(28px,5vh,56px)">
+      <h2 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.8rem,3.6vw,3.2rem);line-height:0.98;text-transform:uppercase;max-width:22ch;text-wrap:balance">One team, one package: research, brand and website</h2>
+      <p style="margin-top:calc(clamp(28px,5vh,56px) * -0.5);display:flex;gap:12px;align-items:baseline;max-width:72ch;font:400 0.95rem/1.55 'Chakra Petch',sans-serif;color:rgba(241,239,238,0.85);text-wrap:pretty"><span style="flex:none;padding:6px 10px;border-radius:999px;background:#F4290C;color:#FFFFFF;font:600 0.66rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Process</span><span>Every decision backed by what parents, students, and staff told us during research, so the site speaks directly to them, and answers their questions directly.</span></p>
+      <ol style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:0;border-top:1.5px solid rgba(241,239,238,0.25)">
+        <li style="display:flex;flex-direction:column;gap:14px;padding:clamp(22px,3vh,32px) clamp(0px,2vw,28px) clamp(22px,3vh,32px) 0;border-bottom:1.5px solid rgba(241,239,238,0.25)">
+          <span style="font:600 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;color:#F4290C">01</span>
+          <h3 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.3rem,2vw,1.8rem);text-transform:uppercase;letter-spacing:0.02em">Research &amp; UX</h3>
+          <p style="font:400 1rem/1.6 'Chakra Petch',sans-serif;color:rgba(241,239,238,0.78);max-width:40ch;text-wrap:pretty">Stakeholder interviews, a family survey, three personas, user journeys and a new site architecture.</p>
+        </li>
+        <li style="display:flex;flex-direction:column;gap:14px;padding:clamp(22px,3vh,32px) clamp(0px,2vw,28px) clamp(22px,3vh,32px) 0;border-bottom:1.5px solid rgba(241,239,238,0.25)">
+          <span style="font:600 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;color:#F4290C">02</span>
+          <h3 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.3rem,2vw,1.8rem);text-transform:uppercase;letter-spacing:0.02em">Brand identity</h3>
+          <p style="font:400 1rem/1.6 'Chakra Petch',sans-serif;color:rgba(241,239,238,0.78);max-width:40ch;text-wrap:pretty">A redesigned logo and mascot, a youthful color palette and a friendly type system.</p>
+        </li>
+        <li style="display:flex;flex-direction:column;gap:14px;padding:clamp(22px,3vh,32px) clamp(0px,2vw,28px) clamp(22px,3vh,32px) 0;border-bottom:1.5px solid rgba(241,239,238,0.25)">
+          <span style="font:600 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;color:#F4290C">03</span>
+          <h3 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.3rem,2vw,1.8rem);text-transform:uppercase;letter-spacing:0.02em">Website</h3>
+          <p style="font:400 1rem/1.6 'Chakra Petch',sans-serif;color:rgba(241,239,238,0.78);max-width:40ch;text-wrap:pretty">A responsive site with paths to each resource center, events, and enrollment on every page.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section data-screen-label="Overview" style="max-width:1680px;margin:0 auto;padding:clamp(56px,10vh,140px) clamp(20px,4vw,56px) clamp(40px,7vh,88px);display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+    <h2 style="flex:0 1 min(100%,20rem);min-width:0;font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">Overview</h2>
+    <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:64ch">
+      <p style="font:400 clamp(1.05rem,1.5vw,1.5rem)/1.45 'Chakra Petch',sans-serif;letter-spacing:-0.005em;text-wrap:pretty">The Learning Choice Academy is a San Diego public charter home–school. The goal of this project is to create an experience that promotes an engaging atmosphere, while providing a sense of safety, information about the charter homeschool experience, and also motivates students to succeed.</p>
+    </div>
+  </section>
+
+  <section data-screen-label="Research" style="background:#120A08;color:#FFFFFF">
+    <div style="max-width:1680px;margin:0 auto;padding:clamp(56px,10vh,130px) clamp(20px,4vw,56px);display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+      <h2 style="flex:0 1 min(100%,20rem);min-width:0;font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">Research</h2>
+      <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:72ch">
+        <p style="font:400 clamp(0.98rem,1.2vw,1.15rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">To learn more about the specific needs, and to set goals for the user experience design we conducted qualitative research. We conducted phone interviews and administered a survey via Survey Monkey placed on the website. We talked to 12 stakeholders throughout The Learning Choice Academy including staff and teachers. We collected 42 survey responses and heard from parents, teachers, and students.</p>
+        <dl style="margin-top:clamp(32px,5vh,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr));gap:clamp(20px,3vw,40px)">
+          <div style="border-top:1.5px solid #F4290C;padding-top:16px">
+            <dt style="font-family:Anton,Impact,sans-serif;font-size:clamp(3rem,6vw,5.2rem);line-height:0.9">12</dt>
+            <dd style="margin-top:12px;font:500 0.92rem/1.45 'Chakra Petch',sans-serif;opacity:0.8">Stakeholder phone interviews with staff and teachers</dd>
+          </div>
+          <div style="border-top:1.5px solid #F4290C;padding-top:16px">
+            <dt style="font-family:Anton,Impact,sans-serif;font-size:clamp(3rem,6vw,5.2rem);line-height:0.9">42</dt>
+            <dd style="margin-top:12px;font:500 0.92rem/1.45 'Chakra Petch',sans-serif;opacity:0.8">Survey responses via an on-site Survey Monkey survey</dd>
+          </div>
+          <div style="border-top:1.5px solid #F4290C;padding-top:16px">
+            <dt style="font-family:Anton,Impact,sans-serif;font-size:clamp(3rem,6vw,5.2rem);line-height:0.9">3</dt>
+            <dd style="margin-top:12px;font:500 0.92rem/1.45 'Chakra Petch',sans-serif;opacity:0.8">Audiences heard from: parents, teachers, students</dd>
+          </div>
+        </dl>
+        <p style="margin-top:clamp(18px,2.6vh,28px);display:flex;gap:12px;align-items:baseline;max-width:72ch;font:400 0.95rem/1.55 'Chakra Petch',sans-serif;color:rgba(241,239,238,0.85);text-wrap:pretty"><span style="flex:none;padding:6px 10px;border-radius:999px;background:#F4290C;color:#FFFFFF;font:600 0.66rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Strategy</span><span>Talking to every audience before designing kept the school from building a site around its org chart. The research set the priorities for everything that followed.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="Personas" style="max-width:1680px;margin:0 auto;padding:clamp(56px,10vh,130px) clamp(20px,4vw,56px)">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px">
+      <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">Three people, three reasons to visit</h2>
+      <div role="tablist" style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{ personaTabs }}" as="t" hint-placeholder-count="3">
+          <button role="tab" onClick="{{ t.go }}" style="border:1.5px solid #120A08;border-radius:999px;background:{{ t.bg }};color:{{ t.color }};cursor:pointer;padding:0 20px;min-height:44px;font:600 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">{{ t.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="margin-top:clamp(24px,4vh,40px);display:flex;flex-wrap:wrap;background:#FFFFFF;border-radius:22px;overflow:hidden">
+      <div style="flex:1 1 280px;padding:clamp(24px,3.5vw,44px);background:#FFE9DB;display:flex;flex-direction:column;gap:22px">
+        <img src="{{ per.img }}" alt="{{ per.name }}" style="width:132px;height:132px;border-radius:50%;object-fit:cover">
+        <div>
+          <div style="font:700 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:#C21F05">{{ per.role }}</div>
+          <div style="margin-top:10px;font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.2vw,2rem);text-transform:uppercase;line-height:1">{{ per.name }}</div>
+        </div>
+        <sc-for list="{{ per.bars }}" as="b" hint-placeholder-count="2">
+          <div>
+            <div style="font:700 0.7rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">{{ b.l }}</div>
+            <div style="margin-top:8px;height:8px;border-radius:999px;background:rgba(18,10,8,0.12);overflow:hidden"><div style="height:100%;background:#F4290C;border-radius:999px;transition:width .6s cubic-bezier(.2,.7,.2,1);width:{{ b.w }}"></div></div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="flex:3 1 480px;min-width:0;padding:clamp(24px,3.5vw,48px);display:flex;flex-direction:column;gap:28px">
+        <blockquote style="font:500 clamp(1.1rem,1.6vw,1.5rem)/1.45 'Chakra Petch',sans-serif;text-wrap:pretty">“{{ per.quote }}”</blockquote>
+        <p style="font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">{{ per.about }}</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:24px">
+          <div>
+            <div style="font:700 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;padding-bottom:12px;border-bottom:1.5px solid rgba(18,10,8,0.28)">Characteristics</div>
+            <ul><sc-for list="{{ per.traits }}" as="x" hint-placeholder-count="3"><li style="padding:11px 0;border-bottom:1px solid rgba(18,10,8,0.12);font-size:0.98rem;line-height:1.4">{{ x }}</li></sc-for></ul>
+          </div>
+          <div>
+            <div style="font:700 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;padding-bottom:12px;border-bottom:1.5px solid rgba(18,10,8,0.28)">Needs &amp; goals</div>
+            <ul><sc-for list="{{ per.needs }}" as="x" hint-placeholder-count="5"><li style="padding:11px 0;border-bottom:1px solid rgba(18,10,8,0.12);font-size:0.98rem;line-height:1.4">{{ x }}</li></sc-for></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="Challenge" style="background:#F4290C;color:#FFFFFF">
+    <div style="max-width:1680px;margin:0 auto;padding:clamp(56px,10vh,130px) clamp(20px,4vw,56px);display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+      <h2 style="flex:0 1 min(100%,20rem);min-width:0;font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">The challenge</h2>
+      <p style="flex:1 1 min(100%,24rem);min-width:0;max-width:60ch;font:500 clamp(1.05rem,1.5vw,1.45rem)/1.5 'Chakra Petch',sans-serif;text-wrap:pretty">The Learning Choice Academy has 4 separate resource center locations, with varied curriculum. Our challenge was to present all resource centers as one, while highlighting what makes them unique. The site is used by students to find curriculum, and connect with classmates and teachers. It's also used by parents to find extra curricular events, and build community. The site has a secondary purpose of acting as marketing page to drive enrollment and make free public education accessible to all.</p>
+    </div>
+  </section>
+
+  <section data-screen-label="Solution" style="background:#DCDBE8">
+    <div style="max-width:1680px;margin:0 auto;padding:clamp(56px,10vh,130px) clamp(20px,4vw,56px);display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+      <h2 style="flex:0 1 min(100%,20rem);min-width:0;font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">Our solution</h2>
+      <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:64ch">
+        <p style="font:400 clamp(1.05rem,1.5vw,1.4rem)/1.5 'Chakra Petch',sans-serif;text-wrap:pretty">We re-organized the site architecture to focus on way finding for the curriculum, and programs they offered, and created a section that specifically called out the 4 locations. We defined clear pathways to individual resource centers, and paired that with upcoming events. The secondary purpose of the site is to drive enrollment and to build a sense of community and trust. We put the stories of the families up front, and made sure the enrollment button was clear, visible, and on every page.</p>
+        <p style="margin-top:clamp(18px,2.6vh,28px);display:flex;gap:12px;align-items:baseline;max-width:72ch;font:400 0.95rem/1.55 'Chakra Petch',sans-serif;text-wrap:pretty"><span style="flex:none;padding:6px 10px;border-radius:999px;background:#F4290C;color:#FFFFFF;font:600 0.66rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Strategy</span><span>Organize by what people come to do, not by department. Current families find events and resources fast, while prospective families always have a clear next step toward enrolling.</span></p>
+        <ul style="margin-top:clamp(28px,4vh,44px);display:flex;flex-direction:column;border-top:1.5px solid rgba(18,10,8,0.28)">
+          <sc-for list="{{ solutions }}" as="s" hint-placeholder-count="4">
+            <li style="border-bottom:1.5px solid rgba(18,10,8,0.28)"><a href="#prototype" onClick="{{ s.go }}" style="text-decoration:none;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0;transition:padding 200ms ease" style-hover="padding-left:8px;color:#C21F05"><span style="display:flex;gap:12px;font-family:Anton,Impact,sans-serif;font-size:clamp(1.05rem,1.5vw,1.3rem);letter-spacing:0.02em;text-transform:uppercase"><span aria-hidden="true" style="color:#F4290C">+</span>{{ s.t }}</span><span style="flex:none;font:700 0.7rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">View →</span></a></li>
+          </sc-for>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="Brand" style="max-width:1680px;margin:0 auto;padding:clamp(56px,10vh,130px) clamp(20px,4vw,56px)">
+    <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">Brand: from sketch to mascot</h2>
+    <figure style="margin-top:clamp(24px,4vh,40px);background:#FFFFFF;border-radius:22px;padding:clamp(16px,3vw,40px)">
+      <img loading="lazy" decoding="async" src="tlc/uploads/pasted-1790542985954-0.png" alt="Logo evolution from sketch to final marks" style="width:100%">
+    </figure>
+    <div style="margin-top:clamp(32px,5vh,64px);display:flex;flex-wrap:wrap;gap:clamp(24px,4vw,64px);align-items:start">
+      <div style="flex:1 1 300px;min-width:0;max-width:52ch">
+        <p style="font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">The colors are youthful, playful and energetic, chosen to excite kids about learning without alienating high school students. Primary colors and basic shapes echo the foundation kids receive early in school. Museo Sans Rounded keeps the type soft, safe and friendly, yet still structured.</p>
+        <p style="margin-top:clamp(18px,2.6vh,28px);display:flex;gap:12px;align-items:baseline;max-width:72ch;font:400 0.95rem/1.55 'Chakra Petch',sans-serif;text-wrap:pretty"><span style="flex:none;padding:6px 10px;border-radius:999px;background:#F4290C;color:#FFFFFF;font:600 0.66rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Strategy</span><span>One brand that works for a kindergartner and a high school senior, so all four resource centers look like the same school.</span></p>
+        <div style="margin-top:28px;display:grid;grid-template-columns:repeat(6,1fr);gap:8px">
+          <sc-for list="{{ swatches }}" as="c" hint-placeholder-count="6"><div style="aspect-ratio:1;border-radius:12px;background:{{ c }};box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)"></div></sc-for>
+        </div>
+      </div>
+      <img loading="lazy" decoding="async" src="tlc/uploads/pasted-1790543048525-0.webp" alt="Mood board" style="flex:3 1 480px;min-width:0;width:100%;border-radius:22px">
+    </div>
+  </section>
+
+  <section data-screen-label="Redesign" style="background:#120A08;color:#FFFFFF">
+    <div style="max-width:1680px;margin:0 auto;padding:clamp(56px,10vh,130px) clamp(20px,4vw,56px);display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+      <h2 style="flex:0 1 min(100%,20rem);min-width:0;font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">The redesign</h2>
+      <div style="flex:1 1 min(100%,24rem);min-width:0">
+        <p style="max-width:60ch;font:500 clamp(1.05rem,1.5vw,1.45rem)/1.45 'Chakra Petch',sans-serif;text-wrap:pretty">Revisiting the homepage as a story you scroll through.</p>
+        <p style="margin-top:clamp(16px,2.4vh,28px);max-width:64ch;font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">Revisiting the project, I kept the original architecture, content and brand, and rebuilt the homepage as a sequence of full-screen scenes. Each scene carries one idea from the research: what TLC is, a day on site, the four resource centers, student stories, programs by grade, and the community that leads to enrollment.</p>
+        <p style="margin-top:clamp(18px,2.6vh,28px);display:flex;gap:12px;align-items:baseline;max-width:72ch;font:400 0.95rem/1.55 'Chakra Petch',sans-serif;color:rgba(241,239,238,0.85);text-wrap:pretty"><span style="flex:none;padding:6px 10px;border-radius:999px;background:#F4290C;color:#FFFFFF;font:600 0.66rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Strategy</span><span>Keep what the research proved and change only the delivery. The redesign tells the same story with more motion and less reading, which suits families browsing on their phones.</span></p>
+  </section>
+
+  <section id="prototype" data-screen-label="Prototype" style="padding:clamp(56px,10vh,130px) clamp(12px,4vw,56px);scroll-margin-top:72px">
+    <div style="max-width:1400px;margin:0 auto">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px">
+        <div>
+          <div style="font:700 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:#C21F05">Interactive prototype</div>
+          <h2 style="margin-top:12px;font-family:Anton,Impact,sans-serif;font-size:clamp(1.8rem,3.6vw,3.2rem);line-height:0.95;text-transform:uppercase">Try the redesign</h2>
+        </div>
+        <div role="tablist" style="display:flex;flex-wrap:wrap;gap:8px">
+          <sc-for list="{{ devices }}" as="d" hint-placeholder-count="3">
+            <button role="tab" onClick="{{ d.go }}" style="border:1.5px solid #120A08;border-radius:999px;background:{{ d.bg }};color:{{ d.color }};cursor:pointer;padding:0 20px;min-height:44px;font:600 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">{{ d.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:6px">
+        <sc-for list="{{ protoPages }}" as="p" hint-placeholder-count="6">
+          <button onClick="{{ p.go }}" style="border:none;border-radius:999px;background:{{ p.bg }};color:{{ p.color }};cursor:pointer;padding:0 16px;min-height:40px;font:600 0.8rem/1 'Chakra Petch',sans-serif;letter-spacing:0.04em">{{ p.label }}</button>
+        </sc-for>
+      </div>
+      <div ref="{{ stageRef }}" style="margin-top:28px;display:flex;justify-content:center">
+        <div style="position:relative;overflow:hidden;background:#120A08;width:{{ frameW }};height:{{ frameH }};padding:{{ bezel }};border-radius:{{ radius }};box-shadow:0 40px 80px -30px rgba(18,10,8,.5);transition:width .5s cubic-bezier(.2,.7,.2,1),height .5s cubic-bezier(.2,.7,.2,1)">
+          <div style="position:relative;overflow:hidden;background:#FFFFFF;width:100%;height:100%;border-radius:{{ innerRadius }}">
+            <iframe key="{{ frameKey }}" src="{{ src }}" title="TLC website prototype" style="position:absolute;top:0;left:0;border:0;transform-origin:0 0;width:{{ devW }};height:{{ devH }};transform:scale({{ scale }})"></iframe>
+          </div>
+        </div>
+      </div>
+      <p style="margin-top:18px;text-align:center;font:600 0.74rem/1.6 'Chakra Petch',sans-serif;letter-spacing:0.12em;text-transform:uppercase;color:rgba(18,10,8,0.6)">{{ devNote }} · <a href="tlc/TLC%20Home%20Playful.dc.html?back=1">Open full screen ↗</a></p>
+    </div>
+  </section>
+
+  <section data-screen-label="Outcome" style="max-width:1680px;margin:0 auto;padding:clamp(56px,10vh,140px) clamp(20px,4vw,56px) clamp(40px,7vh,88px);display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+    <h2 style="flex:0 1 min(100%,20rem);min-width:0;font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">Outcome</h2>
+    <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:64ch">
+      <p style="font:400 clamp(1.05rem,1.5vw,1.5rem)/1.45 'Chakra Petch',sans-serif;letter-spacing:-0.005em;text-wrap:pretty">Four resource centers presented as one school, with a site that serves current families every week and gives new families a clear path to enroll.</p>
+      <dl style="margin-top:clamp(16px,2.4vh,28px);display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 20px;font:400 clamp(0.92rem,1vw,1.02rem)/1.55 'Chakra Petch',sans-serif">
+        <dt style="font-weight:700;letter-spacing:0.1em;text-transform:uppercase;font-size:0.74rem;padding-top:3px">Research</dt><dd style="opacity:0.8;text-wrap:pretty">Personas, journeys and an architecture the school can use for future pages and programs.</dd>
+        <dt style="font-weight:700;letter-spacing:0.1em;text-transform:uppercase;font-size:0.74rem;padding-top:3px">Brand</dt><dd style="opacity:0.8;text-wrap:pretty">A new logo, mascot and palette ready for print, signage, events and social.</dd>
+        <dt style="font-weight:700;letter-spacing:0.1em;text-transform:uppercase;font-size:0.74rem;padding-top:3px">Website</dt><dd style="opacity:0.8;text-wrap:pretty">Paths to each center, events by location, and enrollment on every page.</dd>
+        <dt style="font-weight:700;letter-spacing:0.1em;text-transform:uppercase;font-size:0.74rem;padding-top:3px">Measure</dt><dd style="opacity:0.8;text-wrap:pretty">Enrollment starts, event registrations, and how fast families find what they came for.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section style="background:#FFE9DB;padding:clamp(48px,9vh,120px) clamp(20px,4vw,56px)">
+    <div style="max-width:1680px;margin:0 auto;display:flex;flex-wrap:wrap;gap:clamp(28px,5vw,88px);align-items:start">
+      <div style="flex:1 1 min(100%,20rem);min-width:0;max-width:56ch">
+        <h2 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.8rem,3.6vw,3.2rem);line-height:0.98;text-transform:uppercase;text-wrap:balance">Running an education platform or multi-location program?</h2>
+        <p style="margin-top:clamp(16px,2.4vh,28px);font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">I can research your audiences, reorganize your site around what they need, and refresh the brand so every location reads as one organization.</p>
+      </div>
+      <div style="flex:1 1 min(100%,20rem);min-width:0;max-width:52ch">
+        <h2 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">Services on this project</h2>
+        <ul style="margin-top:clamp(16px,2.5vh,28px);display:flex;flex-direction:column;border-top:1.5px solid rgba(18,10,8,0.28)">
+          <li style="display:flex;gap:12px;padding:14px 0;border-bottom:1.5px solid rgba(18,10,8,0.28);font-family:Anton,Impact,sans-serif;font-size:clamp(1.1rem,1.6vw,1.4rem);letter-spacing:0.02em;text-transform:uppercase"><span aria-hidden="true" style="color:#F4290C">+</span>UX research</li>
+          <li style="display:flex;gap:12px;padding:14px 0;border-bottom:1.5px solid rgba(18,10,8,0.28);font-family:Anton,Impact,sans-serif;font-size:clamp(1.1rem,1.6vw,1.4rem);letter-spacing:0.02em;text-transform:uppercase"><span aria-hidden="true" style="color:#F4290C">+</span>Information architecture</li>
+          <li style="display:flex;gap:12px;padding:14px 0;border-bottom:1.5px solid rgba(18,10,8,0.28);font-family:Anton,Impact,sans-serif;font-size:clamp(1.1rem,1.6vw,1.4rem);letter-spacing:0.02em;text-transform:uppercase"><span aria-hidden="true" style="color:#F4290C">+</span>Brand &amp; identity</li>
+          <li style="display:flex;gap:12px;padding:14px 0;border-bottom:1.5px solid rgba(18,10,8,0.28);font-family:Anton,Impact,sans-serif;font-size:clamp(1.1rem,1.6vw,1.4rem);letter-spacing:0.02em;text-transform:uppercase"><span aria-hidden="true" style="color:#F4290C">+</span>Website design</li>
+        </ul>
+        <div style="margin-top:clamp(26px,4vh,48px);display:flex;flex-wrap:wrap;gap:12px 16px">
+          <a href="John Slingerland Services.dc.html#contact" style="text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#120A08;border:1.5px solid #120A08;border-radius:999px;padding:0 32px;min-height:58px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#120A08;color:#FFE9DB"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>Start a project</a>
+          <a href="John Slingerland Services.dc.html#work" style="text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#120A08;border:1.5px solid #120A08;border-radius:999px;padding:0 32px;min-height:58px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#120A08;color:#FFE9DB"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>Back to work</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const INK='#120A08';
+const PERSONAS=[
+ {label:'Jared, student',role:'Student',name:'Jared, 13 yrs',img:'tlc/assets/p-jared.png',bars:[['Tech knowledge',95],['Visiting habits',76]],
+  quote:'[There are] many activities that are provided… …and opportunities for social interaction. Also, TLC has many dedicated and caring teachers that make a big impact…',
+  about:'Jared was formerly in public school but didn\'t feel like he fit in with the other kids. His other school was boring and too easy. The Learning Choice Academy allows him to explore different curriculum that he is interested in, at his own pace, and he fits in better with students who take their education a bit more seriously.',
+  traits:['Primarily uses mobile devices','Plays video games','Enjoys activities with others'],
+  needs:['Teacher contact information','Teacher website','Event information','Online registration for events','Testing dates','News and announcements']},
+ {label:'Mindy, stay-at-home mother',role:'Stay at home mother',name:'Mindy, 36 yrs',img:'tlc/assets/p-mindy.png',bars:[['Tech knowledge',73],['Visiting habits',82]],
+  quote:'[TLC] is a wonderful option in comparison to public school, where there is overcrowding. Children can get lost in the mix. Hence, they cannot benefit from the education provided.',
+  about:'Mindy has two children at The Learning Choice Academy. She deeply cares about their education and wants to be involved in their personalized learning. She feels home school, supplemented by enrichment activities for socialization, is a more positive and constructive approach than public school.',
+  traits:['Cares about community','Mobile is primary device','Busy with kids, on the go','Interested in a student study team'],
+  needs:['Visits the website several times a week to find events','Needs the academic calendar','Relies on weekly bulletin to stay informed and connected to TLC','Quickly register for an event online','Needs permission forms for field trips']},
+ {label:'Suzanne, working mother',role:'Working mother',name:'Suzanne, 32 yrs',img:'tlc/assets/p-suzanne.png',bars:[['Tech knowledge',61],['Visiting habits',31]],
+  quote:'…there are so many options, personalized learning is really happening here…. …ultimately us parents are piloting our children\'s curriculum.',
+  about:'Suzanne works full time and has one daughter. When she noticed her daughter struggling in school, she took the time to research alternatives, starting on her desktop and continuing on her tablet. She hasn\'t settled on homeschool yet. To make the leap she needs to know the steps involved in enrollment, and a little more information.',
+  traits:['Takes time to do research','Desktop is primary device, iPad is secondary','Interested in volunteering'],
+  needs:['What are the steps','Why TLC and how to enroll?','What\'s the curriculum like?','Wants to know the teachers: who they are, their backgrounds','Understanding the transition from public school to homeschool','Might sign up to the newsletter before deciding to enroll']}
+];
+const JOURNEYS=[
+ {label:'Jared',task:'Find test dates and contact a teacher',img:'tlc/uploads/pasted-1790542776519-0.png',note:'Home → News & announcements → Test detail → Teacher bio → Contact form. Scroll sideways on small screens.'},
+ {label:'Suzanne',task:'Learn about TLC, enroll, and register for orientation',img:'tlc/uploads/pasted-1790542781576-0.png',note:'Home → Enroll → Programs → Registration checklist → Orientation registration → Confirmation → FAQ.'}
+];
+const DEV={desktop:{label:'Desktop',w:1280,h:800,bezel:10,r:14,ir:6},tablet:{label:'Tablet',w:820,h:1080,bezel:16,r:32,ir:18},mobile:{label:'Mobile',w:390,h:780,bezel:12,r:48,ir:38}};
+const PAGES=[['Welcome','s0'],['A day at TLC','s1'],['Four centers','s2'],['Students','s3'],['Programs','s4'],['Community','s5']];
+
+class Component extends DCLogic {
+  state={persona:0,journey:0,dev:'desktop',page:'s0',cw:1200,k:0};
+  stageRef=React.createRef();
+  componentDidMount(){
+    const el=this.stageRef.current; if(!el) return;
+    this.ro=new ResizeObserver(()=>this.setState({cw:el.clientWidth})); this.ro.observe(el);
+    if(window.innerWidth<720) this.setState({dev:'mobile'});
+  }
+  componentWillUnmount(){ this.ro&&this.ro.disconnect(); }
+  show(page){ this.setState(s=>({page,k:s.k+1})); }
+  renderVals(){
+    const s=this.state, d=DEV[s.dev];
+    const outerW=d.w+d.bezel*2, outerH=d.h+d.bezel*2;
+    const scale=Math.min(1,(s.cw||outerW)/outerW);
+    const tab=(a)=>({bg:a?INK:'transparent',color:a?'#FFFFFF':INK});
+    const p=PERSONAS[s.persona];
+    const g=(n,ci)=>`window.tlcGo&&window.tlcGo(${n}${ci!=null?','+ci:''})`;
+    return {
+      heroBeats:[
+        {at:0,w:1280,h:800,label:'Desktop · welcome',js:g(0)},
+        {at:0.16,w:1280,h:800,label:'Desktop · a day at TLC',js:g(1)},
+        {at:0.32,w:1280,h:800,label:'Desktop · four centers, one school',js:g(2,0)},
+        {at:0.48,w:1280,h:800,label:'Desktop · student stories',js:g(3)},
+        {at:0.64,w:1280,h:800,label:'Desktop · programs by grade',js:g(4)},
+        {at:0.82,w:390,h:844,label:'Phone · community and enrollment',js:g(5)}
+      ],
+      personaTabs:PERSONAS.map((x,i)=>({label:x.label,...tab(i===s.persona),go:()=>this.setState({persona:i})})),
+      per:{...p,bars:p.bars.map(([l,v])=>({l,w:v+'%'}))},
+      ia:[
+        {n:'1.0',t:'About Us',items:['Curriculum','Contact','Board of Directors','Parent Advisory Committee','Support Us','WASC Accreditation']},
+        {n:'2.0',t:'Our Programs',items:['Elementary (K–5)','Middle School (6–8)','High School (9–12)','Enrichment','Extended Units']},
+        {n:'3.0',t:'Locations',items:['Chula Vista','La Mesa','Scripps Ranch','Temecula']},
+        {n:'4.0',t:'Resources',items:['Staff Directory','Forms – Handbooks','FAQ']},
+        {n:'5.0',t:'Events',items:['Calendar by resource center']},
+        {n:'6.0',t:'Enroll',items:['Enrollment Checklist']}
+      ],
+      journeyTabs:JOURNEYS.map((j,i)=>({label:j.label,...tab(i===s.journey),go:()=>this.setState({journey:i})})),
+      jr:JOURNEYS[s.journey],
+      solutions:[
+        {t:'Four resource centers presented as one school',go:()=>this.show('s2')},
+        {t:'Clear pathways to each center, paired with upcoming events',go:()=>this.show('s5')},
+        {t:'Family stories up front to build community and trust',go:()=>this.show('s3')},
+        {t:'Enrollment visible on every page, with a guided checklist',go:()=>this.show('s5')}
+      ],
+      redesign:[
+        {n:'01',t:'Video-led scenes',d:'Real classroom footage, tinted in the brand purple and orange, sets the mood for each scene.',go:()=>this.show('s0')},
+        {n:'02',t:'Four centers, one school',d:'Scrolling pauses on the locations scene and steps through each center card before moving on.',go:()=>this.show('s2')},
+        {n:'03',t:'Families up front',d:'Student spotlights and the parent quote carry the trust-building stories from the research.',go:()=>this.show('s3')},
+        {n:'04',t:'Paths by grade',d:'Program cards cycle through K–5, 6–8, 9–12 and enrichment, with a matching photo that pans behind each.',go:()=>this.show('s4')},
+        {n:'05',t:'Enrollment on every scene',d:'The Enroll button stays in the nav, and the last scene pairs upcoming events with a clear call to start.',go:()=>this.show('s5')},
+        {n:'06',t:'Built to degrade gracefully',d:'Videos load only when needed and fade in over still frames, with reduced-motion support and a stacked mobile layout.',go:()=>this.show('s0')}
+      ],
+      swatches:['#000000','#d3ec1a','#ee5b36','#5b3cc4','#3d3d3d','#e8e5da'],
+      devices:Object.entries(DEV).map(([k,v])=>({label:v.label,...tab(k===s.dev),go:()=>this.setState({dev:k})})),
+      protoPages:PAGES.map(([label,pg])=>({label,bg:pg===s.page?'#F4290C':'#FFFFFF',color:pg===s.page?'#FFFFFF':INK,go:()=>this.show(pg)})),
+      stageRef:this.stageRef,
+      frameW:Math.round(outerW*scale)+'px',frameH:Math.round(outerH*scale)+'px',bezel:Math.round(d.bezel*scale)+'px',radius:Math.round(d.r*scale)+'px',innerRadius:Math.round(d.ir*scale)+'px',
+      devW:d.w+'px',devH:d.h+'px',scale:scale.toFixed(4),
+      src:'tlc/TLC%20Home%20Playful.dc.html#'+s.page,frameKey:s.page+'-'+s.k,
+      devNote:`${d.label} · ${d.w}×${d.h}${scale<1?' · scaled to fit':''}`
+    };
+  }
+}
+</script>
+</body>
+</html>

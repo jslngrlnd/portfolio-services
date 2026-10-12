@@ -1,0 +1,1523 @@
+<!-- stage: wip -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>v3xp — Contextual Briefing with Linked Topics v3</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script>window.react = React;</script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide-react@0.469.0/dist/umd/lucide-react.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    window.onerror=function(m,u,l,c,e){
+      var msg=m;if(e&&e.stack)msg=e.stack;else if(e&&e.message)msg=e.message;
+      document.getElementById("root").innerHTML='<pre style="color:red;padding:20px;font-size:13px;white-space:pre-wrap">'+msg+'\nURL: '+u+'\nLine: '+l+', Col: '+c+'</pre>';
+    };
+    window.addEventListener('unhandledrejection',function(e){
+      document.getElementById("root").innerHTML='<pre style="color:red;padding:20px;font-size:13px;white-space:pre-wrap">Unhandled rejection: '+(e.reason&&e.reason.stack||e.reason)+'</pre>';
+    });
+  </script>
+</head>
+<body style="margin:0;font-family:'Inter',system-ui,sans-serif">
+<!-- CA-STAGE-BANNER:START -->
+<div id="ca-stage-banner" style="position:relative;display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 16px;background:#fff3e6;color:#b35a00;font-family:'DM Sans',system-ui,sans-serif;font-size:13px;font-weight:600;border-bottom:1px solid rgba(0,0,0,0.08);">
+  <span>🚧 WIP &mdash; Messy exploration — open discussion, not yet ready for a formal review.</span>
+  <button onclick="document.getElementById('ca-stage-banner').style.display='none'" style="background:rgba(0,0,0,0.06);border:none;color:inherit;font-weight:600;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;line-height:1.4;">&times;</button>
+</div>
+<!-- CA-STAGE-BANNER:END -->
+  <div id="root"></div>
+  <script>
+const{useState,useRef,useCallback,useEffect,useLayoutEffect}=React;
+const{Mic,Check,ChevronDown,ChevronUp,X,FileText,Pill,ArrowRight,ShieldCheck,CalendarClock,FlaskConical,Edit3,Menu,Pause,Play,HeartPulse,Search,Activity,Stethoscope,Hospital}=LucideReact;
+
+// ─── Scenario Data ─────────────────────────────────────
+// Scenario A: Complex patient — hospitalization, multiple specialists, many med changes
+const SCENARIO_A={
+  brief:[
+    {id:"hosp",type:"hospitalization",label:"DKA + HF decompensation",facility:"Memorial General Hospital",dateRange:"Jun 4 - 10, 2026",summary:"Admitted for diabetic ketoacidosis with concurrent HF decompensation. ICU 2 days. Insulin drip transitioned to pump. BNP 1,240. Discharged on new regimen.",linksTo:"hfref",content:{timeline:[],labs:[],diagnoses:[],dischargeMeds:[]}},
+    {id:"endocrinology",type:"encounter",provider:"Dr. James Reyes",specialty:"Endocrinology",date:"Jun 14, 2026",summary:"Insulin pump settings adjusted. Basal rate increased 0.8 → 1.0 u/hr. Correction factor tightened. CGM reviewed — time in range 42%.",linksTo:"dm",content:{}},
+    {id:"cardiology",type:"encounter",provider:"Dr. Priya Mehta",specialty:"Cardiology",date:"Jun 16, 2026",summary:"Post-discharge HF follow-up. BNP trending down to 780. Entresto initiated, replacing Lisinopril. Volume status improving.",linksTo:"hfref",content:{}},
+    {id:"nephrology",type:"encounter",provider:"Dr. Aarav Singh",specialty:"Nephrology",date:"Jun 20, 2026",summary:"eGFR dropped to 48 from 58. CKD stage 3B confirmed. Adjusted SGLT2 dosing. Avoid NSAIDs strictly.",linksTo:null,content:{}},
+    {id:"med_insulin",type:"med_change",medication:"Insulin pump basal 0.8 → 1.0 u/hr",context:"Adjusted by endocrinology",date:"Jun 14, 2026",summary:"Basal rate increased due to persistent hyperglycemia. ICR unchanged at 1:10.",linksTo:null},
+    {id:"med_entresto",type:"med_change",medication:"Entresto 49/51mg BID",context:"Replacing Lisinopril",date:"Jun 16, 2026",summary:"ARNI initiated per cardiology. 36-hr washout from Lisinopril observed. Monitor for hypotension.",linksTo:null},
+    {id:"med_carvedilol",type:"med_change",medication:"Carvedilol 12.5 → 25mg BID",context:"Uptitrated at discharge",date:"Jun 10, 2026",summary:"Beta-blocker uptitrated during hospitalization. Tolerating well, HR 64.",linksTo:null},
+    {id:"med_furosemide",type:"med_change",medication:"Furosemide 40 → 60mg daily",context:"Increased at discharge",date:"Jun 10, 2026",summary:"Dose increased for persistent volume overload. Weight at discharge 182 lb, down from 192.",linksTo:null},
+    {id:"med_jardiance",type:"med_change",medication:"Jardiance 10 → 25mg",context:"Increased by nephrology",date:"Jun 20, 2026",summary:"SGLT2 dose increased for cardiorenal benefit. Monitor eGFR trend.",linksTo:null},
+    {id:"med_cgm",type:"med_change",medication:"Dexcom G7 sensors — new Rx",context:"Ordered by endocrinology",date:"Jun 14, 2026",summary:"CGM supplies ordered. 90-day supply to pharmacy. Training completed during endo visit.",linksTo:null},
+  ],
+  items:[
+    {id:"dm",label:"T2DM",detail:"DKA recovery · pump adj",source:"chronic",hasAssessment:true,linkedFrom:"endocrinology"},
+    {id:"hfref",label:"HFrEF",detail:"Entresto started",source:"chronic",hasAssessment:true,linkedFrom:"cardiology"},
+    {id:"htn",label:"HTN",detail:"Entresto replacing Lisinopril",source:"chronic",hasAssessment:true,linkedFrom:null},
+    {id:"met",label:"Metformin",detail:"Hold — eGFR 48",source:"meds",linkedFrom:null},
+    {id:"eye",label:"Retinal screen",detail:"Overdue 18 mo",source:"gap",linkedFrom:null},
+  ],
+  gaps:["Diabetic eye exam","Foot exam","Flu vaccine","Pneumonia vaccine"],
+  subtitle:"Post-DKA + HF · 4 specialists · 6 med changes",
+  scenarioLabel:"Complex patient",
+};
+
+// Scenario B: Stable patient (connected pattern — current default)
+const SCENARIO_B={
+  brief:[
+    {id:"hosp",type:"hospitalization",label:"HF decompensation",facility:"Memorial General Hospital",dateRange:"Jun 8 - 12, 2026",summary:"Admitted for acute HF decompensation with bilateral LE edema. BNP 1,240 on admission. IV Furosemide, discharged on adjusted oral regimen.",linksTo:"hfref",content:{timeline:[{date:"Jun 8, 2026",event:"Admission",detail:"Acute dyspnea, bilateral leg edema, 2-pillow orthopnea. BNP 1,240 pg/mL. CXR: pulmonary edema. Weight 188 lb."},{date:"Jun 9-11, 2026",event:"Inpatient",detail:"IV Furosemide 80mg BID. Na restriction <2g. Echo: EF 35%. Daily weights: 188 -> 185 -> 183 lb. Carvedilol started 12.5mg."},{date:"Jun 12, 2026",event:"Discharge",detail:"Weight 182 lb. Switched to Furosemide 40mg PO daily. Carvedilol 12.5mg BID. PCP follow-up 2 weeks."}],labs:[{name:"BNP",value:"1,240 pg/mL",date:"Jun 8",flag:"high"},{name:"BNP (discharge)",value:"680 pg/mL",date:"Jun 12",flag:"high"},{name:"Creatinine",value:"1.6 mg/dL",date:"Jun 8",flag:"high"},{name:"Sodium",value:"136 mEq/L",date:"Jun 8",flag:null},{name:"Potassium",value:"4.1 mEq/L",date:"Jun 8",flag:null}],diagnoses:["Heart failure, systolic (primary)","Acute on chronic HF decompensation","Volume overload"],dischargeMeds:["Furosemide 40mg PO daily (new)","Carvedilol 12.5mg BID (new)","Lisinopril 10mg daily (continued)","Metformin 1000mg BID (continued)"]}},
+    {id:"cardiology",type:"encounter",provider:"Dr. Priya Mehta",specialty:"Cardiology",date:"Jun 16, 2026",summary:"Post-discharge HF follow-up. BNP trending down to 780. Volume status improving. Continued current regimen.",linksTo:"hfref",content:{reason:"Post-discharge CHF follow-up",location:"Memorial Heart Failure Clinic",labs:[{name:"BNP",value:"780 pg/mL",date:"Jun 16",flag:"high"},{name:"Creatinine",value:"1.6 mg/dL",date:"Jun 16",flag:"high"},{name:"Sodium",value:"139 mEq/L",date:"Jun 16",flag:null}],medChanges:[{med:"Furosemide 40mg",action:"Continued",note:"Adherence confirmed"},{med:"Carvedilol 12.5mg",action:"Continued",note:"Tolerating well"},{med:"Lisinopril 10mg",action:"Continued",note:"No changes"}],impression:"CHF stabilizing, volume improved. Continue current regimen. Daily weights. Cardiology follow-up in 6 weeks.",nextVisit:"Cardiology in 6 weeks"}},
+    {id:"med_carvedilol",type:"med_change",medication:"Carvedilol 12.5mg BID",context:"Started at discharge",date:"Jun 12, 2026",summary:"Beta-blocker initiated during hospitalization for HFrEF. Tolerating well per cardiology follow-up.",linksTo:null},
+  ],
+  items:[
+    {id:"htn",label:"HTN",detail:"Uptitrate if tol",source:"chronic",hasAssessment:true,linkedFrom:null},
+    {id:"dm",label:"T2DM",detail:"A1c 7.8% — review",source:"chronic",hasAssessment:true,linkedFrom:null},
+    {id:"hfref",label:"HFrEF",detail:"Echo pending",source:"chronic",hasAssessment:true,linkedFrom:"cardiology"},
+    {id:"met",label:"Met refill",detail:"Pt request",source:"meds",linkedFrom:null},
+    {id:"eye",label:"Retinal screen",detail:"Ref needed",source:"gap",linkedFrom:null},
+  ],
+  gaps:["Diabetic eye exam","Mammogram","Flu vaccine"],
+  subtitle:"Post-discharge · assessments linked to encounters",
+  scenarioLabel:"Stable patient",
+};
+
+// Scenario C: Routine follow-up
+const SCENARIO_C={
+  brief:[],
+  items:[
+    {id:"htn",label:"HTN",detail:"Annual reconfirmation",source:"chronic",hasAssessment:true,linkedFrom:null},
+    {id:"dm",label:"T2DM",detail:"A1c 7.8% — review",source:"chronic",hasAssessment:true,linkedFrom:null},
+    {id:"hfref",label:"HFrEF",detail:"Stable — reassess",source:"chronic",hasAssessment:true,linkedFrom:null},
+    {id:"eye",label:"Retinal screen",detail:"Ref needed",source:"gap",linkedFrom:null},
+    {id:"flu",label:"Flu vaccine",detail:"Not documented",source:"gap",linkedFrom:null},
+  ],
+  gaps:["Diabetic eye exam","Colorectal screening"],
+  subtitle:"Routine follow-up · no significant events",
+  scenarioLabel:"Routine follow-up",
+};
+
+const SCENARIOS={a:SCENARIO_A,b:SCENARIO_B,c:SCENARIO_C};
+
+// ─── Brief Items (Since You've Been Gone) ──────────────
+const BRIEF_ITEMS=[
+  {
+    id:"hosp",
+    type:"hospitalization",
+    label:"HF decompensation",
+    facility:"Memorial General Hospital",
+    dateRange:"Jun 8 - 12, 2026",
+    summary:"Admitted for acute HF decompensation with bilateral LE edema. BNP 1,240 on admission. IV Furosemide, discharged on adjusted oral regimen.",
+    linksTo:"hfref",
+    content:{
+      timeline:[
+        {date:"Jun 8, 2026",event:"Admission",detail:"Acute dyspnea, bilateral leg edema, 2-pillow orthopnea. BNP 1,240 pg/mL. CXR: pulmonary edema. Weight 188 lb."},
+        {date:"Jun 9-11, 2026",event:"Inpatient",detail:"IV Furosemide 80mg BID. Na restriction <2g. Echo: EF 35%. Daily weights: 188 -> 185 -> 183 lb. Carvedilol started 12.5mg."},
+        {date:"Jun 12, 2026",event:"Discharge",detail:"Weight 182 lb. Switched to Furosemide 40mg PO daily. Carvedilol 12.5mg BID. PCP follow-up 2 weeks."}
+      ],
+      labs:[
+        {name:"BNP",value:"1,240 pg/mL",date:"Jun 8",flag:"high"},
+        {name:"BNP (discharge)",value:"680 pg/mL",date:"Jun 12",flag:"high"},
+        {name:"Creatinine",value:"1.6 mg/dL",date:"Jun 8",flag:"high"},
+        {name:"Sodium",value:"136 mEq/L",date:"Jun 8",flag:null},
+        {name:"Potassium",value:"4.1 mEq/L",date:"Jun 8",flag:null}
+      ],
+      diagnoses:["Heart failure, systolic (primary)","Acute on chronic HF decompensation","Volume overload"],
+      dischargeMeds:["Furosemide 40mg PO daily (new)","Carvedilol 12.5mg BID (new)","Lisinopril 10mg daily (continued)","Metformin 1000mg BID (continued)"]
+    }
+  },
+  {
+    id:"cardiology",
+    type:"encounter",
+    provider:"Dr. Priya Mehta",
+    specialty:"Cardiology",
+    date:"Jun 16, 2026",
+    summary:"Post-discharge HF follow-up. BNP trending down to 780. Volume status improving. Continued current regimen.",
+    linksTo:"hfref",
+    content:{
+      reason:"Post-discharge CHF follow-up",
+      location:"Memorial Heart Failure Clinic",
+      labs:[
+        {name:"BNP",value:"780 pg/mL",date:"Jun 16",flag:"high"},
+        {name:"Creatinine",value:"1.6 mg/dL",date:"Jun 16",flag:"high"},
+        {name:"Sodium",value:"139 mEq/L",date:"Jun 16",flag:null}
+      ],
+      medChanges:[
+        {med:"Furosemide 40mg",action:"Continued",note:"Adherence confirmed"},
+        {med:"Carvedilol 12.5mg",action:"Continued",note:"Tolerating well"},
+        {med:"Lisinopril 10mg",action:"Continued",note:"No changes"}
+      ],
+      impression:"CHF stabilizing, volume improved. Continue current regimen. Daily weights. Cardiology follow-up in 6 weeks.",
+      nextVisit:"Cardiology in 6 weeks"
+    }
+  },
+  {
+    id:"med_carvedilol",
+    type:"med_change",
+    medication:"Carvedilol 12.5mg BID",
+    context:"Started at discharge",
+    date:"Jun 12, 2026",
+    summary:"Beta-blocker initiated during hospitalization for HFrEF. Tolerating well per cardiology follow-up.",
+    linksTo:null
+  }
+];
+
+// ─── Agenda Items ───────────────────────────────────────
+const ITEMS=[
+  {id:"htn",label:"HTN",detail:"Uptitrate if tol",source:"chronic",hasAssessment:true,linkedFrom:null},
+  {id:"dm",label:"T2DM",detail:"A1c 7.8% — review",source:"chronic",hasAssessment:true,linkedFrom:null},
+  {id:"hfref",label:"HFrEF",detail:"Echo pending",source:"chronic",hasAssessment:true,linkedFrom:"cardiology"},
+  {id:"met",label:"Met refill",detail:"Pt request",source:"meds",linkedFrom:null},
+  {id:"eye",label:"Retinal screen",detail:"Ref needed",source:"gap",linkedFrom:null},
+];
+
+const CTX={
+  fluid:{evidence:"Wt 182 lb (stable) . No edema . No SOB since d/c",plan:"Monitor fluid status, reinforce restriction"},
+  htn:{evidence:"BP 148/92 today . Lisinopril 10mg current",dx:"Essential HTN + hypertensive HF",dxSrc:"Scribed",plan:"Uptitrate Lisinopril -> 20mg, recheck 2 wk"},
+  dm:{evidence:"A1c 7.8% (Apr '26) . LDL 168 . Metformin 1000mg",dx:"T2DM w/ retinopathy, hyperlipidemia",dxSrc:"Scribed",plan:"Diet counseling, adherence review"},
+  hfref:{evidence:"Echo EF 35% (pending) . Wt 182 lb . NYHA II",dx:"HFrEF, NYHA Class II",dxSrc:"Scribed",plan:"Await echo, continue regimen"},
+  met:{evidence:"Metformin 1000mg . Adherence issues reported",plan:"Refill -> CVS Pharmacy"},
+  eye:{evidence:"No exam on record . DM dx 2018",plan:"Referral -> Valley Eye Center"},
+  knee:{evidence:"Rt knee pain with walking — no prior knee data on file",plan:"Discussed with patient"},
+  flu:{evidence:"No flu vaccination documented this season",plan:"Administer today if no contraindications"},
+};
+
+const SCRIBE_TX=["so how have you been feeling since you got home from the hospital","the swelling in my legs has been better but my blood pressure","has been harder to control I get dizzy sometimes in the morning","okay your weight looks stable thats good for the fluid situation","when does the dizziness happen is it when you first stand up","yeah mostly when I get out of bed too fast","that sounds orthostatic lets check your pressure","one forty eight over ninety two so its still running high","I want to talk about bumping up your lisinopril to twenty if you can tolerate it","how has the metformin been going any stomach issues","no its fine I just forget to take it some days","okay I sent a refill to CVS lets talk about a reminder system","your A1c came back seven point eight so its trending up a little","we should talk about diet and maybe check in on the eye exam","I dont think Ive had one of those in a while","lets get that referral in to Valley Eye Center","your echo results are still pending but your symptoms sound stable","I want to see you back in two weeks to recheck the blood pressure"];
+const DICTATION_TX={brief:["patient is here for post discharge follow up","she called yesterday and mentioned new knee pain so add that to the agenda","also want to check on her metformin adherence and whether the eye exam referral went through"],agenda:["her blood pressure is 148 over 92 today","she says the morning dizziness started about a week after discharge","lets plan to uptitrate the lisinopril to 20 milligrams"],review:["add a note about monitoring for orthostatic hypotension after the uptitration","include in instructions to call if dizziness worsens or she has any falls","also flag the echo results to review at the next visit when they come in"]};
+const TOPIC_CAPTURES={fluid:{bullets:["Wt 182 lb stable","No LE edema","No SOB since d/c"],artifacts:[{label:"Wt 182 lb",status:"noted"}]},htn:{bullets:["BP 148/92","AM dizziness — orthostatic","Lisinopril uptitration discussed"],artifacts:[{label:"BP 148/92",status:"noted"},{label:"Lisinopril 20mg",status:"pending"}]},dm:{bullets:["A1c 7.8%","Diet slippage","Metformin adherence reviewed"],artifacts:[{label:"HbA1c 7.8%",status:"noted"}]},hfref:{bullets:["Echo pending","No dyspnea","NYHA II confirmed"],artifacts:[{label:"Echo f/u",status:"ordered"}]},met:{bullets:["1000mg refill sent","Adherence counseled"],artifacts:[{label:"Metformin -> CVS",status:"sent"}]},eye:{bullets:["Referral placed","Valley Eye Center"],artifacts:[{label:"Eye exam referral",status:"sent"}]},knee:{bullets:["Rt knee pain with walking","No swelling or injury reported"],artifacts:[]},flu:{bullets:["Vaccine administered"],artifacts:[{label:"Flu vaccine",status:"sent"}]}};
+const NEXT_STEPS={fluid:"Monitor wt + edema at 2-wk f/u",htn:"Recheck BP in 2 wk",dm:"Repeat A1c in 3 mo",hfref:"Review echo when available",met:"CVS refill sent",eye:"Valley Eye Center referral placed",knee:"Consider X-ray if persistent",flu:"Administered today"};
+const REV=[{id:"assess_htn",label:"HTN assessment",status:"needs-review",detail:"Scribed — confirm dx specificity",action:"Confirm",icon:Activity,isAssessment:true,agendaId:"htn"},{id:"assess_dm",label:"T2DM assessment",status:"pending",detail:"Partially scribed — treatment plan incomplete",action:"Complete",icon:Activity,isAssessment:true,agendaId:"dm"},{id:"meds",label:"Med orders",status:"pending",detail:"Lisinopril 20mg — needs sig",action:"Sign",icon:Pill},{id:"note",label:"Visit note",status:"needs-review",detail:"Draft ready",action:"Review",icon:FileText},{id:"codes",label:"Dx codes",status:"needs-review",detail:"HTN, HFrEF — confirm specificity",action:"Confirm",icon:ShieldCheck},{id:"referrals",label:"Referrals",status:"done",detail:"Eye -> Valley Eye Center",icon:ArrowRight},{id:"followup",label:"F/u visit",status:"done",detail:"2 wk — fluid + BP recheck",icon:CalendarClock},{id:"labs",label:"Labs",status:"done",detail:"A1c + CMP -> Quest",icon:FlaskConical}];
+const NOTE_DRAFT={cc:"Follow-up visit — post-discharge HF, hypertension, diabetes management.",hpi:"56F presents for post-discharge follow-up after HF decompensation admission 2 weeks ago. Reports improved LE edema, no orthopnea or PND. Weight stable at 182 lb. Blood pressure harder to control — AM dizziness when standing quickly, likely orthostatic. Low-sodium diet adherence inconsistent. Metformin adherence suboptimal.",assessment:["Essential hypertension with hypertensive heart failure — BP 148/92, uptitrate Lisinopril to 20mg","Type II DM with retinopathy, hyperlipidemia — A1c 7.8%, trending up","HFrEF, NYHA Class II — EF 35% on last echo, pending repeat, weight stable"],plan:["Increase Lisinopril 10mg -> 20mg daily, recheck BP in 2 weeks","Metformin 1000mg refill sent to CVS","Low-sodium diet reinforced, daily weight monitoring","Diabetic eye exam referral — Valley Eye Center","Follow-up 2 weeks: fluid status, BP recheck","Labs ordered: HbA1c + CMP at Quest"]};
+const CODES_DATA=[{code:"I11.0",desc:"Hypertensive heart disease with heart failure"},{code:"I50.22",desc:"Chronic systolic heart failure, NYHA II"},{code:"E11.319",desc:"T2 DM with unspecified diabetic retinopathy without macular edema"},{code:"E11.65",desc:"Type 2 DM with hyperglycemia"},{code:"E78.5",desc:"Hyperlipidemia, unspecified"}];
+const INSTRUCTIONS_DATA=[{title:"Low-sodium diet",body:"Limit sodium to less than 2,000mg per day. Avoid processed foods, canned soups, deli meats."},{title:"Daily weights",body:"Weigh yourself every morning before eating. Call if you gain more than 3 lbs in one day or 5 lbs in one week."},{title:"Blood pressure monitoring",body:"Check and record your BP twice daily (morning and evening). Bring the log to your next visit."},{title:"Medication changes",body:"Lisinopril increased from 10mg to 20mg daily. Take in the morning. Rise slowly to avoid dizziness."}];
+
+// ─── Patient Data (for search) ──────────────────────────
+const PT_DATA={
+  labs:[{n:"HbA1c",v:"7.8%",d:"Apr 2026",t:"up"},{n:"LDL-C",v:"168 mg/dL",d:"Apr 2026",t:"up"},{n:"CMP",v:"Pending",d:"Ordered today"},{n:"BMP",v:"Normal",d:"Mar 2026"}],
+  vitals:[{n:"BP",v:"148/92 mmHg",d:"Today"},{n:"Weight",v:"182 lb",d:"Today"},{n:"HR",v:"78 bpm",d:"Today"},{n:"SpO2",v:"97%",d:"Today"}],
+  meds:[{n:"Lisinopril",v:"10mg -> 20mg",d:"Uptitrating"},{n:"Metformin",v:"1000mg",d:"Refill sent"},{n:"Carvedilol",v:"12.5mg",d:"Active"}],
+  hx:[{n:"HF admission",v:"Decompensation",d:"2 wks ago"},{n:"Echo",v:"EF 35%",d:"Pending repeat"},{n:"DM dx",v:"Since 2018",d:"8 years"}],
+};
+const AI_RESP=function(q){
+  var ql=q.toLowerCase();
+  if(ql.match(/a1c|hba1c|hemoglobin/))return"HbA1c was 7.8% as of Apr 2026, up from 7.2% in Oct 2025. Trending upward over 6 months — consider adherence counseling.";
+  if(ql.match(/bp|blood pressure|hypertension/))return"BP today 148/92. Last 3 visits: 142/88, 138/84, 148/92. Upward trend post-discharge. Currently on Lisinopril 10mg — uptitration to 20mg discussed.";
+  if(ql.match(/weight|fluid|edema/))return"Weight 182 lb today, stable from last visit. No LE edema noted. Down from 188 lb at discharge 2 wks ago.";
+  if(ql.match(/med|medication|prescription|lisinopril|metformin/))return"Active meds: Lisinopril 10mg (uptitrating to 20mg), Metformin 1000mg (refill sent to CVS), Carvedilol 12.5mg. No reported allergies.";
+  if(ql.match(/echo|ef|ejection/))return"Last echo showed EF 35%. Repeat echo ordered — results pending. NYHA Class II, no dyspnea at rest.";
+  if(ql.match(/hospital|admit|discharge/))return"Admitted 2 wks ago for acute HF decompensation. Discharged on current regimen. This is the post-discharge follow-up visit.";
+  return"I can help with labs, vitals, medications, imaging, or clinical history. Try asking a specific question about this patient.";
+};
+
+// ─── Assessment Data ─────────────────────────────────────
+const ASSESSMENTS={
+  htn:{
+    title:"Hypertension",
+    evidence:[
+      {type:"Vitals",label:"BP 148/92 mmHg",detail:"Today"},
+      {type:"Medications",label:"Lisinopril 10mg",detail:"Last filled 12/01/2024"}
+    ],
+    diagnosis:"Essential hypertension",
+    specs:[
+      {label:"Hypertensive heart failure",checked:true,tag:"Scribed"},
+      {label:"Hypertensive CKD",checked:false},
+    ],
+    treatment:"Uptitrate Lisinopril to 20mg; recheck BP in 2 weeks; low-sodium diet reinforced."
+  },
+  dm:{
+    title:"Type 2 Diabetes",
+    evidence:[
+      {type:"Labs",label:"HbA1c 7.8%",detail:"Apr 2026"},
+      {type:"Labs",label:"LDL-C 168 mg/dL",detail:"Apr 2026"}
+    ],
+    diagnosis:"Type II Diabetes Mellitus",
+    specs:[
+      {label:"Retinopathy",checked:true,tag:"Scribed"},
+      {label:"Hyperlipidemia",checked:false,tag:"Data"},
+      {label:"Neuropathy",checked:false},
+    ],
+    treatment:"Monitor diet compliance; adherence counseling; eye exam referral placed."
+  },
+  hfref:{
+    title:"HFrEF",
+    evidence:[
+      {type:"Imaging",label:"Echo — EF 35%",detail:"Pending"},
+      {type:"Vitals",label:"Weight 182 lb",detail:"Today"}
+    ],
+    diagnosis:"HFrEF (EF < 40%)",
+    specs:[
+      {label:"NYHA Class II",checked:true,tag:"Scribed"},
+      {label:"NYHA Class III",checked:false},
+    ],
+    treatment:"Continue current regimen; monitor fluid status; follow up echo results."
+  }
+};
+const ASSESSMENT_ORDER=["htn","dm","hfref"];
+
+// ─── Assistant Categories (review) ─────────────────────
+const ASST_CATS=[
+  {id:"pcp",name:"PCP Approval",defaultAuto:false,items:[
+    {label:"Lisinopril 20mg uptitration",dest:"→ pharmacy"},
+    {label:"HbA1c recheck 90-day",dest:"→ Quest"},
+  ]},
+  {id:"outreach",name:"Patient Outreach",defaultAuto:true,items:[
+    {label:"Patient instructions",dest:"→ patient portal"},
+    {label:"Check-in scheduling · 2 weeks",dest:""},
+    {label:"Eye exam referral & scheduling",dest:"→ Valley Eye Center"},
+  ]},
+];
+
+const CARE_GAP_DETAILS={
+  "Diabetic eye exam":{desc:"Annual dilated retinal exam overdue — last completed 2024. Required for diabetic retinopathy screening.",primary:"Send referral",secondary:"Patient declined"},
+  "Mammogram":{desc:"Screening mammogram due per USPSTF guidelines. No documented exam in current calendar year.",primary:"Order screening",secondary:"Not indicated"},
+  "Flu vaccine":{desc:"Influenza vaccination not documented this season. Recommended annually for all patients with chronic conditions.",primary:"Administer today",secondary:"Patient declined"},
+  "Foot exam":{desc:"Annual comprehensive foot exam overdue. Required for patients with diabetes to assess neuropathy and vascular status.",primary:"Confirm completed",secondary:"Defer to next visit"},
+  "Pneumonia vaccine":{desc:"PCV20 or PCV15+PPSV23 series not documented. Recommended for adults 65+ and those with chronic conditions.",primary:"Administer today",secondary:"Patient declined"},
+  "Colorectal screening":{desc:"Last colonoscopy 2020 — due for repeat per guidelines. Consider FIT test if colonoscopy not feasible.",primary:"Order colonoscopy",secondary:"Order FIT test"},
+};
+
+const OUTREACH_DETAILS={
+  "Check-in scheduling · 2 weeks":{desc:"Schedule a follow-up check-in call or visit in 2 weeks to monitor blood pressure response to Lisinopril uptitration and fluid status.",primary:"Schedule",secondary:"Skip"},
+  "Eye exam referral & scheduling":{desc:"Diabetic retinal exam overdue — last completed 2024. Referral to Valley Eye Center. Scheduling assistance available via patient outreach.",primary:"Send referral",secondary:"Patient will self-schedule"},
+};
+
+const FRAME_H=780,SNAP_MIN=44,SNAP_RUN=110,SNAP_EXP=Math.round(FRAME_H*0.52);
+const PANELS=["brief","agenda","review"];
+function snapNearest(px){return[{h:SNAP_MIN,n:"min"},{h:SNAP_RUN,n:"run"},{h:SNAP_EXP,n:"exp"}].sort((a,b)=>Math.abs(a.h-px)-Math.abs(b.h-px))[0]}
+
+// ─── Full-width Patient Header ───────────────────────────
+function PatientHeader(){
+  return React.createElement("div",{style:{display:"flex",alignItems:"center",height:52,background:"#fff",flexShrink:0,position:"relative",zIndex:10,boxShadow:"0 1px 4px rgba(0,0,0,0.06)",width:"100%"}},
+    React.createElement("button",{style:{width:44,height:52,display:"flex",alignItems:"center",justifyContent:"center",background:"none",border:"none",cursor:"pointer",flexShrink:0}},
+      React.createElement(Menu,{size:17,color:"#aaa"})),
+    React.createElement("div",{style:{flex:1,minWidth:0,display:"flex",alignItems:"center",gap:8}},
+      React.createElement("span",{style:{fontSize:14,fontWeight:700,color:"#111",letterSpacing:"-0.01em"}},"Sarah Johnson"),
+      React.createElement("span",{style:{fontSize:11,color:"#bbb",fontWeight:400}},"56F . 10:30")),
+    React.createElement("button",{style:{width:44,height:52,display:"flex",alignItems:"center",justifyContent:"center",background:"none",border:"none",cursor:"pointer",flexShrink:0}},
+      React.createElement(HeartPulse,{size:16,color:"#999"})));
+}
+
+// ─── Tab Rail ────────────────────────────────────────────
+function TabRail({panel,onNav}){
+  const tabs=[{k:"brief",l:"BRIEF"},{k:"agenda",l:"VISIT"},{k:"review",l:"FINALIZE"}];
+  const cRef=useRef(null),tRefs=useRef({});
+  const[indY,setIndY]=useState(0);
+  useLayoutEffect(()=>{const c=cRef.current,t=tRefs.current[panel];if(c&&t)setIndY(t.offsetTop+t.offsetHeight/2-9)},[panel]);
+
+  return React.createElement("div",{style:{width:36,flexShrink:0,background:"#fafafa",borderRight:"1px solid #f0f0f0",display:"flex",flexDirection:"column"}},
+    React.createElement("div",{ref:cRef,style:{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:28,position:"relative"}},
+      React.createElement("div",{style:{position:"absolute",left:0,width:2.5,height:18,borderRadius:2,background:"#6366f1",top:indY,transition:"top 0.35s cubic-bezier(0.4,0,0.2,1)"}}),
+      tabs.map(t=>React.createElement("button",{key:t.k,ref:el=>{tRefs.current[t.k]=el},onClick:()=>onNav(t.k),style:{writingMode:"vertical-rl",transform:"rotate(180deg)",background:"none",border:"none",cursor:"pointer",padding:"4px 0"}},
+        React.createElement("span",{style:{fontSize:9,letterSpacing:"0.1em",fontWeight:panel===t.k?700:500,color:panel===t.k?"#6366f1":"#999",transition:"color 0.2s"}},t.l)))));
+}
+
+function Waveform({color,paused}){
+  const bars=[{d:0.7,dl:0},{d:0.6,dl:0.1},{d:0.8,dl:0.15},{d:0.65,dl:0.05},{d:0.75,dl:0.2}];
+  return React.createElement("div",{style:{display:"flex",alignItems:"flex-end",gap:1.5,height:16}},
+    bars.map((b,i)=>React.createElement("div",{key:i,style:{width:2.5,borderRadius:1,background:color,height:paused?6:undefined,animation:paused?"none":"w"+i+" "+b.d+"s ease-in-out "+b.dl+"s infinite"}})));
+}
+
+// ─── Agenda Item (v3 — simplified, Molly's patterns) ────
+function AgendaItem({item,expanded,done,onToggle,onAssess,staggerIdx,hasAssessmentPending,isActive,briefData}){
+  const c=CTX[item.id];
+  const cap=done?TOPIC_CAPTURES[item.id]:null;
+  const canAssess=item.hasAssessment&&!done&&expanded&&hasAssessmentPending;
+  const nextStep=NEXT_STEPS[item.id];
+  const showDetail=expanded&&!done;
+  const ease="all 0.35s cubic-bezier(0.4,0,0.2,1)";
+
+  var connectionTag=null;
+  if(item.linkedFrom&&!done){
+    var briefItem=(briefData||BRIEF_ITEMS).find(function(b){return b.id===item.linkedFrom});
+    if(briefItem){
+      var tagLabel=briefItem.type==="hospitalization"?"Post-d/c":briefItem.type==="encounter"?briefItem.specialty:"Linked";
+      connectionTag=React.createElement("span",{style:{fontSize:8.5,fontWeight:500,color:"#999",background:"#f5f5f5",borderRadius:4,padding:"1px 5px",flexShrink:0,marginLeft:4,transition:ease}},tagLabel);
+    }
+  }
+
+  var isDone=done;
+  return React.createElement("div",{onClick:onToggle,style:{overflow:"hidden",
+    paddingLeft:10,
+    padding:isDone?"2px 0 2px 10px":"4px 0 4px 10px",
+    cursor:"pointer",
+    transition:"padding 0.4s ease",
+    background:"transparent"}},
+    React.createElement("div",{style:{display:"flex",alignItems:"center",gap:8,width:"100%",transition:"all 0.4s ease"}},
+      isDone
+        ?React.createElement(Check,{size:10,color:"#bbb",strokeWidth:2})
+        :React.createElement("span",{style:{width:5,height:5,borderRadius:"50%",background:"#6366f1",flexShrink:0}}),
+      React.createElement("span",{style:{fontSize:isDone?11:12.5,fontWeight:isDone?400:500,color:isDone?"#aaa":"#333",transition:"all 0.4s ease",flex:1}},item.label),
+      !isDone&&connectionTag,
+      !isDone&&item.hasAssessment&&React.createElement("span",{style:{fontSize:9,color:"#bbb",flexShrink:0}},"assess")),
+    !isDone&&React.createElement("div",{style:{fontSize:11,color:"#aaa",paddingLeft:13,paddingTop:1}},item.detail||""));
+}
+
+// ─── Assessment Sheet ────────────────────────────────────
+function AssessmentSheet({assessItemId,items,onClose,onConfirm,cardBottom}){
+  const[specs,setSpecs]=useState([]);
+  const[confirmed,setConfirmed]=useState(false);
+
+  useEffect(()=>{
+    if(assessItemId&&ASSESSMENTS[assessItemId]){
+      setSpecs(ASSESSMENTS[assessItemId].specs.map(s=>({...s})));
+      setConfirmed(false);
+    }
+  },[assessItemId]);
+
+  if(!assessItemId)return null;
+  const data=ASSESSMENTS[assessItemId];
+  if(!data)return null;
+
+  const pendingIds=ASSESSMENT_ORDER.filter(id=>{
+    const item=items.find(i=>i.id===id);
+    return item&&!item.done&&id!==assessItemId;
+  });
+  const nextId=pendingIds[0]||null;
+
+  function handleConfirm(){
+    setConfirmed(true);
+    onConfirm(assessItemId,nextId);
+  }
+
+  const typeColor={Vitals:"#0891b2",Labs:"#7c3aed",Medications:"#059669",Imaging:"#ea580c"};
+
+  return React.createElement("div",{style:{position:"absolute",bottom:cardBottom||80,left:12,right:12,zIndex:30,maxHeight:"60%",background:"#fff",borderRadius:16,boxShadow:"0 8px 32px rgba(0,0,0,0.12),0 2px 8px rgba(0,0,0,0.06)",display:"flex",flexDirection:"column",overflow:"hidden"}},
+      React.createElement("button",{onClick:onClose,style:{position:"absolute",top:10,right:12,background:"#f5f5f5",border:"none",cursor:"pointer",padding:4,zIndex:2,width:26,height:26,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center"}},
+        React.createElement(X,{size:13,color:"#999"})),
+      React.createElement("div",{style:{flex:1,overflowY:"auto",padding:"14px 16px 16px",scrollbarWidth:"none"}},
+        // Header
+        React.createElement("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:14}},
+          React.createElement("div",{style:{fontSize:15,fontWeight:700,color:"#111"}},data.title),
+          React.createElement("span",{style:{fontSize:9,fontWeight:700,letterSpacing:"0.05em",color:"#ea580c",background:"#fff7ed",borderRadius:4,padding:"2px 6px"}},"Needs confirmation")),
+        // Evidence
+        React.createElement("div",{style:{marginBottom:14}},
+          React.createElement("div",{style:{fontSize:9.5,fontWeight:700,color:"#bbb",letterSpacing:"0.06em",marginBottom:7}},"EVIDENCE"),
+          data.evidence.map((ev,i)=>React.createElement("div",{key:i,style:{display:"flex",alignItems:"center",gap:8,padding:"6px 0",borderBottom:i<data.evidence.length-1?"1px solid #f5f5f5":"none"}},
+            React.createElement("span",{style:{fontSize:9,fontWeight:700,color:typeColor[ev.type]||"#888",background:"#f5f5f5",borderRadius:4,padding:"2px 6px",flexShrink:0,minWidth:60,textAlign:"center"}},ev.type),
+            React.createElement("span",{style:{fontSize:12,fontWeight:500,color:"#333",flex:1}},ev.label),
+            React.createElement("span",{style:{fontSize:10.5,color:"#bbb"}},ev.detail)))),
+        // Diagnosis
+        React.createElement("div",{style:{marginBottom:14}},
+          React.createElement("div",{style:{fontSize:9.5,fontWeight:700,color:"#bbb",letterSpacing:"0.06em",marginBottom:7}},"DIAGNOSIS"),
+          React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6}},
+            React.createElement("span",{style:{fontSize:12.5,fontWeight:600,color:"#333"}},"Primary:"),
+            React.createElement("span",{style:{fontSize:12.5,color:"#555"}},data.diagnosis),
+            React.createElement("span",{style:{fontSize:8.5,fontWeight:700,color:"#6366f1",background:"#eef2ff",borderRadius:3,padding:"1px 5px"}},"Scribed"))),
+        // Complications / Specs
+        React.createElement("div",{style:{marginBottom:14}},
+          React.createElement("div",{style:{fontSize:9.5,fontWeight:700,color:"#bbb",letterSpacing:"0.06em",marginBottom:7}},"COMPLICATIONS"),
+          specs.map((sp,i)=>React.createElement("button",{key:i,onClick:()=>{const n=[...specs];n[i]={...n[i],checked:!n[i].checked};setSpecs(n)},style:{display:"flex",alignItems:"center",gap:9,width:"100%",textAlign:"left",padding:"7px 0",background:"none",border:"none",cursor:"pointer",borderBottom:i<specs.length-1?"1px solid #f8f8f8":"none"}},
+            React.createElement("div",{style:{width:17,height:17,borderRadius:5,flexShrink:0,background:sp.checked?"#6366f1":"#fff",border:sp.checked?"none":"1.5px solid #ddd",display:"flex",alignItems:"center",justifyContent:"center"}},
+              sp.checked&&React.createElement(Check,{size:9,color:"#fff",strokeWidth:3})),
+            React.createElement("span",{style:{fontSize:12.5,color:"#333",flex:1}},sp.label),
+            sp.tag&&React.createElement("span",{style:{fontSize:8.5,fontWeight:700,color:sp.tag==="Scribed"?"#6366f1":"#059669",background:sp.tag==="Scribed"?"#eef2ff":"#f0fdf4",borderRadius:3,padding:"1px 5px"}},sp.tag)))),
+        // Treatment
+        React.createElement("div",{style:{marginBottom:16}},
+          React.createElement("div",{style:{fontSize:9.5,fontWeight:700,color:"#bbb",letterSpacing:"0.06em",marginBottom:7}},"TREATMENT PLAN"),
+          React.createElement("div",{style:{fontSize:12,color:"#555",lineHeight:1.6,background:"#fafafa",borderRadius:8,padding:"9px 11px"}},data.treatment)),
+        // Action button
+        confirmed
+          ? nextId
+            ? React.createElement("button",{onClick:()=>onConfirm(assessItemId,nextId,true),style:{width:"100%",height:42,borderRadius:10,background:"#6366f1",border:"none",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6}},
+                "Next: "+ASSESSMENTS[nextId].title,
+                React.createElement(ArrowRight,{size:13,color:"#fff"}))
+            : React.createElement("div",{style:{height:42,borderRadius:10,background:"#f0fdf4",display:"flex",alignItems:"center",justifyContent:"center",gap:6}},
+                React.createElement(Check,{size:14,color:"#16a34a"}),
+                React.createElement("span",{style:{fontSize:13,fontWeight:700,color:"#16a34a"}},"All confirmed"))
+          : React.createElement("button",{onClick:handleConfirm,style:{width:"100%",height:42,borderRadius:10,background:"#6366f1",border:"none",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}},"Confirm")));
+}
+
+// ─── Ambient Footer ─────────────────────────────────────
+function AmbientFooter({micActive,micMode,micPaused,drawerH,setDrawerH,onDragStart,onTapMic,onHoldStart,onHoldEnd,onPause,onResume,onStop,onSwitchMode,onOpenAsk,onNavTo,onGoToReview,onSubmit,elapsed,panel,items,onMark,words,dictWords,dictTarget,sheetOpen,allDone,ctaVisible,allRevDone,ambientTopic}){
+  const fmt=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+  const active=items.filter(i=>!i.done)[0];
+  const cap=active?TOPIC_CAPTURES[active.id]:null;
+  const showTx=drawerH>60;
+  const showFull=drawerH>160;
+  const isScribe=micMode==="scribe";
+  const accentColor=isScribe?"#ef4444":"#6366f1";
+
+  const cardOpen=sheetOpen;
+  const[searchView,setSearchView]=useState(null);
+  const[chatMsgs,setChatMsgs]=useState([]);
+  const[inputText,setInputText]=useState("");
+  const[inputFocused,setInputFocused]=useState(false);
+  const inputRef=useRef(null);
+  const txRef=useRef(null);
+  useEffect(()=>{if(txRef.current)txRef.current.scrollTop=txRef.current.scrollHeight},[words,dictWords]);
+  function handleSend(){
+    if(!inputText.trim())return;
+    const q=inputText.trim();
+    setChatMsgs(p=>[...p,{role:"user",text:q},{role:"ai",text:AI_RESP(q)}]);
+    setInputText("");setSearchView(null);
+  }
+
+  function openSearch(){onOpenAsk();setTimeout(()=>{if(inputRef.current)inputRef.current.focus()},120)}
+
+  // Idle (mic off) and not in ask/search mode — single row pill
+  if(!micActive&&!showFull){
+    return React.createElement("div",{style:{position:"absolute",zIndex:20,height:48,background:"#fff",borderRadius:24,boxShadow:"0 4px 20px rgba(0,0,0,0.1),0 1px 4px rgba(0,0,0,0.05)",display:"flex",alignItems:"center",gap:8,padding:"0 6px 0 6px",transition:"opacity 0.3s ease",left:12,right:12,bottom:10}},
+      React.createElement("button",{
+        onClick:onTapMic,
+        style:{height:36,paddingLeft:12,paddingRight:16,borderRadius:20,background:"#6366f1",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6,flexShrink:0,touchAction:"none",boxShadow:"0 2px 8px rgba(99,102,241,0.3)"}},
+        React.createElement(Mic,{size:14,color:"#fff"}),
+        React.createElement("span",{style:{fontSize:11.5,fontWeight:700,color:"#fff"}},"Start scribe")),
+      React.createElement("div",{style:{flex:1}}),
+      React.createElement("button",{onClick:openSearch,style:{height:34,paddingLeft:10,paddingRight:12,borderRadius:20,background:"#eef2ff",border:"1px solid #ddd8ff",cursor:"pointer",display:"flex",alignItems:"center",gap:5,flexShrink:0}},
+        React.createElement(Search,{size:12,color:"#6366f1"}),
+        React.createElement("span",{style:{fontSize:10.5,fontWeight:600,color:"#6366f1"}},"Ask")));
+  }
+
+  const hideForScroll=ctaVisible&&panel!=="brief";
+  const isMinimal=cardOpen&&micActive;
+  const effectiveDrawer=isMinimal?SNAP_MIN:drawerH;
+  const showIslandCta=!isMinimal&&!showTx&&!showFull&&(panel==="review"||(panel==="agenda"&&!hideForScroll)||(panel==="brief"));
+  const effectiveH=showIslandCta?SNAP_MIN+44:effectiveDrawer;
+  return React.createElement("div",{style:{
+    position:"absolute",zIndex:20,background:"#fff",
+    display:"flex",flexDirection:"column",overflow:"hidden",
+    transition:"height 0.3s ease, border-radius 0.2s ease",
+    left:12,right:12,height:effectiveH,bottom:10,
+    borderRadius:22,
+    boxShadow:"0 4px 24px rgba(0,0,0,0.12),0 1px 4px rgba(0,0,0,0.06)",
+  }},
+    // Controls bar
+    React.createElement("div",{onPointerDown:isMinimal?undefined:onDragStart,style:{flexShrink:0,cursor:isMinimal?"default":"ns-resize",touchAction:"none",display:"flex",flexDirection:"column",alignItems:"center",paddingTop:!isMinimal&&showTx?6:0}},
+      showTx&&React.createElement("div",{style:{width:28,height:3,borderRadius:2,background:"#e5e5e5",marginBottom:4}}),
+      React.createElement("div",{style:{display:"flex",alignItems:"center",gap:5,width:"100%",padding:showTx?"3px 12px 7px":"0 12px",height:showTx?"auto":SNAP_MIN,borderBottom:showFull?"1px solid #f5f5f5":"none"}},
+        !micActive
+          ? React.createElement(React.Fragment,null,
+              React.createElement("button",{onClick:e=>{e.stopPropagation();onTapMic()},style:{width:32,height:32,borderRadius:"50%",background:"#f5f5f5",border:"1px solid #e5e5e5",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}},
+                React.createElement(Mic,{size:13,color:"#999"})),
+              React.createElement("span",{style:{fontSize:11,color:"#bbb"}},"Tap to start"))
+          : micPaused
+          ? React.createElement("div",{style:{display:"flex",gap:4,alignItems:"center"}},
+              React.createElement("button",{onClick:e=>{e.stopPropagation();onResume()},style:{display:"flex",alignItems:"center",gap:4,height:34,paddingLeft:10,paddingRight:14,borderRadius:20,border:"none",cursor:"pointer",background:"#f0fdf4"}},
+                React.createElement(Play,{size:12,color:"#16a34a"}),
+                React.createElement("span",{style:{fontSize:11,fontWeight:600,color:"#16a34a"}},"Resume")),
+              React.createElement("button",{onClick:e=>{e.stopPropagation();onStop()},style:{display:"flex",alignItems:"center",gap:4,height:34,paddingLeft:10,paddingRight:14,borderRadius:20,border:"none",cursor:"pointer",background:"#fef2f2"}},
+                React.createElement(X,{size:12,color:"#dc2626"}),
+                React.createElement("span",{style:{fontSize:11,fontWeight:600,color:"#dc2626"}},"End")))
+          : React.createElement(React.Fragment,null,
+              React.createElement("button",{onClick:e=>{e.stopPropagation();onPause()},style:{display:"flex",alignItems:"center",gap:5,flexShrink:0,height:34,paddingLeft:8,paddingRight:12,borderRadius:20,border:"none",cursor:"pointer",background:isScribe?"#fef2f2":"#eef2ff"}},
+                React.createElement(Mic,{size:13,color:accentColor}),
+                React.createElement(Waveform,{color:accentColor,paused:false}),
+                React.createElement(Pause,{size:11,color:accentColor,style:{marginLeft:2,opacity:0.5}})),
+              isScribe
+                ? React.createElement(React.Fragment,null,
+                    React.createElement("span",{style:{fontSize:11,fontWeight:700,color:"#333",fontVariantNumeric:"tabular-nums"}},fmt(elapsed)),
+                    React.createElement("span",{style:{fontSize:10.5,color:"#bbb"}},ambientTopic?ambientTopic.label:active?active.label:"Listening..."))
+                : React.createElement("span",{style:{fontSize:11,fontWeight:600,color:"#6366f1"}},dictTarget?"Dictating -> Follow-up":"Dictation")),
+        React.createElement("div",{style:{flex:1}}),
+        micActive&&React.createElement("button",{onClick:e=>{e.stopPropagation();onSwitchMode()},style:{fontSize:9.5,fontWeight:600,color:isScribe?"#dc2626":"#6366f1",background:isScribe?"#fef2f2":"#eef2ff",borderRadius:5,padding:"3px 8px",border:"none",cursor:"pointer"}},isScribe?"Scribe":"Dictate"),
+        !isMinimal&&!showFull&&React.createElement("button",{onClick:e=>{e.stopPropagation();openSearch()},style:{width:30,height:30,borderRadius:"50%",background:"#f5f5f5",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}},
+          React.createElement(Search,{size:12,color:"#999"})),
+        !isMinimal&&React.createElement("button",{onClick:e=>{e.stopPropagation();if(!micActive&&showFull){setDrawerH(SNAP_MIN)}else{setDrawerH(drawerH>SNAP_RUN?SNAP_MIN:SNAP_EXP)}},style:{background:"none",border:"none",cursor:"pointer",padding:4,display:"flex"}},
+          (drawerH>SNAP_RUN||(!micActive&&showFull))?React.createElement(ChevronDown,{size:13,color:"#ccc"}):React.createElement(ChevronUp,{size:13,color:"#ccc"})))),
+
+    // Contextual action button
+    showIslandCta&&(function(){
+      var label=null,action=null;
+      if(panel==="review"){label="Sign & submit";action=onSubmit}
+      else{label="Review & submit";action=onGoToReview}
+      return React.createElement("div",{style:{padding:"0 10px 8px",flexShrink:0}},
+        React.createElement("button",{onClick:e=>{e.stopPropagation();action()},style:{width:"100%",height:36,borderRadius:10,background:"#6366f1",border:"none",fontSize:12,fontWeight:700,color:"#fff",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6,boxShadow:"0 2px 8px rgba(99,102,241,0.2)"}},
+          label,React.createElement(ArrowRight,{size:12,color:"#fff"})));
+    })(),
+
+    showTx&&!showFull&&React.createElement("div",{ref:txRef,style:{padding:"2px 14px 8px",overflowY:"auto",scrollbarWidth:"none",maxHeight:44,flexShrink:0}},
+      isScribe
+        ?React.createElement("p",{style:{fontSize:11.5,lineHeight:1.5,margin:0,fontWeight:300}},words.map((w,i)=>{const d=words.length-1-i;return React.createElement("span",{key:i,style:{color:"#777",opacity:d<2?0.3:d<5?0.45:d<10?0.6:d<20?0.7:0.5,transition:"opacity 0.8s"}},w+" ")}),words.length>0&&React.createElement("span",{style:{display:"inline-block",width:1,height:10,background:"#ddd",verticalAlign:"middle",animation:"blink 1s step-end infinite"}}))
+        :React.createElement("p",{style:{fontSize:11.5,lineHeight:1.5,margin:0,fontWeight:400,color:"#6366f1"}},dictWords.join(" "),dictWords.length>0&&React.createElement("span",{style:{}}))),
+    // Expanded multi-modal panel
+    showFull&&!isMinimal&&React.createElement("div",{style:{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}},
+      React.createElement("div",{style:{flex:1,overflowY:"auto",scrollbarWidth:"none",padding:"0 14px"}},
+        isScribe&&active&&React.createElement("div",{style:{paddingTop:8,paddingBottom:8,borderBottom:"1px solid #f5f5f5"}},
+          React.createElement("div",{style:{display:"flex",alignItems:"center",gap:5,marginBottom:6}},React.createElement("span",{style:{fontSize:10,fontWeight:700,color:"#aaa",letterSpacing:"0.08em"}},"NOW"),React.createElement("span",{style:{fontSize:13,fontWeight:700,color:"#222"}},active.label)),
+          React.createElement("div",{style:{background:"#fafafa",borderRadius:7,padding:"7px 10px",marginBottom:8}},React.createElement("p",{style:{fontSize:11,color:"#888",lineHeight:1.5,fontWeight:400,margin:0}},words.slice(-18).join(" "),React.createElement("span",{style:{display:"inline-block",width:1,height:10,background:"#ddd",marginLeft:2,verticalAlign:"middle",animation:"blink 1s step-end infinite"}}))),
+          cap&&cap.artifacts.length>0&&React.createElement("div",{style:{display:"flex",gap:4,flexWrap:"wrap",marginBottom:8}},cap.artifacts.map((a,i)=>React.createElement("span",{key:i,style:{fontSize:10,fontWeight:600,color:a.status==="pending"?"#ea580c":"#6366f1",background:a.status==="pending"?"#fff7ed":"#eef2ff",borderRadius:5,padding:"2px 7px"}},a.label))),
+          React.createElement("button",{onClick:()=>onMark(active.id),style:{width:"100%",height:32,borderRadius:7,background:"#6366f1",border:"none",fontSize:11,fontWeight:600,color:"#fff",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:5}},React.createElement(Check,{size:10,color:"#fff",strokeWidth:2.5}),"Mark covered")),
+        !isScribe&&dictWords.length>0&&React.createElement("div",{style:{paddingTop:8,paddingBottom:8,borderBottom:"1px solid #f5f5f5"}},
+          React.createElement("div",{style:{background:"#f8f9ff",borderRadius:8,padding:"8px 10px",borderLeft:"3px solid #6366f1"}},
+            React.createElement("p",{style:{fontSize:12,color:"#4338ca",lineHeight:1.5,margin:0,fontStyle:"italic"}},dictWords.join(" "),
+              React.createElement("span",{style:{display:"inline-block",width:1,height:11,background:"#a5b4fc",verticalAlign:"middle",animation:"blink 1s step-end infinite",marginLeft:1}})))),
+        searchView&&React.createElement("div",{style:{paddingTop:8,paddingBottom:8}},
+          React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6,marginBottom:8}},
+            React.createElement("button",{onClick:()=>setSearchView(null),style:{background:"none",border:"none",cursor:"pointer",padding:0,display:"flex"}},React.createElement(ChevronDown,{size:12,color:"#999",style:{transform:"rotate(90deg)"}})),
+            React.createElement("span",{style:{fontSize:12,fontWeight:700,color:"#333"}},{labs:"Labs",vitals:"Vitals",meds:"Medications",hx:"History"}[searchView])),
+          (PT_DATA[searchView]||[]).map((r,i)=>React.createElement("div",{key:i,style:{display:"flex",alignItems:"center",padding:"7px 0",borderBottom:"1px solid #f8f8f8"}},
+            React.createElement("span",{style:{fontSize:12,fontWeight:600,color:"#333",flex:1}},r.n),
+            React.createElement("span",{style:{fontSize:12,color:"#666",marginRight:6}},r.v),
+            r.t&&React.createElement("span",{style:{fontSize:11,color:"#ea580c",fontWeight:600,marginRight:4}},r.t),
+            React.createElement("span",{style:{fontSize:10,color:"#bbb"}},r.d)))),
+        chatMsgs.length>0&&React.createElement("div",{style:{paddingTop:8,paddingBottom:4}},
+          chatMsgs.map((m,i)=>React.createElement("div",{key:i,style:{marginBottom:8,display:"flex",flexDirection:"column",alignItems:m.role==="user"?"flex-end":"flex-start"}},
+            React.createElement("div",{style:{maxWidth:"85%",padding:"8px 11px",borderRadius:m.role==="user"?"12px 12px 2px 12px":"12px 12px 12px 2px",background:m.role==="user"?"#6366f1":"#f5f5f5",color:m.role==="user"?"#fff":"#333",fontSize:12,lineHeight:1.5}},m.text)))),
+        !searchView&&React.createElement("div",{style:{paddingTop:8,paddingBottom:4}},
+          React.createElement("div",{style:{display:"flex",gap:5,flexWrap:"wrap"}},
+            [{k:"labs",l:"Labs",c:"#7c3aed"},{k:"vitals",l:"Vitals",c:"#0891b2"},{k:"meds",l:"Meds",c:"#059669"},{k:"hx",l:"History",c:"#ea580c"}].map(ch=>
+              React.createElement("button",{key:ch.k,onClick:()=>{setSearchView(ch.k);setChatMsgs([])},style:{display:"flex",alignItems:"center",gap:4,padding:"5px 10px",borderRadius:8,background:"#fafafa",border:"1px solid #f0f0f0",cursor:"pointer",fontSize:10.5,fontWeight:600,color:ch.c}},
+                React.createElement(Search,{size:10,color:ch.c}),ch.l))))
+      ),
+      React.createElement("div",{style:{padding:"8px 12px 10px",borderTop:"1px solid #f5f5f5",flexShrink:0,display:"flex",gap:6,alignItems:"center"}},
+        React.createElement("input",{
+          ref:inputRef,
+          value:inputText,onChange:e=>setInputText(e.target.value),
+          onFocus:()=>setInputFocused(true),onBlur:()=>setInputFocused(false),
+          onKeyDown:e=>{if(e.key==="Enter")handleSend()},
+          placeholder:dictTarget?"Add follow-up note...":"Ask, search, or add a note...",
+          style:{flex:1,height:36,padding:"0 14px",borderRadius:20,fontSize:12,color:"#333",outline:"none",fontFamily:"inherit",transition:"all 0.15s",
+            border:inputFocused?"1.5px solid #6366f1":"1px solid #e5e5e5",
+            background:inputFocused?"#fafaff":"#fafafa",
+            boxShadow:inputFocused?"0 0 0 3px rgba(99,102,241,0.08)":"none"}}),
+        React.createElement("button",{onClick:handleSend,style:{width:34,height:34,borderRadius:"50%",background:inputText.trim()?"#6366f1":"#f5f5f5",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"background 0.15s"}},
+          React.createElement(ArrowRight,{size:13,color:inputText.trim()?"#fff":"#ccc"})))
+    )
+  );
+}
+
+// ─── Review Sheet ───────────────────────────────────────
+const REVIEW_ORDER=["assess_htn","assess_dm","meds","note","codes"];
+function ReviewSheet({itemId,revItems,onClose,onDone,onAdvance,cardBottom}){
+  const[codesDone,setCodesDone]=useState([false,false,true,true,true]);
+  const[instEnabled,setInstEnabled]=useState(INSTRUCTIONS_DATA.map(()=>true));
+  const[confirmed,setConfirmed]=useState(false);
+  const[noteExpanded,setNoteExpanded]=useState("hpi");
+
+  useEffect(()=>{
+    if(!itemId)return;
+    if(itemId==="codes")setCodesDone([false,false,true,true,true]);
+    if(itemId==="instructions")setInstEnabled(INSTRUCTIONS_DATA.map(()=>true));
+    setConfirmed(false);
+    setNoteExpanded("hpi");
+  },[itemId]);
+
+  if(!itemId)return null;
+
+  const pendingIds=REVIEW_ORDER.filter(id=>{const r=revItems.find(x=>x.id===id);return r&&r.status!=="done"&&id!==itemId});
+  const nextId=pendingIds[0]||null;
+  const totalBlocking=REVIEW_ORDER.filter(id=>{const r=revItems.find(x=>x.id===id);return r&&r.status!=="done"}).length;
+  const blockingNum=REVIEW_ORDER.filter(id=>{const r=revItems.find(x=>x.id===id);return r&&r.status!=="done"}).indexOf(itemId)+1;
+
+  function handleDone(){setConfirmed(true);onDone(itemId)}
+
+  const LBL=(t,sub)=>React.createElement("div",{style:{marginBottom:14}},
+    React.createElement("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:3}},
+      React.createElement("div",{style:{fontSize:15,fontWeight:700,color:"#111"}},t),
+      totalBlocking>0&&React.createElement("span",{style:{fontSize:10,color:"#bbb"}},blockingNum+" of "+totalBlocking)),
+    sub&&React.createElement("div",{style:{fontSize:11.5,color:"#999"}},sub));
+
+  function footer(){
+    if(confirmed&&nextId){
+      return React.createElement("button",{onClick:()=>onAdvance(nextId),style:{width:"100%",height:42,borderRadius:10,background:"#6366f1",border:"none",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6,marginTop:8}},
+        "Next: "+(revItems.find(r=>r.id===nextId)||{}).label,React.createElement(ArrowRight,{size:13,color:"#fff"}));
+    }
+    if(confirmed&&!nextId){
+      return React.createElement("div",{style:{height:42,borderRadius:10,background:"#f0fdf4",display:"flex",alignItems:"center",justifyContent:"center",gap:6,marginTop:8}},
+        React.createElement(Check,{size:14,color:"#16a34a"}),React.createElement("span",{style:{fontSize:13,fontWeight:700,color:"#16a34a"}},"All items complete"));
+    }
+    return null;
+  }
+
+  function inner(){
+    if(itemId==="meds") return React.createElement(React.Fragment,null,
+      LBL("Med orders","Pending prescriptions & changes"),
+      React.createElement("div",{style:{border:"1px solid #f0f0f0",borderRadius:10,overflow:"hidden",marginBottom:12}},
+        React.createElement("div",{style:{background:"#fafafa",padding:"10px 14px",borderBottom:"1px solid #f0f0f0",display:"flex",alignItems:"center",gap:8}},
+          React.createElement(Pill,{size:14,color:"#6366f1"}),
+          React.createElement("span",{style:{fontSize:13,fontWeight:700,color:"#222"}},"Lisinopril"),
+          React.createElement("span",{style:{fontSize:11,color:"#999"}},"uptitration")),
+        React.createElement("div",{style:{padding:"10px 14px"}},
+          [{k:"Current",v:"10mg daily"},{k:"New dose",v:"20mg daily",bold:true},{k:"Route",v:"Oral"},{k:"Frequency",v:"QAM"},{k:"Pharmacy",v:"CVS #4821 — Main St"},{k:"Indication",v:"Essential HTN (I10)"}].map((r,i)=>React.createElement("div",{key:r.k,style:{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:i<5?"1px solid #f8f8f8":"none"}},
+            React.createElement("span",{style:{fontSize:11.5,color:"#999"}},r.k),
+            React.createElement("span",{style:{fontSize:11.5,fontWeight:r.bold?700:500,color:r.bold?"#6366f1":"#333"}},r.v))))),
+      React.createElement("div",{style:{background:"#fffbf5",border:"1px solid #fef3c7",borderRadius:8,padding:"9px 12px",marginBottom:12,display:"flex",gap:8,alignItems:"flex-start"}},
+        React.createElement("span",{style:{fontSize:12,flexShrink:0}},"!"),
+        React.createElement("div",null,
+          React.createElement("div",{style:{fontSize:11.5,fontWeight:600,color:"#92400e",marginBottom:2}},"Orthostatic risk"),
+          React.createElement("div",{style:{fontSize:11,color:"#b45309",lineHeight:1.4}},"AM dizziness reported — counsel pt to rise slowly. Recheck BP in 2 wk."))),
+      !confirmed&&React.createElement("div",{style:{display:"flex",gap:8}},
+        React.createElement("button",{onClick:handleDone,style:{flex:1,height:42,borderRadius:10,background:"#6366f1",border:"none",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}},"Sign order"),
+        React.createElement("button",{style:{height:42,paddingLeft:16,paddingRight:16,borderRadius:10,background:"#fef2f2",border:"none",fontSize:12,fontWeight:600,color:"#dc2626",cursor:"pointer"}},"Reject")),
+      footer());
+
+    if(itemId==="note") return React.createElement(React.Fragment,null,
+      LBL("Visit note","Review scribed note before signing"),
+      [{k:"cc",s:"CHIEF COMPLAINT",d:NOTE_DRAFT.cc},{k:"hpi",s:"HPI",d:NOTE_DRAFT.hpi},{k:"assessment",s:"ASSESSMENT",d:NOTE_DRAFT.assessment},{k:"plan",s:"PLAN",d:NOTE_DRAFT.plan}].map(({k,s,d})=>{
+        const isOpen=noteExpanded===k;
+        const isList=Array.isArray(d);
+        return React.createElement("div",{key:k,style:{borderBottom:"1px solid #f5f5f5",marginBottom:2}},
+          React.createElement("button",{onClick:()=>setNoteExpanded(isOpen?null:k),style:{display:"flex",alignItems:"center",width:"100%",padding:"10px 0",background:"none",border:"none",cursor:"pointer",textAlign:"left"}},
+            React.createElement("span",{style:{fontSize:10,fontWeight:700,color:isOpen?"#6366f1":"#bbb",letterSpacing:"0.06em",flex:1}},s),
+            React.createElement("span",{style:{fontSize:11,color:"#ddd",transform:isOpen?"rotate(180deg)":"none",transition:"transform 0.2s"}},"v")),
+          React.createElement("div",{style:{maxHeight:isOpen?300:0,opacity:isOpen?1:0,overflow:"hidden",transition:"max-height 0.25s ease, opacity 0.2s ease"}},
+            React.createElement("div",{style:{paddingBottom:12}},
+              isList
+                ?d.map((l,i)=>React.createElement("div",{key:i,style:{display:"flex",gap:5,marginBottom:3}},
+                  React.createElement("span",{style:{color:"#ccc",flexShrink:0}},"."),
+                  React.createElement("span",{style:{fontSize:12,color:"#555",lineHeight:1.5}},l)))
+                :React.createElement("p",{style:{fontSize:12,color:"#555",lineHeight:1.6,margin:0}},d))));}),
+      !confirmed&&React.createElement("div",{style:{display:"flex",gap:8,marginTop:8}},
+        React.createElement("button",{onClick:handleDone,style:{flex:1,height:42,borderRadius:10,background:"#6366f1",border:"none",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}},"Approve note"),
+        React.createElement("button",{style:{width:42,height:42,borderRadius:10,background:"#f5f5f5",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}},React.createElement(Edit3,{size:14,color:"#999"}))),
+      footer());
+
+    if(itemId==="instructions") return React.createElement(React.Fragment,null,
+      LBL("Pt instructions","Toggle items to include, then send to portal"),
+      INSTRUCTIONS_DATA.map((inst,i)=>React.createElement("div",{key:i,style:{display:"flex",gap:10,padding:"10px 0",borderBottom:i<INSTRUCTIONS_DATA.length-1?"1px solid #f5f5f5":"none",opacity:instEnabled[i]?1:0.4,transition:"opacity 0.2s"}},
+        React.createElement("button",{onClick:()=>{const n=[...instEnabled];n[i]=!n[i];setInstEnabled(n)},style:{width:20,height:20,borderRadius:5,flexShrink:0,marginTop:1,background:instEnabled[i]?"#6366f1":"#fff",border:instEnabled[i]?"none":"1.5px solid #ddd",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}},
+          instEnabled[i]&&React.createElement(Check,{size:9,color:"#fff",strokeWidth:3})),
+        React.createElement("div",{style:{flex:1}},
+          React.createElement("div",{style:{fontSize:12.5,fontWeight:600,color:"#333",marginBottom:2}},inst.title),
+          React.createElement("div",{style:{fontSize:11,color:"#888",lineHeight:1.5}},inst.body)))),
+      React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6,padding:"10px 0",marginTop:4}},
+        React.createElement(ArrowRight,{size:12,color:"#999"}),
+        React.createElement("span",{style:{fontSize:11,color:"#999"}},"Delivers via patient portal + print copy at checkout")),
+      !confirmed&&React.createElement("button",{onClick:handleDone,style:{width:"100%",height:42,borderRadius:10,background:"#6366f1",border:"none",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",marginTop:4}},
+        "Send "+instEnabled.filter(Boolean).length+" instruction"+(instEnabled.filter(Boolean).length!==1?"s":"")),
+      footer());
+
+    if(itemId==="codes"){
+      const all=codesDone.every(Boolean);
+      return React.createElement(React.Fragment,null,
+        LBL("Dx codes","Confirm ICD-10 specificity for this encounter"),
+        CODES_DATA.map((c,i)=>React.createElement("button",{key:c.code,onClick:()=>{const n=[...codesDone];n[i]=!n[i];setCodesDone(n)},style:{display:"flex",alignItems:"center",gap:10,width:"100%",textAlign:"left",padding:"10px 0",background:"none",border:"none",cursor:"pointer",borderBottom:i<CODES_DATA.length-1?"1px solid #f5f5f5":"none"}},
+          React.createElement("div",{style:{width:18,height:18,borderRadius:5,flexShrink:0,background:codesDone[i]?"#6366f1":"#fff",border:codesDone[i]?"none":"1.5px solid #ddd",display:"flex",alignItems:"center",justifyContent:"center"}},
+            codesDone[i]&&React.createElement(Check,{size:9,color:"#fff",strokeWidth:3})),
+          React.createElement("div",{style:{flex:1}},
+            React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6}},
+              React.createElement("span",{style:{fontSize:12.5,fontWeight:700,color:"#333",fontFamily:"monospace"}},c.code),
+              !codesDone[i]&&React.createElement("span",{style:{fontSize:8,fontWeight:700,color:"#ea580c",background:"#fff7ed",borderRadius:3,padding:"1px 5px"}},"CONFIRM")),
+            React.createElement("div",{style:{fontSize:11,color:"#888",lineHeight:1.4,marginTop:2}},c.desc)))),
+        React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6,padding:"8px 0",marginTop:4}},
+          React.createElement("span",{style:{fontSize:11,color:"#999"}},codesDone.filter(Boolean).length+"/"+codesDone.length+" confirmed")),
+        !confirmed&&React.createElement("button",{onClick:all?handleDone:undefined,style:{width:"100%",height:42,borderRadius:10,marginTop:4,background:all?"#6366f1":"#e5e5e5",border:"none",color:all?"#fff":"#bbb",fontSize:13,fontWeight:700,cursor:all?"pointer":"not-allowed"}},
+          all?"Confirm all codes":"Confirm remaining to continue"),
+        footer());
+    }
+    // Assessment items (assess_htn, assess_dm, etc.)
+    if(itemId&&itemId.indexOf("assess_")===0){
+      var assessKey=itemId.replace("assess_","");
+      var assessData=ASSESSMENTS[assessKey];
+      var ctx=CTX[assessKey];
+      if(assessData&&ctx){
+        var revItem=revItems.find(function(r){return r.id===itemId});
+        var isPartial=revItem&&revItem.status==="pending";
+        return React.createElement(React.Fragment,null,
+          LBL(assessData.title,isPartial?"Partially scribed — needs completion":"Scribed — confirm assessment"),
+          React.createElement("div",{style:{fontSize:11,color:"#888",lineHeight:1.5,marginBottom:8}},ctx.evidence),
+          ctx.dx&&React.createElement("div",{style:{marginBottom:8}},
+            React.createElement("div",{style:{fontSize:9.5,fontWeight:700,color:"#bbb",letterSpacing:"0.06em",marginBottom:5}},"DIAGNOSIS"),
+            React.createElement("div",{style:{fontSize:12,color:"#555"}},ctx.dx)),
+          React.createElement("div",{style:{marginBottom:12}},
+            React.createElement("div",{style:{fontSize:9.5,fontWeight:700,color:"#bbb",letterSpacing:"0.06em",marginBottom:5}},"PLAN"),
+            React.createElement("div",{style:{fontSize:12,color:"#555",lineHeight:1.5}},ctx.plan)),
+          !confirmed&&React.createElement("button",{onClick:handleDone,style:{width:"100%",height:42,borderRadius:10,background:"#6366f1",border:"none",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}},isPartial?"Complete & confirm":"Confirm assessment"),
+          footer());
+      }
+    }
+    return null;
+  }
+
+  return React.createElement("div",{style:{position:"absolute",bottom:cardBottom||80,left:12,right:12,zIndex:30,maxHeight:"60%",background:"#fff",borderRadius:16,boxShadow:"0 8px 32px rgba(0,0,0,0.12),0 2px 8px rgba(0,0,0,0.06)",display:"flex",flexDirection:"column",overflow:"hidden"}},
+      React.createElement("button",{onClick:onClose,style:{position:"absolute",top:10,right:12,background:"#f5f5f5",border:"none",cursor:"pointer",padding:4,zIndex:2,width:26,height:26,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center"}},React.createElement(X,{size:13,color:"#999"})),
+      React.createElement("div",{style:{flex:1,overflowY:"auto",padding:"14px 16px 12px",scrollbarWidth:"none"}},inner()),
+      // Prev / Next navigation within review items
+      (function(){
+        var blockingIds=REVIEW_ORDER.filter(function(id){var r=revItems.find(function(x){return x.id===id});return r&&r.status!=="done"});
+        var blockIdx=blockingIds.indexOf(itemId);
+        var prevId=blockIdx>0?blockingIds[blockIdx-1]:null;
+        var nextId2=blockIdx<blockingIds.length-1?blockingIds[blockIdx+1]:null;
+        var prevLabel=prevId?revItems.find(function(r){return r.id===prevId}):null;
+        var nextLabel=nextId2?revItems.find(function(r){return r.id===nextId2}):null;
+        if(!prevLabel&&!nextLabel)return null;
+        return React.createElement("div",{style:{display:"flex",alignItems:"center",borderTop:"1px solid #f0f0f0",flexShrink:0}},
+          React.createElement("button",{onClick:prevId?function(){onAdvance(prevId)}:undefined,style:{flex:1,display:"flex",alignItems:"center",justifyContent:"flex-start",gap:6,padding:"10px 14px",background:"none",border:"none",cursor:prevId?"pointer":"default",opacity:prevId?1:0.3}},
+            React.createElement(ChevronDown,{size:12,color:"#999",style:{transform:"rotate(90deg)"}}),
+            prevLabel&&React.createElement("span",{style:{fontSize:10,color:"#999"}},prevLabel.label)),
+          React.createElement("div",{style:{width:1,height:20,background:"#f0f0f0"}}),
+          React.createElement("button",{onClick:nextId2?function(){onAdvance(nextId2)}:undefined,style:{flex:1,display:"flex",alignItems:"center",justifyContent:"flex-end",gap:6,padding:"10px 14px",background:"none",border:"none",cursor:nextId2?"pointer":"default",opacity:nextId2?1:0.3}},
+            nextLabel&&React.createElement("span",{style:{fontSize:10,color:"#999"}},nextLabel.label),
+            React.createElement(ChevronDown,{size:12,color:"#999",style:{transform:"rotate(-90deg)"}})));
+      })());
+}
+
+// ─── Section Header ─────────────────────────────────────
+function SectionHead({title,subtitle}){
+  return React.createElement("div",{style:{padding:"16px 16px 10px"}},
+    React.createElement("div",{style:{fontSize:17,fontWeight:800,color:"#111",letterSpacing:"-0.02em",marginBottom:subtitle?2:0}},title),
+    subtitle&&React.createElement("div",{style:{fontSize:12,color:"#999"}},subtitle));
+}
+
+// ─── App ────────────────────────────────────────────────
+function App(){
+  const[scenario,setScenario]=useState("b");
+  const[briefItems,setBriefItems]=useState(SCENARIO_B.brief);
+  const[careGaps,setCareGaps]=useState(SCENARIO_B.gaps);
+  const[briefSubtitle,setBriefSubtitle]=useState(SCENARIO_B.subtitle);
+  function switchScenario(key){
+    var s=SCENARIOS[key];if(!s)return;
+    setScenario(key);
+    setBriefItems(s.brief);
+    setCareGaps(s.gaps);
+    setBriefSubtitle(s.subtitle);
+    setItems(s.items.map(function(i){return{...i,done:false}}));
+    setExpandedItems(new Set());
+    setAmbientTopic(null);
+    setMicActive(false);setMicPaused(false);setMicMode("scribe");
+    setDrawerH(SNAP_MIN);setWords([]);setDictWords([]);setElapsed(0);
+    autoFlowRef.current=false;
+    setPanel("brief");setCtaVisible(false);
+    setSheetId(null);setAssessItemId(null);setDetailItemId(null);setMedChangesOpen(false);setEncountersOpen(false);setCareGapsOpen(false);setCareGapActions({});setMedChangeActions({});setNowDiscExpanded(false);setInstEnabled(INSTRUCTIONS_DATA.map(function(){return true}));setInstSent(false);setOutreachSheet(null);setOutreachDone({});setSubmitDrawer(false);
+    setRevItems(REV.map(function(r){return{...r}}));
+    setBeforeYouGoOpen(false);
+  }
+  const[panel,setPanel]=useState("brief");
+  const[prevPanel,setPrevPanel]=useState(null);
+  const[items,setItems]=useState(ITEMS.map(i=>({...i,done:false})));
+  const[micActive,setMicActive]=useState(false);
+  const[micMode,setMicMode]=useState("scribe");
+  const[micPaused,setMicPaused]=useState(false);
+  const[drawerH,setDrawerH]=useState(SNAP_MIN);
+  const[elapsed,setElapsed]=useState(0);
+  const[words,setWords]=useState([]);
+  const[dictWords,setDictWords]=useState([]);
+  const[revItems,setRevItems]=useState(REV.map(r=>({...r})));
+  const[sheetId,setSheetId]=useState(null);
+  const[assessItemId,setAssessItemId]=useState(null);
+  const[followUpText,setFollowUpText]=useState("");
+  const[followUpFocused,setFollowUpFocused]=useState(false);
+  const[submitDrawer,setSubmitDrawer]=useState(false);
+  const[ctaVisible,setCtaVisible]=useState(false);
+  const[ambientTopic,setAmbientTopic]=useState(null);
+  const[asstAuto,setAsstAuto]=useState({pcp:false,outreach:true});
+  const[revSections,setRevSections]=useState({actions:true,topics:true});
+  const[beforeYouGoOpen,setBeforeYouGoOpen]=useState(false);
+  const holdTimer=useRef(null);
+  const holdFired=useRef(false);
+  const dragRef=useRef({active:false,startY:0,startH:0});
+  const panelRefs=useRef({});
+  const cooldown=useRef(false);
+  const touchY=useRef(0);
+
+  const[expandedItems,setExpandedItems]=useState(new Set());
+  function toggleExpand(id){setExpandedItems(prev=>{const next=new Set(prev);if(next.has(id))next.delete(id);else next.add(id);return next})}
+  const[detailItemId,setDetailItemId]=useState(null);
+  const[medChangesOpen,setMedChangesOpen]=useState(false);
+  const[encountersOpen,setEncountersOpen]=useState(false);
+  const[careGapsOpen,setCareGapsOpen]=useState(false);
+  const[careGapActions,setCareGapActions]=useState({});
+  const[medChangeActions,setMedChangeActions]=useState({});
+  const[nowDiscExpanded,setNowDiscExpanded]=useState(false);
+  const[instEnabled,setInstEnabled]=useState(INSTRUCTIONS_DATA.map(function(){return true}));
+  const[instSent,setInstSent]=useState(false);
+  const[instSheetOpen,setInstSheetOpen]=useState(false);
+  const[outreachSheet,setOutreachSheet]=useState(null);
+  const[outreachDone,setOutreachDone]=useState({});
+  function closeAllOverlays(){setDetailItemId(null);setSheetId(null);setAssessItemId(null);setMedChangesOpen(false);setEncountersOpen(false);setCareGapsOpen(false);setInstSheetOpen(false);setOutreachSheet(null);setSubmitDrawer(false)}
+  function openDetail(id){closeAllOverlays();setDetailItemId(id)}
+  function closeDetail(){setDetailItemId(null)}
+  function openSheet(id){closeAllOverlays();setSheetId(id)}
+  function openAssess(id){closeAllOverlays();setAssessItemId(id)}
+
+  // Auto-expand the active scribe item
+  useEffect(()=>{
+    if(micActive&&micMode==="scribe"&&!micPaused&&!ambientTopic){
+      const firstUndone=items.find(i=>!i.done);
+      if(firstUndone){
+        setExpandedItems(prev=>{const next=new Set(prev);next.add(firstUndone.id);return next});
+      }
+    }
+  },[items,micActive,micMode,micPaused,ambientTopic]);
+
+  function tryNav(dir){
+    if(cooldown.current)return;
+    const idx=PANELS.indexOf(panel);
+    const next=dir==="forward"?PANELS[idx+1]:PANELS[idx-1];
+    if(!next)return;
+    cooldown.current=true;
+    navTo(next);
+    // Reset the destination panel scroll to top so momentum doesn't carry
+    setTimeout(()=>{var el=panelRefs.current[next];if(el)el.scrollTop=0},50);
+    setTimeout(()=>{cooldown.current=false},900);
+  }
+
+  function handlePanelScroll(){
+    const el=panelRefs.current[panel];if(!el)return;
+    setCtaVisible(el.scrollTop+el.clientHeight>=el.scrollHeight-120);
+  }
+  // Track consecutive overscroll to require sustained intent
+  const overscrollCount=useRef(0);
+  function handleWheel(e){
+    handlePanelScroll();
+    const el=panelRefs.current[panel];if(!el)return;
+    const atBottom=el.scrollTop+el.clientHeight>=el.scrollHeight-40;
+    const atTop=el.scrollTop<=3;
+    if(e.deltaY>20&&atBottom){overscrollCount.current++;if(overscrollCount.current>=3)tryNav("forward")}
+    else if(e.deltaY<-15&&atTop){overscrollCount.current++;if(overscrollCount.current>=3)tryNav("back")}
+    else{overscrollCount.current=0}
+  }
+
+  function handleTouchStart(e){touchY.current=e.touches[0].clientY;handlePanelScroll()}
+  function handleTouchEnd(e){handlePanelScroll();overscrollCount.current=0;
+    const delta=touchY.current-e.changedTouches[0].clientY;
+    const el=panelRefs.current[panel];if(!el)return;
+    const atBottom=el.scrollTop+el.clientHeight>=el.scrollHeight-40;
+    const atTop=el.scrollTop<=3;
+    if(delta>100&&atBottom)tryNav("forward");
+    if(delta<-50&&atTop)tryNav("back");
+  }
+
+  useEffect(()=>{if(!micActive||micMode!=="scribe"||micPaused)return;const t=setInterval(()=>setElapsed(s=>s+1),1000);return()=>clearInterval(t)},[micActive,micMode,micPaused]);
+  useEffect(()=>{if(!micActive||micMode!=="scribe"||micPaused)return;const a=SCRIBE_TX.join(" ").split(" ");let i=0;setWords([]);const t=setInterval(()=>{if(i>=a.length){clearInterval(t);return}i++;setWords(a.slice(0,i))},300);return()=>clearInterval(t)},[micActive,micMode,micPaused]);
+  useEffect(()=>{if(!micActive||micMode!=="dictation"||micPaused)return;const src=DICTATION_TX[panel]||DICTATION_TX.brief;const a=src.join(" ").split(" ");let i=0;setDictWords([]);const t=setInterval(()=>{if(i>=a.length){clearInterval(t);return}i++;setDictWords(a.slice(0,i))},120);return()=>clearInterval(t)},[micActive,micMode,micPaused,panel]);
+
+  // Full visit auto-flow
+  const autoFlowRef=useRef(false);
+  useEffect(()=>{
+    if(!micActive||autoFlowRef.current)return;
+    autoFlowRef.current=true;
+    const timers=[];
+    timers.push(setTimeout(()=>{
+      setMicMode("scribe");setElapsed(0);setDrawerH(SNAP_MIN);navTo("agenda");setTimeout(function(){var el=panelRefs.current.agenda;if(el)el.scrollTop=0},100);
+    },4000));
+    [{id:"htn",t:11000},{id:"dm",t:22000},{id:"met",t:30000},{id:"hfref",t:36000},{id:"eye",t:42000}].forEach(ev=>{
+      timers.push(setTimeout(()=>setItems(p=>p.map(i=>i.id===ev.id?{...i,done:true}:i)),ev.t));
+    });
+    // Ambient topic: knee pain detected at 22s (Phase 1 — now-discussing only)
+    timers.push(setTimeout(()=>{
+      setAmbientTopic({id:"knee",label:"Knee pain",detail:"Pt mentioned",source:"ambient",done:false});
+    },22000));
+    // Ambient topic: knee pain drops to agenda at 26s — inserts after last discussed item
+    timers.push(setTimeout(()=>{
+      setItems(prev=>{
+        var lastDoneIdx=-1;
+        for(var i=0;i<prev.length;i++){if(prev[i].done)lastDoneIdx=i}
+        var newItems=[...prev];
+        newItems.splice(lastDoneIdx+1,0,{id:"knee",label:"Knee pain",detail:"Pt mentioned",source:"ambient",done:true});
+        return newItems;
+      });
+      setAmbientTopic(null);
+    },26000));
+    timers.push(setTimeout(()=>{
+      setMicMode("dictation");setDictWords([]);
+    },50000));
+    return()=>timers.forEach(clearTimeout);
+  },[micActive]);
+
+  function navTo(p){
+    if(p===panel)return;
+    setPrevPanel(panel);
+    setPanel(p);
+    setCtaVisible(false);
+  }
+
+  function handleTapMic(){
+    if(holdFired.current)return;
+    setMicActive(true);setMicMode("dictation");setMicPaused(false);setDrawerH(SNAP_MIN);setDictWords([]);
+  }
+  function handleHoldStart(e){
+    e.preventDefault();holdFired.current=false;
+    holdTimer.current=setTimeout(()=>{holdFired.current=true;setMicActive(true);setMicMode("dictation");setMicPaused(false);setDrawerH(SNAP_MIN);setDictWords([])},400);
+  }
+  function handleHoldEnd(){if(holdTimer.current){clearTimeout(holdTimer.current);holdTimer.current=null}}
+
+  function handleOpenAsk(){setDrawerH(SNAP_EXP)}
+  function stopMic(){setMicActive(false);setMicPaused(false);setDrawerH(SNAP_MIN);setWords([]);setDictWords([])}
+  function switchMode(){if(micMode==="scribe"){setMicMode("dictation");setDictWords([])}else{setMicMode("scribe");setWords([]);setElapsed(0)};setMicPaused(false)}
+  function markCovered(id){setItems(p=>p.map(i=>i.id===id?{...i,done:true}:i))}
+  function toggleItem(id){setItems(p=>p.map(i=>i.id===id?{...i,done:!i.done}:i))}
+  function goToReview(){stopMic();navTo("review")}
+
+  function openAssessment(itemId){setAssessItemId(itemId)}
+  function handleAssessConfirm(currentId,nextId,advance){
+    setItems(p=>p.map(i=>i.id===currentId?{...i,done:true}:i));
+    if(advance&&nextId){setAssessItemId(nextId)}
+  }
+  function handleAssessAdvance(currentId,nextId){
+    setItems(p=>p.map(i=>i.id===currentId?{...i,done:true}:i));
+    if(nextId){setAssessItemId(nextId)} else {setAssessItemId(null)}
+  }
+
+  function onDragStart(e){
+    e.preventDefault();dragRef.current={active:true,startY:e.clientY,startH:drawerH};
+    const onMove=ev=>{if(!dragRef.current.active)return;const dy=dragRef.current.startY-(ev.clientY||(ev.touches&&ev.touches[0].clientY));setDrawerH(Math.max(SNAP_MIN,Math.min(SNAP_EXP+40,dragRef.current.startH+dy)))};
+    const onUp=()=>{dragRef.current.active=false;setDrawerH(p=>snapNearest(p).h);window.removeEventListener("pointermove",onMove);window.removeEventListener("pointerup",onUp)};
+    window.addEventListener("pointermove",onMove);window.addEventListener("pointerup",onUp);
+  }
+
+  const allDone=items.every(i=>i.done);
+  const hasCard=!!(sheetId||assessItemId||detailItemId||submitDrawer);
+  const islandCollapsed=hasCard&&micActive;
+  const islandH=islandCollapsed?SNAP_MIN:(micActive?drawerH:48);
+  const cardBottom=islandH+20+10;
+  const bottomPad=(micActive?drawerH:56)+30;
+  const blocking=revItems.filter(r=>r.status!=="done");
+  const done=revItems.filter(r=>r.status==="done");
+  const allRevDone=blocking.length===0;
+
+  const pIdx=PANELS.indexOf(panel);
+
+  function panelStyle(p){
+    const isActive=p===panel;
+    const off=p===panel?0:(PANELS.indexOf(p)>pIdx?12:-12);
+    return{position:"absolute",inset:0,overflowY:"auto",scrollbarWidth:"none",paddingBottom:bottomPad,
+      opacity:isActive?1:0,transform:"translateY("+off+"px)",
+      transition:"opacity 0.32s cubic-bezier(0.4,0,0.2,1), transform 0.32s cubic-bezier(0.4,0,0.2,1)",
+      pointerEvents:isActive?"auto":"none",zIndex:isActive?1:0};
+  }
+
+  const assessmentPendingItems=items.filter(i=>i.hasAssessment&&!i.done);
+
+  // ─── Brief Panel Helper: Connection indicator ──────────
+  function ConnectionIndicator(){
+    return React.createElement("span",{style:{fontSize:9,fontWeight:600,color:"#6366f1",marginLeft:4}},"-> Agenda");
+  }
+
+  return React.createElement("div",{style:{width:"100%",minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"#f0f0f0",padding:"20px 0",gap:12}},
+    // ── Scenario toggle ──
+    React.createElement("div",{style:{display:"flex",gap:6,alignItems:"center"}},
+      React.createElement("span",{style:{fontSize:10,fontWeight:600,color:"#999",letterSpacing:"0.04em",marginRight:4}},"SCENARIO"),
+      [{k:"a",l:"Complex patient"},{k:"b",l:"Stable patient"},{k:"c",l:"Routine follow-up"}].map(function(s){
+        return React.createElement("button",{key:s.k,onClick:function(){switchScenario(s.k)},style:{
+          fontSize:11,fontWeight:scenario===s.k?700:500,
+          color:scenario===s.k?"#fff":"#666",
+          background:scenario===s.k?"#333":"#fff",
+          border:"1px solid "+(scenario===s.k?"#333":"#ddd"),
+          borderRadius:6,padding:"5px 12px",cursor:"pointer",fontFamily:"inherit",transition:"all 0.15s"
+        }},s.l)})),
+    React.createElement("style",null,"@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}\n@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}\n@keyframes w0{0%,100%{height:3px}50%{height:13px}}\n@keyframes w1{0%,100%{height:7px}50%{height:16px}}\n@keyframes w2{0%,100%{height:4px}50%{height:11px}}\n@keyframes w3{0%,100%{height:8px}50%{height:15px}}\n@keyframes w4{0%,100%{height:5px}50%{height:12px}}\n@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}\n@keyframes nudge{0%,100%{transform:translateY(0);opacity:0.3}50%{transform:translateY(3px);opacity:0.6}}\n@keyframes shimBorder{0%,100%{box-shadow:0 0 0 1px rgba(99,102,241,0.1)}50%{box-shadow:0 0 0 1px rgba(99,102,241,0.22)}}\n@keyframes overlayIn{from{opacity:0}to{opacity:1}}\n@keyframes fadeSlideUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}\n@keyframes completePulse{0%{background:#f0fdf4}50%{background:#dcfce7}100%{background:transparent}}\n@keyframes ambientAppear{0%{opacity:0;transform:translateY(12px) scale(0.97)}60%{opacity:1;transform:translateY(-2px) scale(1.01)}100%{opacity:1;transform:translateY(0) scale(1)}}\n@keyframes topicExit{from{opacity:1;max-height:60px}to{opacity:0;max-height:0}}\n@keyframes redPulse{0%,100%{opacity:0.4}50%{opacity:1}}\n*{box-sizing:border-box}body{font-family:'Inter',system-ui,sans-serif}"),
+
+    // Phone frame
+    React.createElement("div",{style:{width:390,height:FRAME_H,borderRadius:28,overflow:"hidden",background:"#fff",boxShadow:"0 20px 60px rgba(0,0,0,0.1),0 4px 12px rgba(0,0,0,0.04)",position:"relative",display:"flex",flexDirection:"column"}},
+
+      React.createElement(PatientHeader,null),
+
+      React.createElement("div",{style:{flex:1,display:"flex",overflow:"hidden"}},
+        React.createElement(TabRail,{panel,onNav:navTo}),
+
+        React.createElement("div",{style:{flex:1,display:"flex",flexDirection:"column",position:"relative",overflow:"hidden"}},
+
+          React.createElement("div",{onWheel:handleWheel,onTouchStart:handleTouchStart,onTouchEnd:handleTouchEnd,onScroll:handlePanelScroll,style:{flex:1,position:"relative",overflow:"hidden"}},
+
+            // ── BRIEF ──
+            React.createElement("div",{ref:el=>{panelRefs.current.brief=el},style:panelStyle("brief")},
+              React.createElement(SectionHead,{title:"Visit brief",subtitle:briefSubtitle}),
+              React.createElement("div",{style:{padding:"0 16px"}},
+
+                // ── Section 1: SINCE YOUR LAST VISIT ──
+                briefItems.length>0&&React.createElement("div",{style:{marginBottom:16}},
+                  React.createElement("div",{style:{fontSize:10,fontWeight:600,color:"#aaa",letterSpacing:"0.06em",marginBottom:8}},"SINCE YOUR LAST VISIT"),
+
+                  // Hospitalization callout — amber left-border card
+                  briefItems.filter(function(b){return b.type==="hospitalization"}).map(function(b){
+                    return React.createElement("div",{key:b.id,style:{background:"#fffbf5",borderLeft:"3px solid #f59e0b",borderRadius:"0 8px 8px 0",padding:"10px 12px",marginBottom:10,cursor:"pointer"}},
+                      React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6,marginBottom:3}},
+                        React.createElement(Hospital,{size:12,color:"#b45309"}),
+                        React.createElement("span",{style:{fontSize:10,fontWeight:700,color:"#b45309",letterSpacing:"0.04em"}},"HOSPITALIZATION")),
+                      React.createElement("div",{style:{fontSize:12.5,fontWeight:600,color:"#92400e",marginBottom:2}},b.label),
+                      React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6,marginBottom:3}},
+                        React.createElement("span",{style:{fontSize:11,color:"#b45309"}},b.facility),
+                        React.createElement("span",{style:{fontSize:10,color:"#d97706"}},b.dateRange)),
+                      React.createElement("div",{style:{fontSize:11,color:"#92400e",lineHeight:1.4,opacity:0.85}},b.summary),
+                      b.linksTo&&React.createElement("div",{style:{display:"flex",alignItems:"center",gap:5,marginTop:6}},
+                        React.createElement("span",{style:{width:5,height:5,borderRadius:"50%",background:"#6366f1",flexShrink:0}}),
+                        React.createElement("span",{style:{fontSize:10,color:"#6366f1"}},
+                          ITEMS.find(function(it){return it.id===b.linksTo}).label+" on agenda")));
+                  }),
+
+                  // Encounters — inline if ≤3, summary card if >3
+                  (function(){
+                    var encs=briefItems.filter(function(b){return b.type==="encounter"});
+                    if(encs.length===0)return null;
+                    if(encs.length<=3){
+                      return encs.map(function(b){
+                        return React.createElement("div",{key:b.id,style:{display:"flex",alignItems:"flex-start",gap:10,padding:"9px 0",borderBottom:"1px solid #f5f5f5",cursor:"pointer"}},
+                          React.createElement("div",{style:{width:28,height:28,borderRadius:7,background:"#f5f5f5",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}},
+                            React.createElement(Stethoscope,{size:13,color:"#888"})),
+                          React.createElement("div",{style:{flex:1,minWidth:0}},
+                            React.createElement("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:6,marginBottom:1}},
+                              React.createElement("span",{style:{fontSize:12.5,fontWeight:500,color:"#333"}},b.provider),
+                              React.createElement("span",{style:{fontSize:10,color:"#bbb"}},b.date)),
+                            React.createElement("div",{style:{fontSize:11,color:"#888",marginBottom:1}},b.specialty),
+                            React.createElement("div",{style:{fontSize:11,color:"#777",lineHeight:1.4,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}},b.summary),
+                            b.linksTo&&React.createElement("div",{style:{display:"flex",alignItems:"center",gap:5,marginTop:4}},
+                              React.createElement("span",{style:{width:5,height:5,borderRadius:"50%",background:"#6366f1",flexShrink:0}}),
+                              React.createElement("span",{style:{fontSize:10,color:"#6366f1"}},
+                                ITEMS.find(function(it){return it.id===b.linksTo}).label+" on agenda"))));
+                      });
+                    }
+                    // >3 encounters: summary card
+                    var specialties=[];
+                    encs.forEach(function(e){if(e.specialty&&specialties.indexOf(e.specialty)<0)specialties.push(e.specialty)});
+                    var linked=encs.filter(function(e){return e.linksTo});
+                    return React.createElement("button",{onClick:function(){closeAllOverlays();setEncountersOpen(true)},style:{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",marginTop:4,width:"100%",background:"#fafafa",border:"1px solid #f0f0f0",borderRadius:10,cursor:"pointer",textAlign:"left"}},
+                      React.createElement(Stethoscope,{size:14,color:"#888",style:{flexShrink:0}}),
+                      React.createElement("div",{style:{flex:1,minWidth:0}},
+                        React.createElement("div",{style:{fontSize:12.5,fontWeight:600,color:"#333",marginBottom:2}},encs.length+" specialist visits"),
+                        React.createElement("div",{style:{fontSize:11,color:"#888"}},specialties.join(" · ")),
+                        linked.length>0&&React.createElement("div",{style:{fontSize:10.5,color:"#aaa",marginTop:2}},linked.length+" linked to agenda")),
+                      React.createElement(ChevronDown,{size:12,color:"#ccc",style:{flexShrink:0,transform:"rotate(-90deg)"}}));
+                  })(),
+
+                  // Med changes — inline if ≤3, summary card if >3
+                  (function(){
+                    var meds=briefItems.filter(function(b){return b.type==="med_change"});
+                    if(meds.length===0)return null;
+                    if(meds.length<=3){
+                      return meds.map(function(b){
+                        return React.createElement("div",{key:b.id,style:{display:"flex",alignItems:"flex-start",gap:10,padding:"9px 0",borderBottom:"1px solid #f5f5f5",cursor:"pointer"}},
+                          React.createElement("div",{style:{width:28,height:28,borderRadius:7,background:"#f5f5f5",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}},
+                            React.createElement(Pill,{size:13,color:"#999"})),
+                          React.createElement("div",{style:{flex:1,minWidth:0}},
+                            React.createElement("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:6,marginBottom:1}},
+                              React.createElement("span",{style:{fontSize:12.5,fontWeight:500,color:"#333"}},b.medication),
+                              React.createElement("span",{style:{fontSize:10,color:"#bbb"}},b.date)),
+                            React.createElement("div",{style:{fontSize:11,color:"#888"}},b.context)));
+                      });
+                    }
+                    // >3 med changes: summary card
+                    var newMeds=meds.filter(function(m){return m.context&&m.context.toLowerCase().indexOf("start")>=0||m.context&&m.context.toLowerCase().indexOf("new")>=0||m.context&&m.context.toLowerCase().indexOf("replac")>=0||m.context&&m.context.toLowerCase().indexOf("initiat")>=0});
+                    var changedMeds=meds.filter(function(m){return m.context&&(m.context.toLowerCase().indexOf("increas")>=0||m.context.toLowerCase().indexOf("adjust")>=0||m.context.toLowerCase().indexOf("uptitrat")>=0)});
+                    var summary=[];
+                    if(newMeds.length>0)summary.push(newMeds.length+" new");
+                    if(changedMeds.length>0)summary.push(changedMeds.length+" adjusted");
+                    var otherCount=meds.length-newMeds.length-changedMeds.length;
+                    if(otherCount>0)summary.push(otherCount+" other");
+                    var confirmedCount=meds.filter(function(m){return medChangeActions[m.id]}).length;
+                    return React.createElement("button",{onClick:function(){closeAllOverlays();setMedChangesOpen(true)},style:{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",marginTop:4,width:"100%",background:"#fafafa",border:"1px solid #f0f0f0",borderRadius:10,cursor:"pointer",textAlign:"left"}},
+                      React.createElement(Pill,{size:14,color:confirmedCount===meds.length?"#22c55e":"#888",style:{flexShrink:0}}),
+                      React.createElement("div",{style:{flex:1,minWidth:0}},
+                        React.createElement("div",{style:{fontSize:12.5,fontWeight:600,color:"#333",marginBottom:2}},meds.length+" medication changes"+(confirmedCount>0?" · "+confirmedCount+" reviewed":"")),
+                        React.createElement("div",{style:{fontSize:11,color:"#888"}},summary.join(" · ")),
+                        React.createElement("div",{style:{fontSize:10.5,color:"#aaa",marginTop:2}},meds.slice(0,3).map(function(m){return m.medication.split(" ")[0]}).join(", ")+(meds.length>3?" + "+(meds.length-3)+" more":""))),
+                      React.createElement(ChevronDown,{size:12,color:"#ccc",style:{flexShrink:0,transform:"rotate(-90deg)"}}));
+                  })()
+                ),
+
+                // Empty brief state
+                briefItems.length===0&&React.createElement("div",{style:{padding:"4px 0 16px"}},
+                  React.createElement("div",{style:{fontSize:12.5,color:"#999",lineHeight:1.5}},"No significant events since last visit.")),
+
+                // ── Section 2: CARE GAPS ──
+                (function(){
+                  if(careGaps.length===0)return null;
+                  var actedCount=careGaps.filter(function(g){return careGapActions[g]}).length;
+                  // When brief is empty (routine follow-up), expand care gaps inline
+                  if(briefItems.length===0){
+                    return React.createElement("div",{style:{marginTop:4}},
+                      React.createElement("div",{style:{fontSize:10,fontWeight:600,color:"#aaa",letterSpacing:"0.06em",marginBottom:8}},"CARE GAPS"),
+                      careGaps.map(function(g,i){
+                        var detail=CARE_GAP_DETAILS[g]||{desc:"Screening or preventive measure due.",primary:"Confirm",secondary:"No change"};
+                        var acted=careGapActions[g];
+                        return React.createElement("div",{key:g,style:{padding:"8px 0",borderBottom:i<careGaps.length-1?"1px solid #f5f5f5":"none",opacity:acted?0.6:1,transition:"opacity 0.3s ease"}},
+                          React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6,marginBottom:2}},
+                            acted&&React.createElement(Check,{size:11,color:"#22c55e",strokeWidth:2.5}),
+                            React.createElement("span",{style:{fontSize:12,fontWeight:500,color:acted?"#888":"#333"}},g)),
+                          React.createElement("div",{style:{fontSize:11,color:"#777",lineHeight:1.4,marginBottom:acted?0:6}},detail.desc),
+                          acted
+                            ?React.createElement("div",{style:{fontSize:10,color:"#22c55e",marginTop:2}},acted)
+                            :React.createElement("div",{style:{display:"flex",gap:6}},
+                              React.createElement("button",{onClick:function(){setCareGapActions(function(p){var n={};for(var k in p)n[k]=p[k];n[g]=detail.primary;return n})},style:{flex:1,height:30,borderRadius:7,background:"#6366f1",border:"none",fontSize:11,fontWeight:600,color:"#fff",cursor:"pointer"}},detail.primary),
+                              React.createElement("button",{onClick:function(){setCareGapActions(function(p){var n={};for(var k in p)n[k]=p[k];n[g]=detail.secondary;return n})},style:{height:30,paddingLeft:10,paddingRight:10,borderRadius:7,background:"#f5f5f5",border:"none",fontSize:11,fontWeight:500,color:"#888",cursor:"pointer"}},detail.secondary)))}));
+                  }
+                  // Otherwise: summary card
+                  return React.createElement("button",{onClick:function(){closeAllOverlays();setCareGapsOpen(true)},style:{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",marginTop:4,width:"100%",background:"#fafafa",border:"1px solid #f0f0f0",borderRadius:10,cursor:"pointer",textAlign:"left"}},
+                    React.createElement(ShieldCheck,{size:14,color:actedCount===careGaps.length?"#22c55e":"#888",style:{flexShrink:0}}),
+                    React.createElement("div",{style:{flex:1,minWidth:0}},
+                      React.createElement("div",{style:{fontSize:12.5,fontWeight:600,color:"#333",marginBottom:2}},careGaps.length+" care gap"+(careGaps.length!==1?"s":"")+(actedCount>0?" · "+actedCount+" addressed":"")),
+                      React.createElement("div",{style:{fontSize:11,color:"#888"}},careGaps.join(" · "))),
+                    React.createElement(ChevronDown,{size:12,color:"#ccc",style:{flexShrink:0,transform:"rotate(-90deg)"}}));
+                })()
+              )),
+
+            // ── AGENDA ──
+            React.createElement("div",{ref:el=>{panelRefs.current.agenda=el},style:panelStyle("agenda")},
+              React.createElement(SectionHead,{title:"Visit",subtitle:items.filter(i=>!i.done).length+" remaining"}),
+
+              // "Now discussing" card — always visible during scribe (listening, regular, or ambient)
+              micActive&&micMode==="scribe"&&!micPaused&&(function(){
+                var cur=ambientTopic?null:items.find(function(i){return !i.done});
+                var label=ambientTopic?ambientTopic.label:cur?cur.label:"Listening...";
+                var evidence=ambientTopic?CTX[ambientTopic.id].evidence:cur?CTX[cur.id].evidence:"Waiting for conversation";
+                var isListening=!ambientTopic&&!cur;
+                var isAmbient=!!ambientTopic;
+                var hasTrend=cur&&cur.id==="dm";
+                var cardStyle={margin:"0 16px 10px",padding:"10px 12px",background:"#fff",borderRadius:10,border:"1.5px solid #e5e5e5",cursor:cur?"pointer":"default",animation:"fadeSlideUp 0.35s ease-out",position:hasTrend?"relative":"static",zIndex:hasTrend?20:1};
+                return React.createElement("div",{onClick:cur?function(){openDetail(cur.id)}:undefined,style:cardStyle},
+                  React.createElement("div",{style:{display:"flex",alignItems:"center",gap:5,marginBottom:4}},
+                    React.createElement("span",{style:{width:5,height:5,borderRadius:"50%",background:"#ef4444",animation:"redPulse 2s ease-in-out infinite"}}),
+                    React.createElement("span",{style:{fontSize:9,fontWeight:700,color:"#888",letterSpacing:"0.06em"}},isListening?"LISTENING":isAmbient?"DETECTED":"NOW DISCUSSING")),
+                  React.createElement("div",{style:{fontSize:14,fontWeight:700,color:isListening?"#bbb":"#111",marginBottom:3}},label),
+                  React.createElement("div",{style:{fontSize:11,color:isListening?"#ccc":"#888"}},evidence),
+                  isAmbient&&React.createElement("div",{style:{fontSize:10,color:"#bbb",fontStyle:"italic",marginTop:4}},"Not on your agenda — detected from conversation"),
+                  // A1c trend chart — shown by default when discussing T2DM
+                  hasTrend&&React.createElement("div",{style:{overflow:"hidden",marginTop:10}},
+                    React.createElement("div",{style:{fontSize:9,fontWeight:600,color:"#aaa",letterSpacing:"0.04em",marginBottom:6}},"HbA1c TREND"),
+                    React.createElement("svg",{width:"100%",height:90,viewBox:"0 0 280 90",style:{display:"block"}},
+                      // Grid lines
+                      [0,1,2,3].map(function(i){return React.createElement("line",{key:"g"+i,x1:30,x2:270,y1:10+i*22,y2:10+i*22,stroke:"#f0f0f0",strokeWidth:1})}),
+                      // Y-axis labels
+                      React.createElement("text",{x:26,y:14,textAnchor:"end",style:{fontSize:8,fill:"#bbb"}},"9%"),
+                      React.createElement("text",{x:26,y:36,textAnchor:"end",style:{fontSize:8,fill:"#bbb"}},"8%"),
+                      React.createElement("text",{x:26,y:58,textAnchor:"end",style:{fontSize:8,fill:"#bbb"}},"7%"),
+                      React.createElement("text",{x:26,y:80,textAnchor:"end",style:{fontSize:8,fill:"#bbb"}},"6%"),
+                      // Target zone
+                      React.createElement("rect",{x:30,y:54,width:240,height:26,fill:"rgba(34,197,94,0.06)",rx:2}),
+                      React.createElement("text",{x:272,y:70,textAnchor:"end",style:{fontSize:7,fill:"#22c55e"}},"target"),
+                      // Data points: Oct'24=7.0, Jan'25=7.2, Apr'25=7.4, Aug'25=7.2, Jan'26=8.1, Apr'26=7.8
+                      React.createElement("polyline",{points:"50,58 90,52 130,48 170,52 210,26 250,32",fill:"none",stroke:"#6366f1",strokeWidth:1.5,strokeLinejoin:"round"}),
+                      [["50","58","7.0","Oct 24"],["90","52","7.2","Jan 25"],["130","48","7.4","Apr 25"],["170","52","7.2","Aug 25"],["210","26","8.1","Jan 26"],["250","32","7.8","Apr 26"]].map(function(pt,i){
+                        return React.createElement("g",{key:"p"+i},
+                          React.createElement("circle",{cx:pt[0],cy:pt[1],r:i===5?4:2.5,fill:i===5?"#6366f1":"#6366f1",stroke:i===5?"#fff":"none",strokeWidth:i===5?2:0}),
+                          React.createElement("text",{x:pt[0],y:Number(pt[1])-7,textAnchor:"middle",style:{fontSize:7,fill:i===5?"#6366f1":"#999",fontWeight:i===5?700:400}},pt[2]),
+                          i===5&&React.createElement("text",{x:pt[0],y:88,textAnchor:"middle",style:{fontSize:7,fill:"#bbb"}},pt[3]))}))));
+              })(),
+
+              React.createElement("div",{style:{padding:"0 16px"}},
+                items.map((item,idx)=>{
+                  const firstUndone=items.find(i=>!i.done);
+                  const isActive=micActive&&micMode==="scribe"&&!micPaused&&firstUndone&&firstUndone.id===item.id;
+                  return React.createElement(AgendaItem,{
+                  key:item.id,
+                  item,
+                  expanded:false,
+                  done:item.done,
+                  isActive:isActive,
+                  onToggle:function(){openDetail(item.id)},
+                  onAssess:function(){openDetail(item.id)},
+                  staggerIdx:idx,
+                  hasAssessmentPending:item.hasAssessment&&!item.done,
+                  briefData:briefItems
+                })})),
+
+              // ── Before you go section (always visible) ──
+              React.createElement("div",{style:{marginTop:28,padding:"0 16px 16px",borderTop:"1px solid #f0f0f0",paddingTop:16}},
+                // Section header
+                React.createElement("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:10}},
+                  React.createElement("svg",{width:16,height:16,viewBox:"0 0 12 12",fill:"none",style:{flexShrink:0}},
+                    React.createElement("path",{d:"M6 1c0 0 .35 2.6 1.6 3.4C8.9 5.2 11 6 11 6s-2.1.8-3.4 1.6C6.35 8.4 6 11 6 11s-.35-2.6-1.6-3.4C3.1 6.8 1 6 1 6s2.1-.8 3.4-1.6C5.65 3.6 6 1 6 1z",fill:"#6366f1"})),
+                  React.createElement("span",{style:{fontSize:16,fontWeight:800,color:"#111",letterSpacing:"-0.02em"}},"Before you go")),
+                // Content
+                React.createElement("div",{style:{display:"flex",flexDirection:"column",gap:6}},
+                    // PCP Approval — toggle + grouped confirm (original style)
+                    (function(){var cat=ASST_CATS.find(function(c){return c.id==="pcp"});if(!cat)return null;
+                      return React.createElement("div",{style:{border:"1px solid #f0f0f0",borderRadius:10,overflow:"hidden"}},
+                        React.createElement("div",{style:{display:"flex",alignItems:"center",padding:"9px 12px",background:"#fafafa"}},
+                          React.createElement("span",{style:{fontSize:11.5,fontWeight:600,color:"#333",flex:1}},cat.name),
+                          React.createElement("span",{style:{fontSize:9.5,fontWeight:600,color:asstAuto[cat.id]?"#059669":"#6366f1",marginRight:6}},asstAuto[cat.id]?"Auto":"Per visit"),
+                          React.createElement("button",{onClick:function(e){e.stopPropagation();setAsstAuto(function(p){var n={};for(var k in p)n[k]=p[k];n[cat.id]=!p[cat.id];return n})},style:{width:32,height:18,borderRadius:9,background:asstAuto[cat.id]?"#059669":"#e5e5e5",border:"none",cursor:"pointer",position:"relative",transition:"background 0.2s"}},
+                            React.createElement("div",{style:{width:14,height:14,borderRadius:"50%",background:"#fff",position:"absolute",top:2,left:asstAuto[cat.id]?16:2,transition:"left 0.2s",boxShadow:"0 1px 3px rgba(0,0,0,0.15)"}}))),
+                        React.createElement("div",{style:{padding:"0 12px 8px"}},
+                          cat.items.map(function(it,ii){return React.createElement("div",{key:ii,style:{display:"flex",alignItems:"center",gap:6,padding:"5px 0 6px",borderTop:"1px solid #f8f8f8"}},
+                            React.createElement("span",{style:{fontSize:9,fontWeight:700,color:"#bbb",width:14,textAlign:"center",flexShrink:0}},ii+1),
+                            React.createElement("span",{style:{fontSize:11,color:"#555",flex:1}},it.label),
+                            it.dest&&React.createElement("span",{style:{fontSize:9.5,color:"#999",flexShrink:0}},it.dest))}),
+                          !asstAuto[cat.id]&&React.createElement("div",{style:{display:"flex",gap:6,padding:"6px 0 4px"}},
+                            React.createElement("button",{style:{flex:1,height:30,borderRadius:7,background:"#6366f1",border:"none",fontSize:11,fontWeight:600,color:"#fff",cursor:"pointer"}},"Approve"),
+                            React.createElement("button",{style:{height:30,paddingLeft:12,paddingRight:12,borderRadius:7,background:"#f5f5f5",border:"none",fontSize:11,fontWeight:600,color:"#999",cursor:"pointer"}},"Edit")),
+                          asstAuto[cat.id]&&React.createElement("div",{style:{display:"flex",alignItems:"center",gap:4,padding:"4px 0 4px"}},
+                            React.createElement("svg",{width:10,height:10,viewBox:"0 0 12 12",fill:"none",style:{flexShrink:0}},
+                              React.createElement("path",{d:"M6 1c0 0 .35 2.6 1.6 3.4C8.9 5.2 11 6 11 6s-2.1.8-3.4 1.6C6.35 8.4 6 11 6 11s-.35-2.6-1.6-3.4C3.1 6.8 1 6 1 6s2.1-.8 3.4-1.6C5.65 3.6 6 1 6 1z",fill:"#059669"})),
+                            React.createElement("span",{style:{fontSize:9.5,color:"#999"}},"Queued: will send after signing"))));
+                    })(),
+                    // Patient Outreach — individual cards
+                    (function(){var cat=ASST_CATS.find(function(c){return c.id==="outreach"});if(!cat)return null;
+                      return React.createElement(React.Fragment,null,
+                        React.createElement("div",{style:{fontSize:10,fontWeight:600,color:"#aaa",letterSpacing:"0.04em",marginTop:4}},cat.name),
+                        cat.items.map(function(it,ii){
+                          var isInst=it.label==="Patient instructions";
+                          var icon=isInst?FileText:it.dest&&it.dest.indexOf("Eye")>=0?Stethoscope:CalendarClock;
+                          var isDone=isInst?instSent:outreachDone[it.label];
+                          return React.createElement("button",{key:ii,onClick:function(){closeAllOverlays();if(isInst)setInstSheetOpen(true);else setOutreachSheet(it.label)},style:{display:"flex",alignItems:"center",gap:10,padding:"9px 12px",width:"100%",background:"#fafafa",border:"1px solid #f0f0f0",borderRadius:10,cursor:"pointer",textAlign:"left",opacity:isDone?0.6:1,transition:"opacity 0.3s ease"}},
+                            React.createElement(icon,{size:13,color:isDone?"#22c55e":"#888",style:{flexShrink:0}}),
+                            React.createElement("div",{style:{flex:1,minWidth:0}},
+                              React.createElement("div",{style:{fontSize:11.5,fontWeight:500,color:isDone?"#888":"#333"}},it.label),
+                              isInst&&React.createElement("div",{style:{fontSize:10,color:"#888",marginTop:1}},instSent?instEnabled.filter(Boolean).length+" sent to patient portal":instEnabled.filter(Boolean).length+" items · tap to review"),
+                              isDone&&!isInst&&React.createElement("div",{style:{fontSize:10,color:"#22c55e",marginTop:1}},outreachDone[it.label])),
+                            isDone
+                              ?React.createElement(Check,{size:11,color:"#22c55e",strokeWidth:2.5,style:{flexShrink:0}})
+                              :React.createElement(ChevronDown,{size:11,color:"#ccc",style:{flexShrink:0,transform:"rotate(-90deg)"}}))})
+                      );
+                    })()),
+
+                    // Follow-up items
+                    React.createElement("div",{style:{marginTop:10,paddingTop:8,borderTop:"1px solid #f0f0f0"}},
+                      React.createElement("div",{style:{fontSize:10,fontWeight:600,color:"#aaa",letterSpacing:"0.06em",marginBottom:6}},"FOLLOW-UP"),
+                      [{label:"F/u visit",detail:"2 wk — fluid status + BP recheck",icon:CalendarClock,color:"#6366f1"},
+                       {label:"Echo results",detail:"Review when available — EF trending",icon:FlaskConical,color:"#999"},
+                       {label:"Retinal screen",detail:"Confirm completion — Valley Eye Center",icon:ArrowRight,color:"#999"}
+                      ].map(function(fu,i){return React.createElement("div",{key:i,style:{display:"flex",alignItems:"center",gap:10,padding:"7px 0",borderBottom:i<2?"1px solid #f8f8f8":"none"}},
+                        React.createElement(fu.icon,{size:13,color:fu.color,style:{flexShrink:0}}),
+                        React.createElement("div",{style:{flex:1}},
+                          React.createElement("div",{style:{fontSize:12,fontWeight:500,color:"#444"}},fu.label),
+                          React.createElement("div",{style:{fontSize:10.5,color:"#aaa",marginTop:1}},fu.detail)))})
+                    ))
+              ),
+
+            // ── REVIEW — only required items blocking sign-off ──
+            React.createElement("div",{ref:el=>{panelRefs.current.review=el},style:panelStyle("review")},
+              React.createElement(SectionHead,{title:"Before you close",subtitle:allRevDone?"Ready to sign.":blocking.length+" item"+(blocking.length!==1?"s":"")+" need attention"}),
+              React.createElement("div",{style:{padding:"0 16px"}},
+
+                // Blocking items — cards
+                blocking.length>0&&React.createElement("div",{style:{display:"flex",flexDirection:"column",gap:6,marginBottom:12}},
+                  blocking.map(function(it){var IC=it.icon;
+                    var isAssess=it.isAssessment;
+                    var statusColor=it.status==="pending"?"#ea580c":"#d97706";
+                    var statusLabel=it.status==="pending"?"Incomplete":"Needs review";
+                    return React.createElement("button",{key:it.id,onClick:function(){openSheet(it.id)},style:{display:"flex",alignItems:"center",gap:10,padding:"9px 12px",width:"100%",background:"#fafafa",border:"1px solid #f0f0f0",borderRadius:10,cursor:"pointer",textAlign:"left"}},
+                    React.createElement(IC,{size:13,color:statusColor,style:{flexShrink:0}}),
+                    React.createElement("div",{style:{flex:1,minWidth:0}},
+                      React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6}},
+                        React.createElement("span",{style:{fontSize:11.5,fontWeight:500,color:"#333"}},it.label),
+                        isAssess&&React.createElement("span",{style:{fontSize:8,fontWeight:600,color:statusColor}},statusLabel)),
+                      React.createElement("div",{style:{fontSize:10,color:"#888",marginTop:1}},it.detail)),
+                    it.action&&React.createElement("span",{style:{fontSize:10,fontWeight:600,color:"#6366f1",flexShrink:0}},it.action),
+                    React.createElement(ChevronDown,{size:11,color:"#ccc",style:{flexShrink:0,transform:"rotate(-90deg)"}}))})),
+
+                // Completed items — compact
+                done.length>0&&React.createElement("div",{style:{marginBottom:12}},
+                  done.map(function(it){return React.createElement("div",{key:it.id,style:{display:"flex",alignItems:"center",gap:8,padding:"5px 0"}},
+                    React.createElement(Check,{size:10,color:"#bbb",strokeWidth:2}),
+                    React.createElement("span",{style:{fontSize:11,color:"#aaa"}},it.label))})),
+
+                // Review & sign
+                React.createElement("div",{style:{padding:"4px 0 4px"}},
+                  React.createElement("button",{onClick:function(){if(allRevDone)alert("Visit signed and submitted!");else setSubmitDrawer(true)},style:{width:"100%",height:46,borderRadius:12,background:"#6366f1",border:"none",fontSize:14,fontWeight:700,color:"#fff",cursor:"pointer",boxShadow:"0 4px 16px rgba(99,102,241,0.3)",display:"flex",alignItems:"center",justifyContent:"center",gap:8}},
+                    React.createElement(Check,{size:15,color:"#fff"}),"Review & sign visit"))))
+          )
+        )
+      ),
+
+      // Ambient footer
+      React.createElement(AmbientFooter,{micActive,micMode,micPaused,drawerH,setDrawerH,onDragStart,
+        onTapMic:handleTapMic,onHoldStart:handleHoldStart,onHoldEnd:handleHoldEnd,
+        onPause:()=>setMicPaused(true),onResume:()=>setMicPaused(false),onStop:stopMic,onSwitchMode:switchMode,
+        onOpenAsk:handleOpenAsk,onNavTo:navTo,onGoToReview:goToReview,
+        elapsed,panel,items,onMark:markCovered,words,dictWords,dictTarget:followUpFocused?"follow-up":null,
+        sheetOpen:!!(sheetId||assessItemId),allDone,ctaVisible,
+        onSubmit:()=>{if(allRevDone)alert("Visit signed and submitted!");else setSubmitDrawer(true)},allRevDone,ambientTopic}),
+
+      // Med changes overlay
+      medChangesOpen&&(function(){
+        var meds=briefItems.filter(function(b){return b.type==="med_change"});
+        if(meds.length===0)return null;
+        return React.createElement("div",{style:{position:"absolute",bottom:cardBottom,left:12,right:12,zIndex:32,background:"#fff",borderRadius:16,boxShadow:"0 8px 32px rgba(0,0,0,0.12),0 2px 8px rgba(0,0,0,0.06)",maxHeight:"70%",overflow:"hidden",animation:"sheetUp 0.3s cubic-bezier(0.4,0,0.15,1)",display:"flex",flexDirection:"column"}},
+          React.createElement("div",{style:{display:"flex",alignItems:"center",padding:"14px 14px 10px",borderBottom:"1px solid #f0f0f0",flexShrink:0}},
+            React.createElement(Pill,{size:14,color:"#888",style:{flexShrink:0}}),
+            React.createElement("span",{style:{fontSize:14,fontWeight:700,color:"#111",flex:1,marginLeft:8}},meds.length+" medication changes"),
+            React.createElement("button",{onClick:function(){setMedChangesOpen(false)},style:{background:"#f5f5f5",border:"none",cursor:"pointer",width:26,height:26,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center"}},
+              React.createElement(X,{size:13,color:"#999"}))),
+          React.createElement("div",{style:{overflowY:"auto",padding:"8px 14px 16px"}},
+            meds.map(function(b,i){
+              var acted=medChangeActions[b.id];
+              return React.createElement("div",{key:b.id,style:{padding:"10px 0",borderBottom:i<meds.length-1?"1px solid #f5f5f5":"none",opacity:acted?0.6:1,transition:"opacity 0.3s ease"}},
+                React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6,marginBottom:1}},
+                  acted&&React.createElement(Check,{size:11,color:"#22c55e",strokeWidth:2.5}),
+                  React.createElement("span",{style:{fontSize:12.5,fontWeight:500,color:acted?"#888":"#333"}},b.medication)),
+                React.createElement("div",{style:{fontSize:11,color:"#888",marginBottom:1}},b.context+" · "+b.date),
+                React.createElement("div",{style:{fontSize:11,color:"#777",lineHeight:1.4,marginBottom:acted?0:8}},b.summary),
+                acted
+                  ?React.createElement("div",{style:{fontSize:10,color:"#22c55e",marginTop:3}},acted)
+                  :React.createElement("div",{style:{display:"flex",gap:6,marginTop:2}},
+                    React.createElement("button",{onClick:function(){setCareGapsOpen(false);setMedChangeActions(function(p){var n={};for(var k in p)n[k]=p[k];n[b.id]="Confirmed";return n})},style:{flex:1,height:32,borderRadius:8,background:"#6366f1",border:"none",fontSize:11,fontWeight:600,color:"#fff",cursor:"pointer"}},"Confirm"),
+                    React.createElement("button",{onClick:function(){setMedChangeActions(function(p){var n={};for(var k in p)n[k]=p[k];n[b.id]="Removed";return n})},style:{height:32,paddingLeft:12,paddingRight:12,borderRadius:8,background:"#fef2f2",border:"none",fontSize:11,fontWeight:500,color:"#dc2626",cursor:"pointer"}},"Remove")))})));
+      })(),
+
+      // Outreach item overlay
+      outreachSheet&&(function(){
+        var detail=OUTREACH_DETAILS[outreachSheet]||{desc:"Review and confirm this outreach action.",primary:"Confirm",secondary:"Skip"};
+        var acted=outreachDone[outreachSheet];
+        var outCat=ASST_CATS.find(function(c){return c.id==="outreach"});
+        var outItems=outCat?outCat.items:[];
+        var curIdx=outItems.findIndex(function(o){return o.label===outreachSheet});
+        var prevOut=curIdx>0?outItems[curIdx-1]:null;
+        var nextOut=curIdx<outItems.length-1?outItems[curIdx+1]:null;
+        function navTo(label){if(label==="Patient instructions"){setOutreachSheet(null);setInstSheetOpen(true)}else{setOutreachSheet(label)}}
+        return React.createElement("div",{style:{position:"absolute",bottom:cardBottom,left:12,right:12,zIndex:34,background:"#fff",borderRadius:16,boxShadow:"0 8px 32px rgba(0,0,0,0.12),0 2px 8px rgba(0,0,0,0.06)",overflow:"hidden",display:"flex",flexDirection:"column"}},
+          React.createElement("button",{onClick:function(){setOutreachSheet(null)},style:{position:"absolute",top:10,right:12,background:"#f5f5f5",border:"none",cursor:"pointer",width:26,height:26,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}},
+            React.createElement(X,{size:13,color:"#999"})),
+          React.createElement("div",{style:{padding:"14px 16px 12px"}},
+            React.createElement("div",{style:{fontSize:15,fontWeight:700,color:"#111",marginBottom:2,paddingRight:30}},outreachSheet),
+            React.createElement("div",{style:{fontSize:11,color:"#777",lineHeight:1.5,marginBottom:14}},detail.desc),
+            acted
+              ?React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6}},
+                React.createElement(Check,{size:12,color:"#22c55e",strokeWidth:2.5}),
+                React.createElement("span",{style:{fontSize:12,fontWeight:600,color:"#22c55e"}},acted))
+              :React.createElement("div",{style:{display:"flex",gap:6}},
+                React.createElement("button",{onClick:function(){setOutreachDone(function(p){var n={};for(var k in p)n[k]=p[k];n[outreachSheet]=detail.primary;return n});if(nextOut)navTo(nextOut.label);else setOutreachSheet(null)},style:{flex:1,height:40,borderRadius:10,background:"#6366f1",border:"none",fontSize:12,fontWeight:700,color:"#fff",cursor:"pointer"}},detail.primary),
+                React.createElement("button",{onClick:function(){setOutreachDone(function(p){var n={};for(var k in p)n[k]=p[k];n[outreachSheet]=detail.secondary;return n});if(nextOut)navTo(nextOut.label);else setOutreachSheet(null)},style:{height:40,paddingLeft:14,paddingRight:14,borderRadius:10,background:"#f5f5f5",border:"none",fontSize:12,fontWeight:500,color:"#888",cursor:"pointer"}},detail.secondary))),
+          // Prev / Next navigation
+          (prevOut||nextOut)&&React.createElement("div",{style:{display:"flex",alignItems:"center",borderTop:"1px solid #f0f0f0",flexShrink:0}},
+            React.createElement("button",{onClick:prevOut?function(){navTo(prevOut.label)}:undefined,style:{flex:1,display:"flex",alignItems:"center",justifyContent:"flex-start",gap:6,padding:"10px 14px",background:"none",border:"none",cursor:prevOut?"pointer":"default",opacity:prevOut?1:0.3}},
+              React.createElement(ChevronDown,{size:12,color:"#999",style:{transform:"rotate(90deg)"}}),
+              prevOut&&React.createElement("span",{style:{fontSize:10,color:"#999"}},prevOut.label)),
+            React.createElement("div",{style:{width:1,height:20,background:"#f0f0f0"}}),
+            React.createElement("button",{onClick:nextOut?function(){navTo(nextOut.label)}:undefined,style:{flex:1,display:"flex",alignItems:"center",justifyContent:"flex-end",gap:6,padding:"10px 14px",background:"none",border:"none",cursor:nextOut?"pointer":"default",opacity:nextOut?1:0.3}},
+              nextOut&&React.createElement("span",{style:{fontSize:10,color:"#999"}},nextOut.label),
+              React.createElement(ChevronDown,{size:12,color:"#999",style:{transform:"rotate(-90deg)"}}))));
+      })(),
+
+      // Patient instructions overlay
+      instSheetOpen&&React.createElement("div",{style:{position:"absolute",bottom:cardBottom,left:12,right:12,zIndex:34,background:"#fff",borderRadius:16,boxShadow:"0 8px 32px rgba(0,0,0,0.12),0 2px 8px rgba(0,0,0,0.06)",maxHeight:"76%",overflow:"hidden",display:"flex",flexDirection:"column"}},
+        React.createElement("div",{style:{display:"flex",alignItems:"center",padding:"14px 14px 10px",borderBottom:"1px solid #f0f0f0",flexShrink:0}},
+          React.createElement(FileText,{size:14,color:"#888",style:{flexShrink:0}}),
+          React.createElement("span",{style:{fontSize:14,fontWeight:700,color:"#111",flex:1,marginLeft:8}},"Patient instructions"),
+          React.createElement("button",{onClick:function(){setInstSheetOpen(false)},style:{background:"#f5f5f5",border:"none",cursor:"pointer",width:26,height:26,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center"}},
+            React.createElement(X,{size:13,color:"#999"}))),
+        React.createElement("div",{style:{overflowY:"auto",padding:"8px 14px 16px"}},
+          React.createElement("div",{style:{fontSize:11,color:"#999",marginBottom:10}},"Toggle items to include, then send to patient portal."),
+          INSTRUCTIONS_DATA.map(function(inst,i){
+            return React.createElement("div",{key:i,style:{display:"flex",gap:10,padding:"10px 0",borderBottom:i<INSTRUCTIONS_DATA.length-1?"1px solid #f5f5f5":"none",opacity:instEnabled[i]?1:0.4,transition:"opacity 0.2s"}},
+              React.createElement("button",{onClick:function(){setInstEnabled(function(p){var n=p.slice();n[i]=!n[i];return n})},style:{width:18,height:18,borderRadius:5,flexShrink:0,marginTop:1,background:instEnabled[i]?"#6366f1":"#fff",border:instEnabled[i]?"none":"1.5px solid #ddd",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}},
+                instEnabled[i]&&React.createElement(Check,{size:9,color:"#fff",strokeWidth:3})),
+              React.createElement("div",{style:{flex:1}},
+                React.createElement("div",{style:{fontSize:12.5,fontWeight:600,color:"#333",marginBottom:2}},inst.title),
+                React.createElement("div",{style:{fontSize:11,color:"#888",lineHeight:1.5}},inst.body)))}),
+          React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6,padding:"10px 0",marginTop:4}},
+            React.createElement(ArrowRight,{size:12,color:"#999"}),
+            React.createElement("span",{style:{fontSize:11,color:"#999"}},"Delivers via patient portal + print copy at checkout")),
+          instSent
+            ?React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6,padding:"8px 0"}},
+              React.createElement(Check,{size:12,color:"#22c55e",strokeWidth:2.5}),
+              React.createElement("span",{style:{fontSize:12,fontWeight:600,color:"#22c55e"}},"Instructions sent"))
+            :React.createElement("button",{onClick:function(){setInstSent(true)},style:{width:"100%",height:42,borderRadius:10,background:"#6366f1",border:"none",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",marginTop:4}},
+              "Send "+instEnabled.filter(Boolean).length+" instruction"+(instEnabled.filter(Boolean).length!==1?"s":""))),
+        // Prev / Next navigation within outreach
+        (function(){
+          var outCat=ASST_CATS.find(function(c){return c.id==="outreach"});
+          var outItems=outCat?outCat.items:[];
+          var curIdx=outItems.findIndex(function(o){return o.label==="Patient instructions"});
+          var prevOut=curIdx>0?outItems[curIdx-1]:null;
+          var nextOut=curIdx<outItems.length-1?outItems[curIdx+1]:null;
+          if(!prevOut&&!nextOut)return null;
+          function navTo(label){setInstSheetOpen(false);if(label==="Patient instructions")setInstSheetOpen(true);else setOutreachSheet(label)}
+          return React.createElement("div",{style:{display:"flex",alignItems:"center",borderTop:"1px solid #f0f0f0",flexShrink:0}},
+            React.createElement("button",{onClick:prevOut?function(){navTo(prevOut.label)}:undefined,style:{flex:1,display:"flex",alignItems:"center",justifyContent:"flex-start",gap:6,padding:"10px 14px",background:"none",border:"none",cursor:prevOut?"pointer":"default",opacity:prevOut?1:0.3}},
+              React.createElement(ChevronDown,{size:12,color:"#999",style:{transform:"rotate(90deg)"}}),
+              prevOut&&React.createElement("span",{style:{fontSize:10,color:"#999"}},prevOut.label)),
+            React.createElement("div",{style:{width:1,height:20,background:"#f0f0f0"}}),
+            React.createElement("button",{onClick:nextOut?function(){navTo(nextOut.label)}:undefined,style:{flex:1,display:"flex",alignItems:"center",justifyContent:"flex-end",gap:6,padding:"10px 14px",background:"none",border:"none",cursor:nextOut?"pointer":"default",opacity:nextOut?1:0.3}},
+              nextOut&&React.createElement("span",{style:{fontSize:10,color:"#999"}},nextOut.label),
+              React.createElement(ChevronDown,{size:12,color:"#999",style:{transform:"rotate(-90deg)"}})));
+        })()),
+
+      // Care gaps overlay
+      careGapsOpen&&React.createElement("div",{style:{position:"absolute",bottom:cardBottom,left:12,right:12,zIndex:32,background:"#fff",borderRadius:16,boxShadow:"0 8px 32px rgba(0,0,0,0.12),0 2px 8px rgba(0,0,0,0.06)",maxHeight:"70%",overflow:"hidden",animation:"sheetUp 0.3s cubic-bezier(0.4,0,0.15,1)",display:"flex",flexDirection:"column"}},
+        React.createElement("div",{style:{display:"flex",alignItems:"center",padding:"14px 14px 10px",borderBottom:"1px solid #f0f0f0",flexShrink:0}},
+          React.createElement(ShieldCheck,{size:14,color:"#888",style:{flexShrink:0}}),
+          React.createElement("span",{style:{fontSize:14,fontWeight:700,color:"#111",flex:1,marginLeft:8}},careGaps.length+" care gap"+(careGaps.length!==1?"s":"")),
+          React.createElement("button",{onClick:function(){setCareGapsOpen(false)},style:{background:"#f5f5f5",border:"none",cursor:"pointer",width:26,height:26,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center"}},
+            React.createElement(X,{size:13,color:"#999"}))),
+        React.createElement("div",{style:{overflowY:"auto",padding:"8px 14px 16px"}},
+          careGaps.map(function(g,i){
+            var detail=CARE_GAP_DETAILS[g]||{desc:"Screening or preventive measure due.",primary:"Confirm",secondary:"No change"};
+            var acted=careGapActions[g];
+            return React.createElement("div",{key:g,style:{padding:"10px 0",borderBottom:i<careGaps.length-1?"1px solid #f5f5f5":"none",opacity:acted?0.6:1,transition:"opacity 0.3s ease"}},
+              React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6,marginBottom:3}},
+                acted&&React.createElement(Check,{size:11,color:"#22c55e",strokeWidth:2.5}),
+                React.createElement("span",{style:{fontSize:12.5,fontWeight:500,color:acted?"#888":"#333"}},g)),
+              React.createElement("div",{style:{fontSize:11,color:"#777",lineHeight:1.5,marginBottom:acted?0:8}},detail.desc),
+              acted
+                ?React.createElement("div",{style:{fontSize:10,color:"#22c55e",marginTop:3}},acted)
+                :React.createElement("div",{style:{display:"flex",gap:6,marginTop:2}},
+                  React.createElement("button",{onClick:function(){setCareGapActions(function(p){var n={};for(var k in p)n[k]=p[k];n[g]=detail.primary;return n})},style:{flex:1,height:32,borderRadius:8,background:"#6366f1",border:"none",fontSize:11,fontWeight:600,color:"#fff",cursor:"pointer"}},detail.primary),
+                  React.createElement("button",{onClick:function(){setCareGapActions(function(p){var n={};for(var k in p)n[k]=p[k];n[g]=detail.secondary;return n})},style:{height:32,paddingLeft:12,paddingRight:12,borderRadius:8,background:"#f5f5f5",border:"none",fontSize:11,fontWeight:500,color:"#888",cursor:"pointer"}},detail.secondary)))}))),
+
+      // Encounters overlay
+      encountersOpen&&(function(){
+        var encs=briefItems.filter(function(b){return b.type==="encounter"});
+        if(encs.length===0)return null;
+        return React.createElement("div",{style:{position:"absolute",bottom:cardBottom,left:12,right:12,zIndex:32,background:"#fff",borderRadius:16,boxShadow:"0 8px 32px rgba(0,0,0,0.12),0 2px 8px rgba(0,0,0,0.06)",maxHeight:"70%",overflow:"hidden",animation:"sheetUp 0.3s cubic-bezier(0.4,0,0.15,1)",display:"flex",flexDirection:"column"}},
+          React.createElement("div",{style:{display:"flex",alignItems:"center",padding:"14px 14px 10px",borderBottom:"1px solid #f0f0f0",flexShrink:0}},
+            React.createElement(Stethoscope,{size:14,color:"#888",style:{flexShrink:0}}),
+            React.createElement("span",{style:{fontSize:14,fontWeight:700,color:"#111",flex:1,marginLeft:8}},encs.length+" specialist visits"),
+            React.createElement("button",{onClick:function(){setEncountersOpen(false)},style:{background:"#f5f5f5",border:"none",cursor:"pointer",width:26,height:26,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center"}},
+              React.createElement(X,{size:13,color:"#999"}))),
+          React.createElement("div",{style:{overflowY:"auto",padding:"8px 14px 16px"}},
+            encs.map(function(b,i){
+              return React.createElement("div",{key:b.id,style:{padding:"10px 0",borderBottom:i<encs.length-1?"1px solid #f5f5f5":"none"}},
+                React.createElement("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:2}},
+                  React.createElement("span",{style:{fontSize:12.5,fontWeight:500,color:"#333"}},b.provider),
+                  React.createElement("span",{style:{fontSize:10,color:"#bbb"}},b.date)),
+                React.createElement("div",{style:{fontSize:11,color:"#888",marginBottom:2}},b.specialty),
+                React.createElement("div",{style:{fontSize:11,color:"#777",lineHeight:1.4}},b.summary),
+                b.linksTo&&React.createElement("div",{style:{display:"flex",alignItems:"center",gap:5,marginTop:4}},
+                  React.createElement("span",{style:{width:5,height:5,borderRadius:"50%",background:"#6366f1",flexShrink:0}}),
+                  React.createElement("span",{style:{fontSize:10,color:"#6366f1"}},
+                    ITEMS.find(function(it){return it.id===b.linksTo})?ITEMS.find(function(it){return it.id===b.linksTo}).label+" on agenda":"")))})));
+      })(),
+
+      // Review sheet overlay
+      React.createElement(ReviewSheet,{itemId:sheetId,revItems,cardBottom,onClose:()=>setSheetId(null),
+        onDone:(id)=>{setRevItems(p=>p.map(r=>r.id===id?{...r,status:"done"}:r))},
+        onAdvance:(nextId)=>{setSheetId(nextId)}}),
+
+      // Detail card — shows evidence/dx/plan for tapped agenda item with prev/next nav
+      detailItemId&&!assessItemId&&(function(){
+        var it=items.find(function(i){return i.id===detailItemId});
+        if(!it)return null;
+        var c=CTX[detailItemId];if(!c)return null;
+        var canAssess=it.hasAssessment&&!it.done;
+        var cap=it.done?TOPIC_CAPTURES[detailItemId]:null;
+        var ns=NEXT_STEPS[detailItemId];
+        var idx=items.findIndex(function(i){return i.id===detailItemId});
+        var prevItem=idx>0?items[idx-1]:null;
+        var nextItem=idx<items.length-1?items[idx+1]:null;
+        return React.createElement("div",{style:{position:"absolute",bottom:cardBottom,left:12,right:12,zIndex:30,background:"#fff",borderRadius:16,boxShadow:"0 8px 32px rgba(0,0,0,0.12),0 2px 8px rgba(0,0,0,0.06)",overflow:"hidden"}},
+          React.createElement("button",{onClick:closeDetail,style:{position:"absolute",top:10,right:12,background:"#f5f5f5",border:"none",cursor:"pointer",padding:4,zIndex:2,width:26,height:26,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center"}},
+            React.createElement(X,{size:13,color:"#999"})),
+          React.createElement("div",{style:{padding:"14px 16px 12px"}},
+            React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6,marginBottom:2}},
+              React.createElement("div",{style:{fontSize:15,fontWeight:700,color:"#111"}},it.label),
+              it.done&&React.createElement(Check,{size:13,color:"#22c55e",strokeWidth:2.5})),
+            React.createElement("div",{style:{fontSize:11,color:"#aaa",marginBottom:12}},it.detail),
+            React.createElement("div",{style:{fontSize:11,color:"#888",lineHeight:1.5,marginBottom:c.dx?8:6}},c.evidence),
+            c.dx&&React.createElement("div",{style:{display:"flex",alignItems:"center",gap:5,marginBottom:8}},
+              React.createElement("span",{style:{fontSize:11,color:"#555"}},c.dx)),
+            React.createElement("div",{style:{fontSize:11,color:"#888",marginBottom:12}},"· "+c.plan),
+            it.done&&cap&&cap.bullets&&React.createElement("div",{style:{borderTop:"1px solid #f0f0f0",paddingTop:10,marginBottom:8}},
+              React.createElement("div",{style:{fontSize:10,fontWeight:600,color:"#bbb",letterSpacing:"0.04em",marginBottom:4}},"CAPTURED"),
+              React.createElement("div",{style:{fontSize:11,color:"#888",lineHeight:1.5}},cap.bullets.join(" · ")),
+              ns&&React.createElement("div",{style:{fontSize:11,color:"#aaa",marginTop:4}},"· "+ns)),
+            !it.done&&(canAssess
+              ?React.createElement("button",{onClick:function(){var id=detailItemId;setDetailItemId(null);openAssess(id)},style:{width:"100%",height:40,borderRadius:10,background:"#6366f1",border:"none",fontSize:12,fontWeight:700,color:"#fff",cursor:"pointer"}},"Open assessment")
+              :React.createElement("button",{onClick:function(){setItems(function(p){return p.map(function(i){return i.id===detailItemId?{...i,done:true}:i})});closeDetail()},style:{width:"100%",height:40,borderRadius:10,background:"#f5f5f5",border:"none",fontSize:12,fontWeight:600,color:"#555",cursor:"pointer"}},"Mark covered"))),
+          // Prev / Next navigation
+          (prevItem||nextItem)&&React.createElement("div",{style:{display:"flex",alignItems:"center",borderTop:"1px solid #f0f0f0",padding:"0"}},
+            React.createElement("button",{onClick:prevItem?function(){setDetailItemId(prevItem.id)}:undefined,style:{flex:1,display:"flex",alignItems:"center",justifyContent:"flex-start",gap:6,padding:"10px 14px",background:"none",border:"none",cursor:prevItem?"pointer":"default",opacity:prevItem?1:0.3}},
+              React.createElement(ChevronDown,{size:12,color:"#999",style:{transform:"rotate(90deg)"}}),
+              prevItem&&React.createElement("span",{style:{fontSize:10,color:"#999"}},prevItem.label)),
+            React.createElement("div",{style:{width:1,height:20,background:"#f0f0f0"}}),
+            React.createElement("button",{onClick:nextItem?function(){setDetailItemId(nextItem.id)}:undefined,style:{flex:1,display:"flex",alignItems:"center",justifyContent:"flex-end",gap:6,padding:"10px 14px",background:"none",border:"none",cursor:nextItem?"pointer":"default",opacity:nextItem?1:0.3}},
+              nextItem&&React.createElement("span",{style:{fontSize:10,color:"#999"}},nextItem.label),
+              React.createElement(ChevronDown,{size:12,color:"#999",style:{transform:"rotate(-90deg)"}}))));
+      })(),
+
+      // Assessment card
+      React.createElement(AssessmentSheet,{
+        assessItemId,
+        items,cardBottom,
+        onClose:()=>setAssessItemId(null),
+        onConfirm:(currentId,nextId,advance)=>{
+          if(advance){handleAssessAdvance(currentId,nextId)}
+          else{setItems(p=>p.map(i=>i.id===currentId?{...i,done:true}:i))}
+        }
+      }),
+
+      // Submit error card
+      submitDrawer&&React.createElement("div",{style:{position:"absolute",bottom:cardBottom,left:12,right:12,zIndex:30,background:"#fff",borderRadius:16,boxShadow:"0 8px 32px rgba(0,0,0,0.12),0 2px 8px rgba(0,0,0,0.06)",padding:"16px 16px 16px",animation:"sheetUp 0.3s cubic-bezier(0.4,0,0.15,1)",overflow:"hidden",maxHeight:"50%"}},
+          React.createElement("button",{onClick:()=>setSubmitDrawer(false),style:{position:"absolute",top:10,right:12,background:"#f5f5f5",border:"none",cursor:"pointer",padding:4,zIndex:2,width:26,height:26,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center"}},React.createElement(X,{size:13,color:"#999"})),
+          React.createElement("div",{style:{fontSize:15,fontWeight:700,color:"#111",marginBottom:3}},"Can't submit yet"),
+          React.createElement("div",{style:{fontSize:12,color:"#999",marginBottom:14}},"Complete these items before signing:"),
+          blocking.map(it=>{var IC=it.icon;return React.createElement("button",{key:it.id,onClick:()=>{setSubmitDrawer(false);openSheet(it.id)},style:{display:"flex",alignItems:"center",gap:10,width:"100%",textAlign:"left",padding:"10px 0",background:"none",border:"none",cursor:"pointer",borderBottom:"1px solid #f5f5f5"}},
+            React.createElement(IC,{size:14,color:"#ea580c",style:{flexShrink:0}}),
+            React.createElement("div",{style:{flex:1}},React.createElement("div",{style:{fontSize:12.5,fontWeight:600,color:"#222"}},it.label),React.createElement("div",{style:{fontSize:11,color:"#aaa",marginTop:1}},it.detail)),
+            React.createElement("span",{style:{fontSize:10.5,fontWeight:600,color:"#6366f1",flexShrink:0}},it.action+" ->"))}),
+          React.createElement("button",{onClick:()=>setSubmitDrawer(false),style:{width:"100%",height:42,borderRadius:10,marginTop:12,background:"#6366f1",border:"none",fontSize:13,fontWeight:700,color:"#fff",cursor:"pointer",boxShadow:"0 2px 8px rgba(99,102,241,0.25)"}},"Got it"))
+    )
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
+  </script>
+</body>
+</html>

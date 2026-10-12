@@ -1,0 +1,636 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Kazzoo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kavoon&family=Livvic:wght@500;600&family=Londrina+Solid:wght@400&family=Mali:wght@500&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --display: "Londrina Solid", "Arial Rounded MT Bold", "Arial Black", sans-serif;
+  --ui: "Livvic", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --hand: "Mali", "Comic Sans MS", "Chalkboard SE", sans-serif;
+  --logo: "Kavoon", "Cooper Black", serif;
+  --green-deep: #0b5030;
+  --forest: #061e06;
+  --pink: #fd7bf4;
+  --peach: #ffb593;
+  --glass: rgba(255,255,255,.09);
+  --ease: cubic-bezier(.7,0,.2,1);
+  --spring: cubic-bezier(.34,1.45,.5,1);
+}
+html,body{height:100%}
+body{margin:0;background:var(--green-deep);color:#fff;font-family:var(--ui);overflow:hidden;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+img{display:block;max-width:none}
+:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- backgrounds ---------- */
+.bgs{position:fixed;inset:0;overflow:hidden;background:var(--green-deep)}
+.bg{position:absolute;inset:-2%;background:center/cover no-repeat;opacity:0;transition:opacity 1.1s ease, transform 1.6s var(--ease)}
+.bg-hills{background-image:url(img/bg-hills.webp)}
+.bg-portal{background-image:url(img/bg-portal.webp);transform:scale(1.2)}
+.bg-clouds{background-image:url(img/bg-clouds.webp)}
+.shade{position:absolute;inset:0;background:linear-gradient(to right,#061e06 8.8%,rgba(6,30,6,0) 62.5%);opacity:0;transition:opacity 1.1s ease}
+[data-step="0"] .bg-hills,[data-step="1"] .bg-hills,[data-step="2"] .bg-hills{opacity:1}
+[data-step="1"] .bg-hills{transform:scale(1.05)}
+[data-step="2"] .bg-hills{transform:scale(1.1) translateY(-1%)}
+[data-step="3"] .bg-portal{opacity:1;transform:scale(1.2) rotate(-2deg)}
+[data-step="3"] .shade{opacity:1}
+[data-step="4"] .bg-clouds{opacity:1}
+
+/* ---------- stage ---------- */
+.viewport{position:fixed;inset:0;overflow:hidden}
+.stage{position:absolute;left:50%;top:50%;width:1440px;height:810px;transform:translate(-50%,-50%) scale(var(--s,1));transform-origin:50% 50%}
+.desk .p{position:absolute}
+
+/* nav */
+.avatar{display:block;width:44px;height:44px;border-radius:16px;background:#fdd9fd;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.menu{display:flex;align-items:center}
+.pill{display:flex;align-items:center;justify-content:center;padding:14px 16px;border-radius:16px;background:var(--glass);font:600 13px/1.2 var(--ui);letter-spacing:-.52px;text-transform:uppercase;white-space:nowrap;color:#fff;transition:background .3s,color .3s}
+.pill:hover{background:rgba(255,255,255,.2)}
+.pill[aria-current="true"]{background:#fff;color:#000}
+.brand{text-decoration:none;display:flex;align-items:center;gap:1.5px;font:400 18.11px/.84 var(--logo);letter-spacing:-.72px;text-transform:uppercase;color:#fff}
+.brand img{width:36.6px;height:36.6px}
+.icon-btn{width:24px;height:24px}
+.icon-btn img{width:24px;height:24px}
+.desk .avatar{left:38px;top:23px}
+.desk .menu{left:196px;top:23px;width:1048px;height:44px}
+.desk .menu .pill{position:absolute;top:0}
+.desk .menu .brand{position:absolute;left:453.9px;top:3.7px}
+.desk .icons{left:1327px;top:33px;display:flex;gap:26.9px}
+.nav-l{display:contents}
+
+/* bullets */
+.bullets{display:flex;flex-direction:column;align-items:flex-end;gap:16.2px}
+.bullets button{width:8px;height:8px;border-radius:99px;background:#fff;opacity:.9;transition:width .45s var(--ease),opacity .3s}
+.bullets button[aria-current="true"]{width:20px;opacity:1}
+.bullets button:hover{opacity:1}
+.desk .bullets{left:1383.6px;top:412.7px;width:20px}
+
+/* scenes */
+.scene{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .8s ease, transform 1.1s var(--ease)}
+.scene.is-active{opacity:1;pointer-events:auto;transform:none}
+.scene *{pointer-events:inherit}
+
+/* type */
+.d{font-family:var(--display);font-weight:400;line-height:.84;text-transform:uppercase;white-space:nowrap;margin:0;color:#fff}
+.body{font:500 20px/1.2 var(--ui);letter-spacing:-.4px;margin:0;color:#fff}
+
+/* buttons */
+.btn{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:8px 8px 8px 24px;border-radius:30px;font:600 18px/1.2 var(--ui);letter-spacing:-.54px;text-transform:uppercase;color:#fff;white-space:nowrap;transition:transform .35s var(--spring),box-shadow .35s}
+.btn .dot{width:60px;height:60px;border-radius:24px;border:1px solid rgba(255,255,255,.09);background:#fff;display:grid;place-items:center;flex:none;transition:transform .35s var(--spring)}
+.btn .dot img{width:18px;height:18px}
+.btn:hover{transform:translateY(-2px)}
+.btn:hover .dot{transform:translateX(4px)}
+.btn-grad{background:linear-gradient(to right,var(--pink),var(--peach))}
+.btn-glass{background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.btn-glass .dot{background:rgba(244,244,244,.1)}
+.w245{width:245px}
+
+/* ---------- scene 0 : hero ---------- */
+.s0.is-past{transform:translateX(-110%);opacity:0}
+.lockup{width:410px;height:255px}
+.lockup svg{position:absolute;inset:0;overflow:visible}
+.lockup text{font:400 26px var(--display);fill:#fff;letter-spacing:0}
+.sun{width:127.93px;height:127.93px;display:grid;place-items:center}
+.sun img{width:109.4px;height:109.4px;transform:rotate(-10.78deg);animation:bob 5s ease-in-out infinite}
+.lockup .sun{position:absolute;left:141px;top:15.2px}
+@keyframes bob{50%{transform:rotate(-4deg) translateY(-6px)}}
+.h-extro{font-size:94px;letter-spacing:-.94px}
+.h-journey{font-size:192.9px;letter-spacing:-1.93px}
+.desk .lockup{left:515px;top:143px}
+.desk .h-extro{left:719.5px;top:271.7px;transform:translateX(-50%)}
+.desk .h-journey{left:725.2px;top:338.9px;transform:translateX(-50%)}
+.desk .hero-copy{left:426px;top:516px;width:588px;text-align:center}
+.desk .hero-ctas{left:470.5px;top:590px;display:flex;gap:27px}
+.scroll-hint{width:84px;height:84px;border-radius:30px;border:2px solid rgba(255,255,255,.2);display:grid;place-items:center;transition:border-color .3s}
+.scroll-hint:hover{border-color:rgba(255,255,255,.5)}
+.scroll-hint img{width:16.54px;height:16.54px;transform:rotate(-45deg);animation:nudge 1.8s ease-in-out infinite}
+@keyframes nudge{50%{transform:rotate(-45deg) translate(-3px,3px)}}
+.desk .scroll-hint{left:30px;top:693px}
+
+/* load-in (first paint of hero) */
+.intro .s0 .rise{animation:rise 1.1s var(--ease) both}
+@keyframes rise{from{opacity:0;translate:0 40px}}
+.intro .s0 .rise:nth-child(2){animation-delay:.12s}
+.intro .s0 .rise:nth-child(3){animation-delay:.22s}
+.intro .s0 .rise:nth-child(4){animation-delay:.34s}
+.intro .s0 .rise:nth-child(5){animation-delay:.46s}
+.intro .s0 .rise:nth-child(6){animation-delay:.58s}
+
+/* ---------- shared video (scene 0 -> 1 -> 2) ---------- */
+.video{position:absolute;left:399.7px;top:192px;width:703px;height:483.9px;border:14.68px solid #fff;border-radius:81.32px;overflow:hidden;box-shadow:9.05px 9.05px 0 rgba(0,0,0,.1);transform-origin:0 0;background:#b9e0f5;
+  transition:transform 1.1s var(--ease), opacity .6s ease;z-index:2}
+.video .v-img{position:absolute;max-width:none;transition:opacity .7s ease}
+.v-still{left:0;width:104.36%;height:193.33%;bottom:-52.88%}
+.v-thumb{left:-18.73%;width:141.82%;height:262.73%;bottom:-81.1%}
+.v-play{position:absolute;left:52.3%;top:52.7%;width:121.2px;height:121.2px;translate:-50% -50%;transition:transform 1.1s var(--ease), scale .35s var(--spring)}
+.v-play img{position:absolute;inset:0;width:100%;height:100%;transition:opacity .6s}
+.v-play .ps{inset:-2px}
+.video:hover .v-play{scale:1.06}
+[data-step="0"] .video{transform:translate(771.3px,4.7px) scale(.3427)}
+[data-step="0"] .v-still{opacity:0}
+[data-step="0"] .v-play{transform:rotate(-45deg)}
+[data-step="0"] .v-play .pb{opacity:0}
+[data-step="1"] .v-thumb,[data-step="2"] .v-thumb,[data-step="3"] .v-thumb,[data-step="4"] .v-thumb{opacity:0}
+[data-step="1"] .v-play .ps,[data-step="2"] .v-play .ps,[data-step="3"] .v-play .ps,[data-step="4"] .v-play .ps{opacity:0}
+[data-step="2"] .video{transform:translate(15.3px,765px) scale(1.082)}
+[data-step="3"] .video,[data-step="4"] .video{transform:translate(15.3px,900px) scale(1.082);opacity:0}
+[data-step="2"] .video,[data-step="3"] .video,[data-step="4"] .video{pointer-events:none}
+.video.playing .v-still{animation:drift 9s ease-in-out infinite alternate}
+@keyframes drift{to{transform:scale(1.12) translate(-3%,2%)}}
+
+/* ---------- scene 2 : characters ---------- */
+.s2:not(.is-active):not(.is-past){transform:translateX(110%)}
+.s2.is-past{transform:translateY(-6%);opacity:0}
+.h-dance{font-size:99.46px;letter-spacing:-3.98px}
+.desk .h-d1{left:38.6px;top:381.3px}
+.desk .h-d2{left:160.6px;top:456.3px}
+.desk .h-d3{left:38.6px;top:531.3px}
+.sun-sm{width:123.4px;height:123.4px;display:grid;place-items:center}
+.desk .heads{display:contents}
+.sun-sm img{width:105.6px;height:105.6px}
+.desk .s2 .sun-sm{left:56.1px;top:427.6px}
+.desk .dance-copy{left:38.6px;top:659.2px;width:576.8px}
+.desk .rail{left:700px;top:480px;width:1400px;height:280px;clip-path:inset(-60px -2000px -60px 0)}
+.track{position:absolute;inset:0;transition:transform .9s var(--ease)}
+.card{position:absolute;top:70.2px;width:287px;height:188.2px;transition:opacity .6s ease, transform .9s var(--ease)}
+.card.gone{opacity:0;transform:translateX(-40px) scale(.94)}
+.card .shape{position:absolute;inset:0;transform:scaleX(-1)}
+.card .shape img{position:absolute;top:0;left:6.04%;width:91.59%;height:100%}
+.card .ch{position:absolute;object-fit:cover;transition:transform .5s var(--spring)}
+.card .ch.mirror{transform:scaleX(-1)}
+.card:hover .ch{transform:translateY(-6px) rotate(-3deg)}
+.card:hover .ch.mirror{transform:scaleX(-1) translateY(-6px) rotate(-3deg)}
+.card .stars{position:absolute;left:81.6px;top:40.2px;width:60.1px;height:12.02px}
+.card .nm{position:absolute;left:81.7px;top:54.1px;font-size:32px}
+.card .ds{position:absolute;left:81.8px;top:98.2px;width:156px;font:500 14px/1.2 var(--hand);letter-spacing:-.28px;color:#000;margin:0;white-space:normal}
+.card .go{position:absolute;left:171.5px;top:-16.9px;width:44px;height:44px;border-radius:18px;background:#fff;display:grid;place-items:center;transition:transform .35s var(--spring)}
+.card .go img{width:18px;height:18px}
+.card .go:hover{transform:scale(1.1) rotate(8deg)}
+
+/* ---------- scene 3 : meet ---------- */
+.s3 .reveal-l,.s3 .reveal-r{transition:opacity .8s ease, translate 1s var(--ease), scale 1s var(--ease)}
+.s3:not(.is-active) .reveal-l{opacity:0;translate:-60px 0}
+.s3:not(.is-active) .reveal-r{opacity:0;translate:80px 0;scale:.96}
+.s3.is-active .reveal-l{transition-delay:.25s}
+.s3.is-active .reveal-r{transition-delay:.4s}
+.h-meet{font-size:99.46px;letter-spacing:-3.98px}
+.h-who{font-size:49.46px;letter-spacing:-1.98px;color:#d2e3cd;transition:color .5s}
+.desk .h-who{left:266.3px;top:128px}
+.desk .h-m1{left:266.3px;top:171px}
+.desk .h-m2{left:108px;top:246px}
+.desk .h-m3{left:108px;top:321px}
+.desk .meet-copy{left:108px;top:434px;width:459px;min-height:168px}
+.desk .meet-cta{left:230.6px;top:679px;transform:translateX(-50%)}
+.crystal{width:132px;height:132px}
+.crystal img{position:absolute;left:50%;top:50%;width:100.96px;height:100.96px;translate:-50% -50%;rotate:-22.64deg}
+.crystal .glow{filter:blur(24.6px);opacity:.4;mix-blend-mode:plus-lighter}
+.crystal-lg{width:361.7px;height:361.7px}
+.crystal-lg img{width:310.24px;height:310.24px;rotate:10.53deg}
+.crystal-lg .glow{filter:blur(43.5px)}
+.desk .crystal-sm{left:118.2px;top:128px}
+.desk .crystal-lg{left:1221.1px;top:-117.5px}
+.float{animation:float 6s ease-in-out infinite}
+.float.slow{animation-duration:8s;animation-delay:-2s}
+@keyframes float{50%{translate:0 -10px}}
+.hero-char{left:0;top:0;width:1440px;height:810px}
+.big-shape{position:absolute;left:784px;top:271.5px;width:516.9px;height:338.8px;transform:rotate(180deg)}
+.big-shape img{position:absolute;top:0;left:6.04%;width:91.59%;height:100%}
+.char-img{position:absolute;transition:opacity .5s ease, transform .7s var(--spring)}
+.char-img.out{opacity:0;transform:translateY(30px) scale(.94)}
+.carets{display:flex;gap:7px}
+.caret{width:60px;height:60px;border-radius:24px;display:grid;place-items:center;transition:transform .3s var(--spring),background .3s}
+.caret img{width:18px;height:18px}
+.caret.next{background:#fff;border:1px solid rgba(255,255,255,.09)}
+.caret.prev{border:2px solid #fff}
+.caret.prev img{transform:scaleX(-1)}
+.caret:hover{transform:scale(1.06)}
+.caret.prev:hover{background:rgba(255,255,255,.12)}
+.desk .carets{left:1275px;top:717px}
+
+/* ---------- scene 4 : horizon ---------- */
+.h-horizon{font-size:192px;letter-spacing:-7.68px;text-align:center}
+.s4 .h-horizon{transition:opacity .9s ease, transform 1.1s var(--ease)}
+.s4:not(.is-active) .h-horizon{opacity:0;transform:translate(-50%,70px)}
+.s4.is-active .h-h2{transition-delay:.12s}
+.desk .h-h1{left:720px;top:90.5px;transform:translateX(-50%)}
+.desk .h-h2{left:719.7px;top:232.5px;transform:translateX(-50%)}
+.deck{width:474px;height:452px;transition:transform 1.1s var(--spring), opacity .7s}
+.s4:not(.is-active) .deck{transform:translateY(120px) scale(.7);opacity:0}
+.s4.is-active .deck{transition-delay:.25s}
+.desk .deck{left:507px;top:325px}
+.tile{position:absolute;inset:0;background:#fff;border:15.13px solid #fff;border-radius:83px;filter:drop-shadow(9.31px 9.31px 0 rgba(43,43,43,.17));transform:scale(.25);opacity:0;transition:transform .7s var(--spring), opacity .45s ease}
+.tile.on{transform:none;opacity:1;z-index:2}
+.tile.leaving{transform:scale(.25);opacity:0;z-index:1;transition:transform .55s var(--ease), opacity .45s ease .1s}
+.tile .union{position:absolute;left:6.44px;top:0;width:466.83px;height:315.95px;transform:rotate(180deg)}
+.tile .union img{width:100%;height:100%}
+.tile .shadow{position:absolute}
+.tile .shadow img{position:absolute;width:auto;height:auto}
+.tile .pic{position:absolute;overflow:hidden}
+.tile .pic img{position:absolute;max-width:none}
+.tile .t-name,.tile .t-pct{position:absolute;top:358.16px;font-size:60px;letter-spacing:-1.2px}
+.tile .t-name{left:41.06px}
+.tile .t-pct{left:290.09px}
+.tile .trend{position:absolute;left:395.09px;top:358.16px;width:30.67px;height:32px;border-radius:11px;background:rgba(114,193,173,.2);display:grid;place-items:center}
+.tile .trend img{width:12px;height:12px}
+.tile .next{position:absolute;right:0;top:240px;width:108px;height:80px;border-radius:31px;background:#fff;border:1px solid #d1d1d1;display:grid;place-items:center;transition:transform .35s var(--spring)}
+.tile .next img{width:18px;height:18px}
+.tile .next:hover{transform:scale(1.06)}
+.tile .pic img{transition:transform .8s var(--spring)}
+.tile.on .pic img{animation:pop .9s var(--spring) both .15s}
+@keyframes pop{from{transform:scale(.6) rotate(-8deg);opacity:0}}
+
+/* ======================= MOBILE / NARROW ======================= */
+.mob .stage{left:0;top:0;width:100%;height:100%;transform:none}
+.mob .avatar{position:absolute;left:16px;top:calc(14px + env(safe-area-inset-top,0px));width:40px;height:40px;border-radius:14px}
+.mob .menu{position:absolute;left:50%;top:calc(16px + env(safe-area-inset-top,0px));transform:translateX(-50%)}
+.mob .menu .pill{display:none}
+.mob .brand{height:36px}
+.mob .icons{position:absolute;right:16px;top:calc(22px + env(safe-area-inset-top,0px));display:flex;gap:16px}
+.mob .bullets{position:absolute;right:8px;top:50%;translate:0 -50%;gap:10px;z-index:3}
+.mob .bullets button{width:6px;height:6px}
+.mob .bullets button[aria-current="true"]{width:14px}
+.mob .scene{display:flex;flex-direction:column;justify-content:center;gap:18px;padding:calc(78px + env(safe-area-inset-top,0px)) 28px calc(28px + env(safe-area-inset-bottom,0px)) 20px}
+.mob .scene .p{position:relative}
+.mob .d{white-space:normal;text-wrap:balance}
+.mob .body{font-size:16px}
+/* hero */
+.mob .s0{align-items:center;text-align:center;gap:10px}
+.mob .lockup{zoom:.72;margin-bottom:-88px}
+.mob .h-extro{font-size:clamp(34px,11vw,56px)}
+.mob .h-journey{font-size:clamp(78px,26vw,130px);margin-top:-4px}
+.mob .hero-copy{max-width:34ch;margin-top:8px}
+.mob .hero-ctas{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+.mob .scroll-hint{display:none}
+/* video */
+.mob .video{left:50%;top:50%;width:min(88vw,560px);height:auto;aspect-ratio:703/483.9;border-width:8px;border-radius:44px;transform-origin:50% 50%;translate:-50% -50%}
+.mob .v-play{width:84px;height:84px}
+.mob[data-step="0"] .video{transform:scale(.4) translateY(40%);opacity:0}
+.mob[data-step="2"] .video,.mob[data-step="3"] .video,.mob[data-step="4"] .video{transform:translateY(110vh);opacity:1}
+/* characters */
+.mob .s2{justify-content:flex-end;gap:14px}
+.mob .h-dance{font-size:clamp(46px,14vw,72px);letter-spacing:-2px;white-space:nowrap}
+.mob .h-d2{padding-left:1.25em}
+.mob .heads{position:relative;display:flex;flex-direction:column}
+.mob .s2 .sun-sm{position:absolute;left:-10px;top:calc(.84 * clamp(46px,14vw,72px) - 10px);width:80px;height:80px;z-index:1}
+.mob .sun-sm img{width:68px;height:68px}
+.mob .rail{position:relative;width:auto;height:240px;margin:0 -28px 0 -20px;clip-path:none;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory}
+.mob .rail::-webkit-scrollbar{display:none}
+.mob .track{position:relative;height:100%;transform:none!important;zoom:.9}
+.mob .card{scroll-snap-align:start}
+.mob .card.gone{opacity:1;transform:none}
+/* meet */
+.mob .s3{justify-content:flex-end;gap:12px}
+.mob .s3 .hero-char{position:absolute;inset:0;width:auto;height:auto;pointer-events:none}
+.mob .big-shape{left:auto;right:-50px;top:calc(150px + env(safe-area-inset-top,0px));width:300px;height:196.6px}
+.mob .char-img{left:auto!important;right:-24px;top:calc(62px + env(safe-area-inset-top,0px))!important;width:min(84vw,340px)!important;height:min(84vw,340px)!important}
+.mob .h-who{font-size:30px}
+.mob .h-meet{font-size:clamp(38px,11vw,60px);letter-spacing:-1.6px}
+.mob .meet-copy{font-size:14px;line-height:1.25;max-width:42ch}
+.mob .meet-cta{align-self:flex-start;font-size:15px;gap:14px;padding-left:18px}
+.mob .meet-cta .dot{width:48px;height:48px;border-radius:20px}
+.mob .s3 .crystal-lg{position:absolute;right:-90px;top:-60px;zoom:.5}
+.mob .s3 .crystal-sm{position:absolute;left:-22px;top:-48px;zoom:.6}
+.mob .s3 .carets{position:absolute;right:28px;bottom:calc(36px + env(safe-area-inset-bottom,0px))}
+.mob .caret{width:48px;height:48px;border-radius:20px}
+/* horizon */
+.mob .s4{justify-content:flex-start;align-items:center;gap:0;padding-top:calc(96px + env(safe-area-inset-top,0px))}
+.mob .h-horizon{font-size:clamp(56px,17vw,110px);letter-spacing:-2px;line-height:.84}
+.mob .s4:not(.is-active) .h-horizon{transform:translateY(60px)}
+.mob .deck{zoom:.66;margin-top:24px}
+@media (max-height:700px){ .mob .deck{zoom:.54} }
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.2s!important;transition-delay:0s!important}
+}
+</style>
+
+<div class="bgs" aria-hidden="true">
+  <div class="bg bg-hills"></div>
+  <div class="bg bg-portal"></div>
+  <div class="bg bg-clouds"></div>
+  <div class="shade"></div>
+</div>
+
+<div class="viewport" id="viewport">
+<div class="stage" id="stage">
+
+  <!-- ===== scene 0 : hero ===== -->
+  <section class="scene s0 is-active" data-scene="0" aria-label="An extroverted journey">
+    <div class="p lockup rise" aria-hidden="true">
+      <svg viewBox="0 0 410 255" width="410" height="255">
+        <path id="arc" d="M39.7 49.5 A292 292 0 0 1 366.3 49.5" fill="none"/>
+        <text><textPath href="#arc" textLength="346" lengthAdjust="spacing">WELCOME TO</textPath></text>
+      </svg>
+      <div class="sun"><img src="img/sun.webp" alt=""></div>
+    </div>
+    <h1 class="sr">Kazzoo — an extroverted journey</h1>
+    <p class="p d h-extro rise" aria-hidden="true">an Extroverted</p>
+    <p class="p d h-journey rise" aria-hidden="true">Journey</p>
+    <p class="p body hero-copy rise">Embark on a transformative extroverted journey, where self-discovery intertwines with quiet reflection.</p>
+    <div class="p hero-ctas rise">
+      <button class="btn btn-grad w245" data-go="1">Start Journey<span class="dot"><img src="img/arrow-right-dark.svg" alt=""></span></button>
+      <button class="btn btn-glass w245" data-go="2">Learn more<span class="dot"><img src="img/arrow-right-light.svg" alt=""></span></button>
+    </div>
+    <button class="p scroll-hint" data-go="1" aria-label="Scroll to next section"><img src="img/scroll-dots.svg" alt=""></button>
+  </section>
+
+  <!-- ===== scene 1 : video (content lives in the shared .video) ===== -->
+  <section class="scene s1" data-scene="1" aria-label="Playworld trailer"></section>
+
+  <!-- shared video frame -->
+  <div class="video" id="video" role="button" tabindex="0" aria-label="Play the playworld trailer">
+    <img class="v-img v-thumb" src="img/video-thumb.webp" alt="">
+    <img class="v-img v-still" src="img/video-still.webp" alt="">
+    <span class="v-play"><img class="ps" src="img/play-small.svg" alt=""><img class="pb" src="img/play-big.svg" alt=""></span>
+  </div>
+
+  <!-- ===== scene 2 : characters ===== -->
+  <section class="scene s2" data-scene="2" aria-label="Dancing through magical universes">
+    <div class="heads">
+      <h2 class="p d h-dance h-d1">Dancing Through</h2>
+      <div class="p sun-sm"><img src="img/sun-flat.webp" alt="" style="transform:rotate(-10.78deg)"></div>
+      <p class="p d h-dance h-d2" aria-hidden="true">Magical</p>
+      <p class="p d h-dance h-d3" aria-hidden="true">Universes</p>
+    </div>
+    <p class="p body dance-copy">Step into colorful adventures filled with playful characters, dreamy landscapes, and magical discoveries around every corner. Every scroll unlocks a new piece of the journey.</p>
+    <div class="p rail" id="rail" aria-label="Characters"><div class="track" id="track"></div></div>
+  </section>
+
+  <!-- ===== scene 3 : meet ===== -->
+  <section class="scene s3" data-scene="3" aria-label="Meet the little dreamer">
+    <div class="p hero-char reveal-r" aria-hidden="true">
+      <div class="big-shape"><img id="bigShape" src="img/card-big-muffy.svg" alt=""></div>
+      <img class="char-img" id="charImg" src="img/muffy-hero.webp" alt="">
+    </div>
+    <div class="p crystal crystal-lg float slow" aria-hidden="true"><img src="img/crystal.webp" alt=""><img class="glow" src="img/crystal.webp" alt=""></div>
+    <div class="heads">
+      <div class="p crystal crystal-sm float" aria-hidden="true"><img src="img/crystal.webp" alt=""><img class="glow" src="img/crystal.webp" alt=""></div>
+      <p class="p d h-who reveal-l" id="whoName">Muffy</p>
+      <h2 class="p d h-meet h-m1 reveal-l">Meet</h2>
+      <p class="p d h-meet h-m2 reveal-l" aria-hidden="true">the little</p>
+      <p class="p d h-meet h-m3 reveal-l" aria-hidden="true">Dreamer</p>
+    </div>
+    <p class="p body meet-copy reveal-l" id="whoBio" aria-live="polite">Muffy is the heart of the adventure. With endless curiosity and a backpack full of imagination, she travels through floating hills, candy skies, and glowing portals searching for hidden treasures, new friendships, and unforgettable memories. Every step she takes inspires kids to dream bigger, explore freely, and embrace their unique spark.</p>
+    <button class="p btn btn-grad meet-cta reveal-l" data-go="4">Explore Assets<span class="dot"><img src="img/arrow-right-dark.svg" alt=""></span></button>
+    <div class="p carets">
+      <button class="caret prev" id="prevChar" aria-label="Previous character"><img src="img/caret-light.svg" alt=""></button>
+      <button class="caret next" id="nextChar" aria-label="Next character"><img src="img/caret-dark.svg" alt=""></button>
+    </div>
+  </section>
+
+  <!-- ===== scene 4 : horizon ===== -->
+  <section class="scene s4" data-scene="4" aria-label="Beyond the cloudy horizon">
+    <h2 class="sr">Beyond the cloudy horizon</h2>
+    <p class="p d h-horizon h-h1" aria-hidden="true">Beyond The</p>
+    <p class="p d h-horizon h-h2" aria-hidden="true">Cloudy Horizon</p>
+    <div class="p deck" id="deck">
+      <!-- Spark -->
+      <article class="tile on" aria-label="Spark, 62 percent">
+        <div class="union"><img src="img/shape-spark.svg" alt=""></div>
+        <div class="shadow" style="left:-14.23px;top:198.1px;width:387.03px;height:116.48px"><img src="img/shadow-spark.svg" alt="" style="top:-26.41%;left:-2.57%;width:93.06%;height:143.86%"></div>
+        <div class="pic" style="left:43.83px;top:-17.39px;width:321.93px;height:325.04px"><img src="img/icon-spark.webp" alt="" style="height:186.96%;width:151.01%;left:-26.71%;top:-43.48%"></div>
+        <p class="d t-name" style="color:#73626f">Spark</p>
+        <p class="d t-pct" style="color:#dcbdd4">62%</p>
+        <span class="trend"><img src="img/trend.svg" alt=""></span>
+        <button class="next" aria-label="Next card"><img src="img/arrow-right-dark.svg" alt=""></button>
+      </article>
+      <!-- Wonder -->
+      <article class="tile" aria-label="Wonder, 52 percent">
+        <div class="union"><img src="img/shape-wonder.svg" alt=""></div>
+        <div class="shadow" style="left:-7.76px;top:203.68px;width:191.1px;height:66.62px"><img src="img/shadow-wonder.svg" alt="" style="top:-46.78%;left:-16.31%;width:132.62%;height:193.15%"></div>
+        <div class="pic" style="left:-118.96px;top:-162.16px;width:540.04px;height:540.04px;overflow:visible"><img src="img/icon-wonder.webp" alt="" style="left:38.79px;top:38.79px;width:462.46px;height:462.46px;rotate:-10.66deg"></div>
+        <p class="d t-name" style="color:#736262">Wonder</p>
+        <p class="d t-pct" style="color:#dcbdbd">52%</p>
+        <span class="trend"><img src="img/trend.svg" alt=""></span>
+        <button class="next" aria-label="Next card"><img src="img/arrow-right-dark.svg" alt=""></button>
+      </article>
+      <!-- Bloom -->
+      <article class="tile" aria-label="Bloom, 20 percent">
+        <div class="union"><img src="img/shape-bloom.svg" alt=""></div>
+        <div class="shadow" style="left:-14px;top:184.4px;width:349.62px;height:107.94px"><img src="img/shadow-bloom.svg" alt="" style="top:-28.88%;left:-8.92%;width:116.4%;height:156.77%"></div>
+        <div class="pic" style="left:14px;top:-29.52px;width:346.75px;height:346.75px"><img src="img/icon-bloom.webp" alt="" style="width:139.47%;height:139.47%;left:-19.73%;top:-19.73%"></div>
+        <p class="d t-name" style="color:#6a6273">Bloom</p>
+        <p class="d t-pct" style="color:#d3bddc">20%</p>
+        <span class="trend"><img src="img/trend.svg" alt=""></span>
+        <button class="next" aria-label="Next card"><img src="img/arrow-right-dark.svg" alt=""></button>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== chrome: nav + bullets ===== -->
+  <a class="p avatar" href="#" data-go="0" aria-label="Kazzoo home"><img src="img/avatar.webp" alt=""></a>
+  <nav class="p menu" aria-label="Main">
+    <button class="pill" style="left:0" data-go="0">Home</button>
+    <button class="pill" style="left:80px" data-go="1">Journey</button>
+    <button class="pill" style="left:178px" data-go="2">Characters</button>
+    <a class="brand" href="#" data-go="0"><img src="img/logo.webp" alt="">Kazzoo</a>
+    <button class="pill" style="left:724px" data-go="3">Adventures</button>
+    <button class="pill" style="left:846px" data-go="4">Playworld</button>
+    <button class="pill" style="left:963px" data-go="next">Explore</button>
+  </nav>
+  <div class="p icons">
+    <button class="icon-btn" aria-label="Search"><img src="img/search.svg" alt=""></button>
+    <button class="icon-btn" aria-label="Menu"><img src="img/dots-nine.svg" alt=""></button>
+  </div>
+  <div class="p bullets" id="bullets" aria-label="Sections"></div>
+
+</div>
+</div>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const stage = document.getElementById('stage');
+  const scenes = [...document.querySelectorAll('.scene')];
+  const N = scenes.length;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let step = 0, lock = false;
+
+  /* ---------- characters ---------- */
+  const chars = [
+    {id:'muffy', name:'Muffy', color:'#4d725c', tint:'#d2e3cd', stars:'stars-5', img:{x:-73.8,y:-9.9,s:178,m:1},
+     blurb:'A cheerful little dreamer who turns every tiny moment into a magical adventure.',
+     bio:'Muffy is the heart of the adventure. With endless curiosity and a backpack full of imagination, she travels through floating hills, candy skies, and glowing portals searching for hidden treasures, new friendships, and unforgettable memories. Every step she takes inspires kids to dream bigger, explore freely, and embrace their unique spark.',
+     big:{src:'muffy-hero', box:681.1, x:658, y:28, s:557.9, r:-14.68}},
+    {id:'james', name:'James', color:'#724d4d', tint:'#e3cdcd', stars:'stars-4', img:{x:-71.5,y:-36.9,s:204},
+     blurb:'Curious, brave, and always exploring new worlds with endless excitement.'},
+    {id:'rony', name:'Rony', color:'#4d6672', tint:'#cddde3', stars:'stars-4b', img:{x:-51.5,y:-2.85,s:167.1},
+     blurb:'A playful explorer who loves collecting stories, smiles, and surprises.'},
+    {id:'jigly', name:'Jigly', color:'#72634d', tint:'#e3dfcd', stars:'stars-4', img:{x:-27.3,y:37.4,s:126.9},
+     blurb:'Soft-hearted and imaginative, bringing warmth and wonder wherever they go.'},
+    {id:'emma', name:'Emma', color:'#4d7172', tint:'#cddee3', stars:'stars-4', img:{x:-55.95,y:-5.8,s:172.9},
+     blurb:'A tiny spark of joy who believes every journey should feel magical.'}
+  ];
+  const SLOT = 272, FIRST = 95.4;
+  const track = document.getElementById('track');
+  chars.forEach((c,i) => {
+    const el = document.createElement('article');
+    el.className = 'card';
+    el.style.left = (FIRST + i*SLOT) + 'px';
+    el.style.zIndex = i + 1;
+    el.innerHTML =
+      `<div class="shape"><img src="img/card-${c.id}.svg" alt=""></div>
+       <img class="ch${c.img.m?' mirror':''}" src="img/char-${c.id}.webp" alt="${c.name}" style="left:${c.img.x}px;top:${c.img.y}px;width:${c.img.s}px;height:${c.img.s}px">
+       <img class="stars" src="img/${c.stars}.svg" alt="${c.stars==='stars-5'?'5':'4'} out of 5 stars">
+       <h3 class="d nm" style="color:${c.color}">${c.name}</h3>
+       <p class="ds">${c.blurb}</p>
+       <button class="go" aria-label="Meet ${c.name}"><img src="img/arrow-up-right.svg" alt=""></button>`;
+    el.querySelector('.go').addEventListener('click', () => { showChar(i); go(3); });
+    track.appendChild(el);
+  });
+  const cards = [...track.children];
+  const MAXC = chars.length - 2;
+  let ci = 0;
+  function setCarousel(n){
+    ci = (n + MAXC + 1) % (MAXC + 1);
+    if (root.classList.contains('mob')) return;
+    track.style.transform = `translateX(${-ci*SLOT}px)`;
+    cards.forEach((c,i) => c.classList.toggle('gone', i < ci));
+  }
+
+  /* meet scene */
+  const charImg = document.getElementById('charImg');
+  const bigShape = document.getElementById('bigShape');
+  const whoName = document.getElementById('whoName');
+  const whoBio = document.getElementById('whoBio');
+  let mi = 0;
+  function placeChar(c){
+    const b = c.big || {src:'char-'+c.id, box:540, x:772, y:100, s:540, r:0};
+    charImg.style.cssText = `left:${b.x + (b.box-b.s)/2}px;top:${b.y + (b.box-b.s)/2}px;width:${b.s}px;height:${b.s}px;rotate:${b.r}deg`;
+    charImg.src = 'img/' + b.src + '.webp';
+  }
+  function showChar(i){
+    mi = (i + chars.length) % chars.length;
+    const c = chars[mi];
+    charImg.classList.add('out');
+    setTimeout(() => {
+      placeChar(c);
+      bigShape.src = `img/card-big-${c.id}.svg`;
+      whoName.textContent = c.name;
+      whoName.style.color = c.tint;
+      whoBio.textContent = c.bio || c.blurb;
+      requestAnimationFrame(() => charImg.classList.remove('out'));
+    }, reduce ? 0 : 260);
+  }
+  placeChar(chars[0]);
+  document.getElementById('prevChar').onclick = () => showChar(mi - 1);
+  document.getElementById('nextChar').onclick = () => showChar(mi + 1);
+
+  /* deck */
+  const tiles = [...document.querySelectorAll('.tile')];
+  let ti = 0;
+  function nextTile(){
+    const cur = tiles[ti];
+    cur.classList.remove('on'); cur.classList.add('leaving');
+    setTimeout(() => cur.classList.remove('leaving'), 700);
+    ti = (ti + 1) % tiles.length;
+    tiles[ti].classList.add('on');
+  }
+  tiles.forEach(t => t.querySelector('.next').addEventListener('click', e => { e.stopPropagation(); nextTile(); restartAuto(); }));
+
+  /* ---------- steps ---------- */
+  const bullets = document.getElementById('bullets');
+  for (let i = 0; i < N; i++){
+    const b = document.createElement('button');
+    b.setAttribute('aria-label', scenes[i].getAttribute('aria-label'));
+    b.onclick = () => go(i);
+    bullets.appendChild(b);
+  }
+  const navBtns = [...document.querySelectorAll('.menu .pill')];
+  function render(){
+    root.dataset.step = step;
+    scenes.forEach((s,i) => {
+      s.classList.toggle('is-active', i === step);
+      s.classList.toggle('is-past', i < step);
+      s.setAttribute('aria-hidden', i !== step);
+      s.inert = i !== step;
+    });
+    [...bullets.children].forEach((b,i) => b.setAttribute('aria-current', i === step));
+    navBtns.forEach(b => b.setAttribute('aria-current', b.dataset.go == step));
+    document.getElementById('video').classList.toggle('playing', step === 1);
+    restartAuto();
+  }
+  function go(n){
+    if (n === 'next') n = step + 1;
+    n = Math.max(0, Math.min(N - 1, +n));
+    if (n === step) return;
+    step = n; root.classList.remove('intro'); render();
+    lock = true; setTimeout(() => lock = false, reduce ? 300 : 1000);
+  }
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-go]');
+    if (!t) return;
+    e.preventDefault(); go(t.dataset.go);
+  });
+  const video = document.getElementById('video');
+  const toggleVideo = () => step === 0 ? go(1) : video.classList.toggle('playing');
+  video.addEventListener('click', toggleVideo);
+  video.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleVideo(); } });
+
+  /* auto-advance on the carousel and deck */
+  let auto;
+  function restartAuto(){
+    clearInterval(auto);
+    if (reduce) return;
+    if (step === 2) auto = setInterval(() => setCarousel(ci + 1), 2800);
+    if (step === 4) auto = setInterval(nextTile, 3200);
+  }
+  const rail = document.getElementById('rail');
+  rail.addEventListener('mouseenter', () => clearInterval(auto));
+  rail.addEventListener('mouseleave', restartAuto);
+
+  /* input: wheel, keys, touch */
+  let acc = 0, accT = 0;
+  addEventListener('wheel', e => {
+    if (root.classList.contains('mob') && e.target.closest('.rail') && Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    e.preventDefault();
+    if (step === 2 && Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 20 && !lock){
+      setCarousel(ci + Math.sign(e.deltaX)); lock = true; setTimeout(() => lock = false, 700); return;
+    }
+    const now = Date.now(); if (now - accT > 200) acc = 0; accT = now;
+    acc += e.deltaY;
+    if (!lock && Math.abs(acc) > 40){ go(step + Math.sign(acc)); acc = 0; }
+  }, {passive:false});
+  addEventListener('keydown', e => {
+    if (['ArrowDown','PageDown',' '].includes(e.key) && !e.target.closest('button,[role=button]')) { e.preventDefault(); go(step + 1); }
+    else if (['ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); go(step - 1); }
+    else if (e.key === 'ArrowRight' && step === 2) setCarousel(ci + 1);
+    else if (e.key === 'ArrowLeft' && step === 2) setCarousel(ci - 1);
+    else if (e.key === 'Home') go(0); else if (e.key === 'End') go(N - 1);
+  });
+  let ty = null, tx = null;
+  addEventListener('touchstart', e => { ty = e.touches[0].clientY; tx = e.touches[0].clientX; }, {passive:true});
+  addEventListener('touchend', e => {
+    if (ty === null) return;
+    const dy = ty - e.changedTouches[0].clientY, dx = tx - e.changedTouches[0].clientX; ty = null;
+    if (Math.abs(dy) > 50 && Math.abs(dy) > Math.abs(dx)) go(step + Math.sign(dy));
+  }, {passive:true});
+
+  /* ---------- layout: scale the 1440x810 stage, or switch to the narrow layout ---------- */
+  function layout(){
+    const W = innerWidth, H = innerHeight;
+    const desk = W >= 900 && W / H > 1.15;
+    root.classList.toggle('desk', desk);
+    root.classList.toggle('mob', !desk);
+    if (desk){
+      stage.style.setProperty('--s', Math.min(W / 1440, H / 810));
+      setCarousel(ci);
+    } else {
+      track.style.transform = ''; cards.forEach(c => c.classList.remove('gone'));
+      // narrow layout: cards flow in a scroll row
+      cards.forEach((c,i) => c.style.left = (80 + i*SLOT) + 'px');
+      track.style.width = (80 + chars.length*SLOT) + 'px';
+    }
+    if (desk) cards.forEach((c,i) => c.style.left = (FIRST + i*SLOT) + 'px');
+  }
+  addEventListener('resize', layout);
+  root.classList.add('intro');
+  layout(); render();
+})();
+</script>
+
+</body></html>

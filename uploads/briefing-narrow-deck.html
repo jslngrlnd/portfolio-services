@@ -1,0 +1,989 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Brief IA improvements · leadership alignment</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #2a2f35; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #1a1d21; }
+
+  .deck { max-width: 1280px; margin: 0 auto; padding: 32px 24px 80px; }
+  .slide { width: 100%; aspect-ratio: 16 / 9; background: #fff; border-radius: 14px; box-shadow: 0 6px 24px rgba(0,0,0,0.18); margin-bottom: 28px; padding: 48px 56px; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+  .slide.tall { aspect-ratio: auto; min-height: 900px; }
+  .slide.xtall { aspect-ratio: auto; min-height: 1050px; }
+  .slide-num { position: absolute; bottom: 18px; right: 24px; font-size: 11px; color: #b5bac0; letter-spacing: 0.05em; }
+  .slide-kicker { font-size: 12px; text-transform: uppercase; letter-spacing: 0.14em; color: #8a9099; font-weight: 600; margin-bottom: 12px; }
+  .slide h1 { font-size: 40px; margin: 0 0 8px; line-height: 1.15; letter-spacing: -0.01em; }
+  .slide h1.big { font-size: 56px; }
+  .slide h2 { font-size: 26px; margin: 0 0 6px; line-height: 1.2; }
+  .slide .subtitle { font-size: 17px; color: #5a6068; margin: 0 0 24px; line-height: 1.45; max-width: 950px; }
+  .slide p { font-size: 15px; line-height: 1.55; color: #2a2f35; }
+  .slide ul { font-size: 15px; line-height: 1.7; color: #2a2f35; padding-left: 22px; margin: 0; }
+  .slide ul li { margin-bottom: 8px; }
+  .content { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .grow { flex: 1; min-height: 0; }
+
+  .slide.title { background: linear-gradient(135deg, #0a7f6b 0%, #086b5a 100%); color: #fff; justify-content: center; }
+  .slide.title h1 { color: #fff; font-size: 60px; }
+  .slide.title .subtitle { color: rgba(255,255,255,0.85); font-size: 20px; }
+  .slide.title .meta { position: absolute; bottom: 40px; left: 56px; font-size: 13px; color: rgba(255,255,255,0.7); }
+  .slide.title .slide-num { color: rgba(255,255,255,0.4); }
+
+  .slide.section { background: #f2f3f5; justify-content: center; }
+  .slide.section .kicker { font-size: 13px; text-transform: uppercase; letter-spacing: 0.16em; color: #0a7f6b; font-weight: 700; margin-bottom: 12px; }
+  .slide.section h1 { font-size: 52px; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; height: 100%; }
+  .two-col.uneven { grid-template-columns: 1.15fr 1fr; }
+
+  .annot { background: #fff8e6; border-left: 3px solid #d69524; padding: 10px 14px; border-radius: 0 6px 6px 0; font-size: 14px; color: #4a3a10; margin-top: 12px; line-height: 1.5; }
+  .annot strong { color: #8a5a10; }
+  .annot.teal { background: #eaf5f1; border-left-color: #0a7f6b; color: #1a3f34; }
+  .annot.teal strong { color: #0a7f6b; }
+
+  .principle { background: #f2f3f5; border-radius: 8px; padding: 10px 14px; margin-top: 10px; font-size: 12.5px; color: #4a5058; }
+  .principle strong { color: #1a1d21; }
+
+  /* Number chips */
+  .chip-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: #0a7f6b; color: #fff; border-radius: 50%; font-size: 13px; font-weight: 700; margin-right: 10px; }
+
+  /* Phone card / brief mock */
+  .phone { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px 14px; font-size: 12.5px; line-height: 1.5; color: #1a1d21; overflow: hidden; max-width: 340px; margin: 0 auto; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .phone .brief-head { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 4px; align-items: baseline; font-size: 14px; }
+  .phone .brief-head .last { font-weight: 400; color: #6b7178; font-size: 11px; }
+  .phone .brief-head .last a { color: #0a7f6b; text-decoration: none; border-bottom: 1px solid #0a7f6b; }
+  .phone .patient { font-size: 11px; color: #4a5058; margin: 0 0 10px; }
+  .phone .link { color: #0a7f6b; text-decoration: none; border-bottom: 1px solid rgba(10,127,107,0.4); }
+  .phone p { font-size: 12px; margin: 0 0 10px; }
+
+  /* Since-strip */
+  .since-strip { background: #f7f8fa; border-radius: 6px; padding: 7px 9px; margin-bottom: 10px; font-size: 11.5px; color: #3a3f45; line-height: 1.5; }
+  .since-strip strong { color: #1a1d21; }
+  .since-strip .bullet { color: #b5bac0; margin: 0 5px; }
+  .since-strip .newdx { color: #b0442c; font-weight: 600; }
+
+  /* Sectional lists */
+  .sec-head { display: flex; justify-content: space-between; align-items: baseline; margin: 12px 0 6px; padding-bottom: 4px; border-bottom: 1px solid #eef0f2; }
+  .sec-head .name { font-size: 12px; font-weight: 700; color: #1a1d21; display: flex; align-items: center; gap: 6px; }
+  .sec-head .count { font-size: 10.5px; color: #6b7178; font-weight: 500; }
+  .sec-head .icon { display: inline-block; width: 14px; height: 14px; background: #e8f1ec; border-radius: 3px; color: #0a7f6b; font-size: 9px; font-weight: 700; text-align: center; line-height: 14px; }
+  .sec-head .icon.orange { background: #fdf3e2; color: #8a5a10; }
+  .sec-head .icon.blue { background: #ecf0fa; color: #2f4f9a; }
+  .sec-head .icon.red { background: #fdecec; color: #a3372a; }
+
+  .list-item { display: grid; grid-template-columns: 14px 1fr auto; gap: 8px; padding: 5px 0; font-size: 12px; align-items: start; }
+  .list-item .marker { color: #b5bac0; margin-top: 2px; font-size: 10px; }
+  .list-item .primary { color: #1a1d21; }
+  .list-item .primary strong { font-weight: 600; }
+  .list-item .primary .why { color: #6b7178; font-size: 11px; }
+  .list-item .value { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; font-size: 11.5px; color: #1a1d21; white-space: nowrap; }
+  .list-item .value .delta { display: block; font-size: 10px; font-weight: 500; margin-top: 1px; }
+  .list-item .value .delta.up { color: #b0442c; }
+  .list-item .value .delta.down { color: #2d7a5f; }
+  .list-item .value .hl { display: inline-block; font-size: 9px; font-weight: 700; padding: 1px 3px; border-radius: 2px; margin-right: 3px; }
+  .hl-H { background: #fdecec; color: #a3372a; }
+  .hl-L { background: #ecf0fa; color: #2f4f9a; }
+
+  .med-row { display: grid; grid-template-columns: 32px 1fr; gap: 7px; padding: 4px 0; font-size: 11.5px; }
+  .med-row .badge { font-size: 9px; font-weight: 700; text-transform: uppercase; padding: 2px 4px; border-radius: 3px; text-align: center; height: fit-content; }
+  .badge-new { background: #e8f1ec; color: #1f6b4e; }
+  .badge-stop { background: #fdecec; color: #a3372a; }
+  .badge-dose { background: #fdf3e2; color: #8a5a10; }
+  .med-row .med-name { font-weight: 600; color: #1a1d21; }
+  .med-row .med-why { color: #6b7178; font-size: 10.5px; margin-top: 1px; }
+
+  /* Old-style prose recreation */
+  .phone.old p.section-para { margin-bottom: 12px; }
+  .phone.old .section-head { font-weight: 700; font-size: 12px; }
+  .phone.old .chev { color: #b5bac0; float: right; }
+  .ai-mark { display: inline-flex; align-items: center; gap: 5px; color: #6b7178; font-size: 11px; margin-top: 4px; }
+  .ai-mark .dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid #6b7178; }
+  .visit-foot { border-top: 1px solid #e5e7eb; margin-top: 8px; padding-top: 8px; text-align: center; font-weight: 600; font-size: 11px; }
+  .visit-foot .muted { color: #6b7178; font-weight: 400; }
+
+  /* Change block */
+  .change-block { display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: stretch; height: 100%; }
+  .change-block .col { display: flex; flex-direction: column; }
+  .change-block .arrow { align-self: center; color: #0a7f6b; font-size: 26px; }
+  .change-block .col-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; text-align: center; margin-bottom: 8px; }
+  .col-label.before { color: #a3372a; }
+  .col-label.after { color: #0a7f6b; }
+
+  /* Product references */
+  .refs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .ref { background: #fafbfc; border: 1px solid #e5e7eb; border-left: 3px solid #0a7f6b; border-radius: 6px; padding: 12px 14px; }
+  .ref h4 { margin: 0 0 4px; font-size: 14px; }
+  .ref .domain { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: #8a9099; font-weight: 700; margin-bottom: 6px; }
+  .ref p { font-size: 12.5px; color: #4a5058; margin: 0; line-height: 1.5; }
+  .ref .pattern { font-size: 11px; color: #0a7f6b; margin-top: 6px; font-weight: 600; }
+
+  /* AI story block (for exploration slide) */
+  .ai-story { background: linear-gradient(180deg, #eef2fa 0%, #f6f8fc 100%); border: 1px solid #d5deee; border-left: 3px solid #2f4f9a; border-radius: 6px; padding: 9px 11px; margin-bottom: 10px; }
+  .ai-story .label { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.1em; color: #2f4f9a; font-weight: 700; margin-bottom: 3px; display: flex; align-items: center; gap: 4px; }
+  .ai-story .label .dot { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid #2f4f9a; }
+  .ai-story .body { font-size: 12px; color: #1a1d21; line-height: 1.45; }
+  .ai-story .body em { font-style: normal; background: #fde9dd; padding: 0 2px; border-radius: 2px; }
+  .ai-story .actions { margin-top: 5px; font-size: 10.5px; color: #2f4f9a; font-weight: 600; }
+  .ai-story .actions .pill { display: inline-block; background: #fff; border: 1px solid #d5deee; padding: 2px 7px; border-radius: 10px; margin-right: 4px; margin-top: 3px; }
+
+  /* Desktop mock */
+  .desktop { background: #fff; border: 1px solid #d5d9de; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); overflow: hidden; }
+  .desktop .chrome { background: #f7f8fa; border-bottom: 1px solid #e5e7eb; padding: 8px 14px; display: flex; align-items: center; gap: 8px; }
+  .desktop .chrome .dots { display: flex; gap: 5px; }
+  .desktop .chrome .dot { width: 10px; height: 10px; border-radius: 50%; background: #d5d9de; }
+  .desktop .chrome .dot:nth-child(1) { background: #f5675a; }
+  .desktop .chrome .dot:nth-child(2) { background: #f2b83a; }
+  .desktop .chrome .dot:nth-child(3) { background: #58c04a; }
+  .desktop .chrome .url { flex: 1; text-align: center; font-size: 11px; color: #8a9099; }
+  .desktop .layout { display: grid; grid-template-columns: 200px 1.15fr 1fr; min-height: 480px; }
+  .desktop .nav { background: #fafbfc; border-right: 1px solid #eef0f2; padding: 16px 14px; font-size: 12px; }
+  .desktop .nav .nav-section { margin-bottom: 16px; }
+  .desktop .nav .nav-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #8a9099; font-weight: 700; margin-bottom: 6px; }
+  .desktop .nav .nav-item { padding: 5px 8px; border-radius: 4px; color: #4a5058; margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
+  .desktop .nav .nav-item.active { background: #eaf5f1; color: #0a7f6b; font-weight: 600; }
+  .desktop .nav .nav-item .icon-dot { width: 6px; height: 6px; border-radius: 50%; background: #b5bac0; }
+  .desktop .nav .nav-item.active .icon-dot { background: #0a7f6b; }
+
+  .desktop .brief-panel { padding: 24px 26px; border-right: 1px solid #eef0f2; overflow: hidden; }
+  .desktop .brief-panel .header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+  .desktop .brief-panel .header h2 { font-size: 18px; margin: 0; }
+  .desktop .brief-panel .header .since { font-size: 12px; color: #6b7178; }
+  .desktop .brief-panel .header .since a { color: #0a7f6b; border-bottom: 1px solid #0a7f6b; text-decoration: none; }
+  .desktop .brief-panel .patient { font-size: 13px; color: #4a5058; margin: 0 0 14px; }
+
+  .desktop .visit-panel { background: #fafbfc; padding: 24px 26px; overflow: hidden; }
+  .desktop .visit-panel .panel-title { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.09em; color: #6b7178; font-weight: 700; margin-bottom: 12px; }
+  .desktop .visit-panel h3 { font-size: 15px; margin: 0 0 8px; }
+  .desktop .visit-panel .assess { background: #fff; border: 1px solid #e5e7eb; border-left: 3px solid #0a7f6b; border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; font-size: 12.5px; }
+  .desktop .visit-panel .assess .assess-title { font-weight: 600; color: #1a1d21; margin-bottom: 2px; }
+  .desktop .visit-panel .assess .assess-meta { font-size: 11px; color: #6b7178; }
+
+  /* Two-col rows within desktop brief */
+  .brief-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 24px; margin-top: 4px; }
+  .brief-two-col .col-full { grid-column: 1 / -1; }
+
+  /* Desktop legend */
+  .breakpoint-legend { display: flex; gap: 6px; align-items: center; padding: 4px 10px; background: #f2f3f5; border-radius: 4px; font-size: 11px; color: #6b7178; }
+  .breakpoint-legend strong { color: #1a1d21; }
+
+  /* Edge state cells */
+  .edge-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; height: 100%; }
+  .edge-cell { display: flex; flex-direction: column; }
+  .edge-cell .edge-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: #6b7178; margin-bottom: 4px; }
+  .edge-cell .edge-title { font-size: 15px; font-weight: 700; margin: 0 0 4px; }
+  .edge-cell .edge-desc { font-size: 12px; color: #5a6068; margin: 0 0 10px; line-height: 1.4; }
+  .edge-cell .phone-sm { max-width: none; padding: 12px 14px; font-size: 12px; }
+
+  /* Empty state helpers */
+  .empty-state { text-align: center; padding: 14px 8px; color: #8a9099; font-size: 11.5px; font-style: italic; background: #fafbfc; border-radius: 6px; margin: 6px 0 4px; }
+  .partial-note { display: flex; gap: 6px; align-items: center; padding: 6px 9px; background: #fdf6ec; border-radius: 5px; font-size: 11px; color: #8a5a10; margin: 4px 0; }
+  .partial-note .badge-icon { background: #f0dcb2; color: #8a5a10; font-size: 10px; font-weight: 700; padding: 2px 5px; border-radius: 3px; flex-shrink: 0; }
+  .error-note { display: flex; gap: 6px; align-items: center; padding: 6px 9px; background: #fdecec; border-radius: 5px; font-size: 11px; color: #a3372a; margin: 4px 0; }
+  .error-note .badge-icon { background: #f0d5cd; color: #a3372a; font-size: 10px; font-weight: 700; padding: 2px 5px; border-radius: 3px; flex-shrink: 0; }
+  .error-note a { color: #a3372a; font-weight: 700; text-decoration: underline; }
+  .status-strip { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: linear-gradient(90deg, #eef2fa 0%, #f6f8fc 100%); border-radius: 6px; margin-bottom: 10px; font-size: 11px; color: #2f4f9a; }
+  .status-strip .dot { width: 8px; height: 8px; border-radius: 50%; background: #2f4f9a; animation: pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+  .status-strip.ok { background: linear-gradient(90deg, #eaf5f1 0%, #f4faf7 100%); color: #1f6b4e; }
+  .status-strip.ok .dot { background: #1f6b4e; animation: none; }
+  .status-strip.stale { background: linear-gradient(90deg, #fdf6ec 0%, #fdfaf3 100%); color: #8a5a10; }
+  .status-strip.stale .dot { background: #d69524; animation: none; }
+  .status-strip .meta { margin-left: auto; font-size: 10.5px; opacity: 0.75; }
+
+  /* Scenario pills */
+  .scen-pill { display: inline-block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; padding: 3px 8px; border-radius: 4px; margin-right: 6px; }
+  .scen-1 { background: #fdecec; color: #a3372a; }
+  .scen-2 { background: #fbe6d3; color: #8a4a10; }
+  .scen-3 { background: #ecf0fa; color: #2f4f9a; }
+  .scen-4 { background: #e8f1ec; color: #1f6b4e; }
+  .scen-5 { background: #f0eafa; color: #5a3f8a; }
+
+  /* Success criteria */
+  .criteria { display: flex; flex-direction: column; gap: 12px; }
+  .crit { display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start; padding: 10px 14px; background: #fafbfc; border-radius: 6px; border-left: 3px solid #0a7f6b; }
+  .crit .num { background: #0a7f6b; color: #fff; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+  .crit .body strong { display: block; font-size: 14px; margin-bottom: 3px; color: #1a1d21; }
+  .crit .body span { font-size: 13px; color: #4a5058; line-height: 1.5; }
+
+  @media print {
+    body { background: #fff; }
+    .deck { padding: 0; max-width: none; }
+    .slide { box-shadow: none; margin: 0; page-break-after: always; border-radius: 0; height: 100vh; aspect-ratio: auto; }
+    .slide:last-child { page-break-after: auto; }
+  }
+  .toolbar { position: sticky; top: 0; background: rgba(42,47,53,0.95); backdrop-filter: blur(8px); padding: 10px 24px; color: #fff; font-size: 12px; z-index: 10; display: flex; justify-content: space-between; align-items: center; }
+  .toolbar .title { font-weight: 600; }
+  .toolbar .hint { color: rgba(255,255,255,0.65); font-size: 11px; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span class="title">Brief IA improvements · leadership alignment</span>
+  <span class="hint">Print → Save as PDF for a shareable version</span>
+</div>
+
+<div class="deck">
+
+<!-- 1: TITLE -->
+<div class="slide title">
+  <div class="content">
+    <h1>Making the Brief<br/>scannable.</h1>
+    <p class="subtitle">Three IA improvements to the current Brief. Built on top of the v3xp prototype, aligned with existing design decisions, validated by prior art.</p>
+  </div>
+  <div class="meta">John Blanco-Slingerland · Design · leadership alignment</div>
+  <div class="slide-num">01</div>
+</div>
+
+<!-- 2: WHERE WE ARE -->
+<div class="slide">
+  <div class="content">
+    <div class="slide-kicker">Where we are</div>
+    <h1>The Brief works — the wall of text inside it doesn't.</h1>
+    <div class="two-col grow" style="align-items:center;">
+      <div>
+        <p>Cecilia (P2) called the consolidation of outside visits a clear win. Nelson called CA "so good." The Brief is doing the right job.</p>
+        <p>What's failing is the presentation <em>inside</em> each section. Multiple sentences of prose per section forces the clinician to read where they should be able to scan.</p>
+        <div class="principle"><strong>Existing decision #1</strong> (Working Group, 2026-06-22): <em>"Surface data without editorializing — like the most humble med student. Trust is easily lost when the system makes clinical interpretations. Earn it incrementally."</em></div>
+        <div class="principle"><strong>Existing decision #15</strong> (Kevin, David, Molly, 2026-06-30): <em>"One experience, three data profiles — same UX pattern, different data density."</em></div>
+        <p style="font-size:13px; color:#5a6068; margin-top:12px;">This proposal works <em>within</em> both of those decisions. We're not asking to re-open either.</p>
+      </div>
+      <div class="phone old" style="max-width:320px;">
+        <div class="brief-head"><span>Brief</span><span class="last">Last visit <a href="#">Feb 14</a></span></div>
+        <p class="section-para">68-year-old male with uncontrolled <span class="link">T2DM</span> (HbA1c 8.4%), moderately elevated PSA (28.6 ng/mL), and a newly diagnosed diabetic foot ulcer, on a background of <span class="link">hypertension</span>, carotid artery disease, and COPD.</p>
+        <p class="section-para"><span class="section-head">7 Specialist visits + 2 Other</span> <span class="chev">›</span> • Multiple specialist visits, including podiatry for a newly diagnosed foot ulcer, IM for chronic condition management, and radiology…</p>
+        <p class="section-para"><span class="section-head">9 medications</span> <span class="chev">›</span> • Multiple new medications were initiated, including lisinopril, amlodipine, atorvastatin, metformin, albuterol, apixaban…</p>
+        <span class="ai-mark"><span class="dot"></span> AI</span>
+        <div class="visit-foot">Visit <span class="muted">— 22 diagnoses · 2 care gaps</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">02</div>
+</div>
+
+<!-- 3: IMPROVEMENT 1 -->
+<div class="slide">
+  <div class="content">
+    <div class="slide-kicker"><span class="chip-num">1</span> Since-last-visit framing</div>
+    <h1>Make the time window unmissable.</h1>
+    <div class="two-col grow uneven" style="align-items:stretch;">
+      <div>
+        <p>Every count on the Brief today ("7 specialist visits", "9 medications") raises the same question from clinicians: <em>since when?</em></p>
+        <p>Corey (P3) flagged this repeatedly. Once he understood everything was scoped to "since last visit," the Brief made sense. The problem was that scope was implicit.</p>
+        <p><strong>What we're proposing:</strong></p>
+        <ul>
+          <li>Header explicitly says <strong>"Since [last visit date]"</strong> — persistent across sections</li>
+          <li>Optional strip surfaces what's <em>new</em> since last visit — new dx, new meds, values trending in wrong direction</li>
+          <li>Every count in each section is implicitly scoped to that window; no ambiguity</li>
+        </ul>
+        <div class="annot teal"><strong>Prior art:</strong> Gong's AI Briefer, Cotera, Sybill all lead with time-window framing. Corey's ask matches an industry pattern.</div>
+      </div>
+      <div class="phone" style="align-self:center;">
+        <div class="brief-head"><span>Brief</span><span class="last">Since <a href="#">Feb 14</a> · 4 mo</span></div>
+        <p class="patient">68M · T2DM, HTN, CAD, COPD</p>
+        <div class="since-strip">
+          <strong>Since last visit:</strong>
+          <span class="newdx">new dx foot ulcer</span>
+          <span class="bullet">·</span> 2 new meds
+          <span class="bullet">·</span> PSA ↑↑
+        </div>
+        <div class="sec-head"><span class="name"><span class="icon orange">H</span> Hospitalizations</span><span class="count">none</span></div>
+        <div class="sec-head"><span class="name"><span class="icon blue">V</span> Recent visits</span><span class="count">7 specialist · 2 other</span></div>
+        <div class="sec-head"><span class="name"><span class="icon">M</span> Medications</span><span class="count">2 new · 1 dose change</span></div>
+        <div class="sec-head"><span class="name"><span class="icon red">L</span> Labs</span><span class="count">3 abnormal</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">03</div>
+</div>
+
+<!-- 4: IMPROVEMENT 2 -->
+<div class="slide tall">
+  <div class="content">
+    <div class="slide-kicker"><span class="chip-num">2</span> Structural spine, not prose</div>
+    <h1>Replace sentences with scannable lists inside every section.</h1>
+    <div class="change-block grow">
+      <div class="col">
+        <div class="col-label before">Before · today</div>
+        <div class="phone old" style="max-width:none; align-self:center;">
+          <p class="section-para" style="margin-bottom:0;"><span class="section-head">7 Specialist visits + 2 Other</span> <span class="chev">›</span> • Multiple specialist visits occurred, including podiatry for a newly diagnosed diabetic foot ulcer, internal medicine for chronic condition management, and radiology for PET/CT and lung cancer screening. Recent routine follow-ups addressed mild cognitive impairment.</p>
+        </div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="col">
+        <div class="col-label after">After · proposed</div>
+        <div class="phone" style="max-width:none; align-self:center;">
+          <div class="sec-head"><span class="name"><span class="icon blue">V</span> Recent visits</span><span class="count">3 · since Feb 14</span></div>
+          <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Podiatry</strong> <span class="why">— new diabetic foot ulcer</span></div><div class="value">2 wk ago</div></div>
+          <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Internal Medicine</strong> <span class="why">— chronic care</span></div><div class="value">6 wk ago</div></div>
+          <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Radiology</strong> <span class="why">— PET/CT + lung screen</span></div><div class="value">2 mo ago</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="annot teal" style="margin-top:16px;"><strong>Kevin's reference:</strong> earlier prototype exploration used "left indentation with icons." This picks up that direction with a resolved iconography model, replacing paragraph prose across every section.</div>
+  </div>
+  <div class="slide-num">04</div>
+</div>
+
+<!-- 5: IMPROVEMENT 3 -->
+<div class="slide tall">
+  <div class="content">
+    <div class="slide-kicker"><span class="chip-num">3</span> Clinical conventions on values</div>
+    <h1>Match how clinicians already read data.</h1>
+    <div class="two-col grow uneven" style="align-items:stretch;">
+      <div>
+        <p>Corey (P3): <em>"Flag it high or low… it's the way that every other lab result on planet Earth comes into you."</em></p>
+        <p>Today the Brief says "abnormal" — a generic label that hides direction. Direction matters clinically. Potassium high vs. low means different things.</p>
+        <p><strong>What we're proposing:</strong></p>
+        <ul>
+          <li><strong>H / L flags</strong> on lab values — the standard clinical convention</li>
+          <li><strong>Delta from prior</strong> when a prior value is available in-window</li>
+          <li><strong>Med change type at the list level</strong> — New / Stop / Dose visible before you click in</li>
+        </ul>
+        <div class="annot teal"><strong>Consistent with decision #1:</strong> we're surfacing data, not editorializing. H/L flags are annotations on values, not clinical interpretations.</div>
+      </div>
+      <div class="phone" style="align-self:center;">
+        <div class="sec-head"><span class="name"><span class="icon red">L</span> Labs</span><span class="count">3 abnormal · since Feb 14</span></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>HbA1c</strong> <span class="why">— T2DM</span></div><div class="value"><span class="hl hl-H">H</span>8.4%<span class="delta up">↑ from 7.6</span></div></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>PSA</strong></div><div class="value"><span class="hl hl-H">H</span>28.6<span class="delta up">↑ from 9.2</span></div></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Triglycerides</strong> <span class="why">— HDL 26</span></div><div class="value"><span class="hl hl-H">H</span>512<span class="delta up">↑ from 380</span></div></div>
+
+        <div class="sec-head" style="margin-top:14px;"><span class="name"><span class="icon">M</span> Medications</span><span class="count">changes since Feb 14</span></div>
+        <div class="med-row"><span class="badge badge-new">New</span><div><div class="med-name">Doxycycline</div><div class="med-why">Foot ulcer · Podiatry</div></div></div>
+        <div class="med-row"><span class="badge badge-new">New</span><div><div class="med-name">Mupirocin</div><div class="med-why">Foot ulcer · Podiatry</div></div></div>
+        <div class="med-row"><span class="badge badge-dose">Dose</span><div><div class="med-name">Metformin ↑</div><div class="med-why">T2DM · IM</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">05</div>
+</div>
+
+<!-- 6: PRIOR ART -->
+<div class="slide">
+  <div class="content">
+    <div class="slide-kicker">Prior art · why this direction is defensible</div>
+    <h1>Sales prep already solved this problem.</h1>
+    <p class="subtitle">Every mature pre-meeting brief in the sales space uses templated structure, traceable evidence, and structural spine. Nobody uses AI narrative topline. The pattern we're proposing is what the reference class converged on.</p>
+    <div class="refs grow" style="align-content:start;">
+      <div class="ref">
+        <h4>Granola</h4>
+        <div class="domain">Meeting notes</div>
+        <p>Pre-meeting Brief designed for back-to-back meetings. Structural spine, filled in beneath. Scannable in seconds.</p>
+        <div class="pattern">→ Structural spine (Improvement 2)</div>
+      </div>
+      <div class="ref">
+        <h4>Gong AI Briefer</h4>
+        <div class="domain">Rev intelligence</div>
+        <p>Time-window pickers, section-level lists, every element linked to source call/email. No narrative summary.</p>
+        <div class="pattern">→ Time framing + traceability</div>
+      </div>
+      <div class="ref">
+        <h4>Sybill</h4>
+        <div class="domain">Sales AI</div>
+        <p>Meeting-type-aware sections. Bullet-list format. Explicit "since last touch" framing throughout.</p>
+        <div class="pattern">→ Sectional structure (Improvements 1 + 2)</div>
+      </div>
+    </div>
+    <div class="annot" style="margin-top:16px;"><strong>The strongest quote from that scan:</strong> Granola — <em>"You write the structure. AI fills in the supporting detail."</em> That's the pattern we're proposing to bring to CA's Brief.</div>
+  </div>
+  <div class="slide-num">06</div>
+</div>
+
+<!-- 7: SUCCESS CRITERIA -->
+<div class="slide">
+  <div class="content">
+    <div class="slide-kicker">How we'll know it worked</div>
+    <h1>Success criteria.</h1>
+    <p class="subtitle">Concrete signals that would validate the improvements or trigger a rethink.</p>
+    <div class="criteria grow" style="margin-top:12px;">
+      <div class="crit">
+        <div class="num">1</div>
+        <div class="body">
+          <strong>Clinicians stop asking "since when?"</strong>
+          <span>Time-window ambiguity was the top comprehension issue in P3 testing. If concept-test participants after the change don't ask that question in the first 60 seconds, Improvement 1 landed.</span>
+        </div>
+      </div>
+      <div class="crit">
+        <div class="num">2</div>
+        <div class="body">
+          <strong>"Wall of text" language disappears from feedback.</strong>
+          <span>Both P1 (Venis) and P2 (Cecilia) used the phrase directly. If it's gone from post-change feedback, Improvement 2 landed.</span>
+        </div>
+      </div>
+      <div class="crit">
+        <div class="num">3</div>
+        <div class="body">
+          <strong>Med changes and lab flags don't require a click to comprehend.</strong>
+          <span>Corey specifically flagged this — the change type was hidden until drill-in. If clinicians can answer "what changed?" from the Brief surface alone, Improvement 3 landed.</span>
+        </div>
+      </div>
+      <div class="crit">
+        <div class="num">4</div>
+        <div class="body">
+          <strong>The "help me figure out what's going on" ask does not disappear.</strong>
+          <span>This is the signal that IA fixes weren't enough and the deeper synthesis question needs a separate answer — likely in Assessments. Not a failure of this proposal, but the trigger for the next conversation.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">07</div>
+</div>
+
+<!-- 8: WHAT WE NEED -->
+<div class="slide">
+  <div class="content">
+    <div class="slide-kicker">What we need from this room</div>
+    <h1>Three alignments.</h1>
+    <div class="two-col grow" style="align-items:center;">
+      <div>
+        <div class="criteria">
+          <div class="crit">
+            <div class="num">1</div>
+            <div class="body">
+              <strong>Endorsement of the narrow scope.</strong>
+              <span>Three IA improvements, nothing more. Not resolving synthesis. Not touching the Brief-vs-Agenda distinction.</span>
+            </div>
+          </div>
+          <div class="crit">
+            <div class="num">2</div>
+            <div class="body">
+              <strong>Engineering + clinical partnership commitment.</strong>
+              <span>Structural spine + H/L flags + delta rendering need backend structure to hand off. Confirming who owns each piece and the build sequence.</span>
+            </div>
+          </div>
+          <div class="crit">
+            <div class="num">3</div>
+            <div class="body">
+              <strong>Path into the v3xp twice-weekly workflow via Molly.</strong>
+              <span>These improvements iterate on the existing v3xp canonical prototype, not a new artifact. Confirming that's the working surface.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#f7f8fa; border-radius:12px; padding:20px;">
+        <p style="font-size:12px; color:#6b7178; text-transform:uppercase; letter-spacing:0.08em; font-weight:700; margin:0 0 12px;">What happens after alignment</p>
+        <ul style="font-size:14px; line-height:1.7;">
+          <li>Design iterates the three improvements in the v3xp prototype (Aug)</li>
+          <li>Concept test with 3 clinicians against the current Brief (early Sep)</li>
+          <li>Partner with Amanda on whether synthesis belongs in Assessments — separate track</li>
+          <li>Revisit success criteria at end of Alpha window</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">08</div>
+</div>
+
+<!-- APPENDIX DIVIDER -->
+<div class="slide section">
+  <div class="content" style="text-align:center; align-items:center; justify-content:center; display:flex; flex-direction:column;">
+    <div class="kicker">Appendix</div>
+    <h1>The design across five<br/>patient scenarios.</h1>
+    <p class="subtitle" style="max-width:950px; text-align:center;">Same section order, same section headers, every scenario. Data density varies with what's actually there — consistent with existing decision #15 (<em>one experience, three data profiles</em>).</p>
+  </div>
+  <div class="slide-num">A0</div>
+</div>
+
+<!-- APPENDIX 1 -->
+<div class="slide xtall">
+  <div class="content">
+    <div class="slide-kicker"><span class="scen-pill scen-1">Scenario 1</span> High-acuity · multiple uncontrolled findings</div>
+    <h2>68M · T2DM, HTN, CAD, COPD · new foot ulcer + PSA + HbA1c</h2>
+    <p class="subtitle" style="margin:8px 0 20px;">The most complex end of the distribution. All three improvements visible: since-last framing, sectional lists, H/L flags with deltas.</p>
+    <div class="grow" style="display:flex; justify-content:center; align-items:flex-start;">
+      <div class="phone" style="max-width:360px;">
+        <div class="brief-head"><span>Brief</span><span class="last">Since <a href="#">Feb 14</a> · 4 mo</span></div>
+        <p class="patient">68M · T2DM, HTN, CAD, COPD</p>
+        <div class="since-strip"><strong>Since last visit:</strong> <span class="newdx">new dx foot ulcer</span> <span class="bullet">·</span> 2 new meds <span class="bullet">·</span> PSA ↑↑</div>
+        <div class="sec-head"><span class="name"><span class="icon orange">H</span> Hospitalizations</span><span class="count">none</span></div>
+        <div class="sec-head"><span class="name"><span class="icon blue">V</span> Recent visits</span><span class="count">3 · since Feb 14</span></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Podiatry</strong> <span class="why">— new foot ulcer</span></div><div class="value">2 wk</div></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Internal Medicine</strong> <span class="why">— chronic care</span></div><div class="value">6 wk</div></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Radiology</strong> <span class="why">— PET/CT + lung screen</span></div><div class="value">2 mo</div></div>
+        <div class="sec-head"><span class="name"><span class="icon">M</span> Medications</span><span class="count">2 new · 1 dose change</span></div>
+        <div class="med-row"><span class="badge badge-new">New</span><div><div class="med-name">Doxycycline · Mupirocin</div><div class="med-why">Foot ulcer · Podiatry</div></div></div>
+        <div class="med-row"><span class="badge badge-dose">Dose</span><div><div class="med-name">Metformin ↑</div><div class="med-why">T2DM · IM</div></div></div>
+        <div class="sec-head"><span class="name"><span class="icon red">L</span> Labs</span><span class="count">3 abnormal</span></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>HbA1c</strong></div><div class="value"><span class="hl hl-H">H</span>8.4%<span class="delta up">↑ 7.6</span></div></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>PSA</strong></div><div class="value"><span class="hl hl-H">H</span>28.6<span class="delta up">↑ 9.2</span></div></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Triglycerides</strong> <span class="why">HDL 26</span></div><div class="value"><span class="hl hl-H">H</span>512<span class="delta up">↑ 380</span></div></div>
+        <div class="visit-foot" style="margin-top:12px;">Visit <span class="muted">— 22 dx · 2 care gaps</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">A1</div>
+</div>
+
+<!-- APPENDIX 2 -->
+<div class="slide xtall">
+  <div class="content">
+    <div class="slide-kicker"><span class="scen-pill scen-2">Scenario 2</span> Recent event · hospitalization anchors</div>
+    <h2>76F · T2DM, HTN, HLD, COPD, dementia · d/c'd 4d ago with AKI</h2>
+    <p class="subtitle" style="margin:8px 0 20px;">Hospitalization surfaces prominently by section order (existing decision #13: hospitalizations lead the briefing when present). Discharge meds carry New / Stop / Dose badges — Corey T5.</p>
+    <div class="grow" style="display:flex; justify-content:center; align-items:flex-start;">
+      <div class="phone" style="max-width:360px;">
+        <div class="brief-head"><span>Brief</span><span class="last">Since <a href="#">Feb 8</a></span></div>
+        <p class="patient">76F · T2DM, HTN, HLD, COPD, dementia</p>
+        <div class="since-strip"><strong>Since last visit:</strong> <span class="newdx">hospitalized 4d ago</span> <span class="bullet">·</span> Cr worsening <span class="bullet">·</span> 3 new meds</div>
+        <div class="sec-head"><span class="name"><span class="icon orange">H</span> Hospitalizations</span><span class="count">1 · Feb 24–25</span></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Regional Medical Center</strong> <span class="why">— dizziness, LUE weakness, L carotid stenosis</span></div><div class="value">4d ago</div></div>
+        <div class="sec-head"><span class="name"><span class="icon blue">V</span> Recent visits</span><span class="count">none post-d/c</span></div>
+        <div class="sec-head"><span class="name"><span class="icon">M</span> Medications</span><span class="count">changes at d/c</span></div>
+        <div class="med-row"><span class="badge badge-new">New</span><div><div class="med-name">ASA · saxagliptin · meclizine</div></div></div>
+        <div class="med-row"><span class="badge badge-stop">Stop</span><div><div class="med-name">Cipro · donepezil · lisinopril</div></div></div>
+        <div class="med-row"><span class="badge badge-dose">Dose</span><div><div class="med-name">Sertraline ↓</div></div></div>
+        <div class="sec-head"><span class="name"><span class="icon red">L</span> Labs</span><span class="count">2 abnormal post-d/c</span></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Creatinine</strong> <span class="why">worsening from d/c</span></div><div class="value"><span class="hl hl-H">H</span>2.1<span class="delta up">↑ 1.7 d/c</span></div></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Potassium</strong></div><div class="value"><span class="hl hl-H">H</span>5.4<span class="delta up">↑</span></div></div>
+        <div class="visit-foot" style="margin-top:12px;">Visit <span class="muted">— 18 dx · 3 care gaps</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">A2</div>
+</div>
+
+<!-- APPENDIX 3 -->
+<div class="slide xtall">
+  <div class="content">
+    <div class="slide-kicker"><span class="scen-pill scen-3">Scenario 3</span> Med reconciliation · med list is the news</div>
+    <h2>83M · resistant HTN + T2DM · 7 new starts across 5 providers</h2>
+    <p class="subtitle" style="margin:8px 0 20px;">Med churn dominates the display naturally — same section order, but the Medications section is where the density lives. The data does the differentiation.</p>
+    <div class="grow" style="display:flex; justify-content:center; align-items:flex-start;">
+      <div class="phone" style="max-width:360px;">
+        <div class="brief-head"><span>Brief</span><span class="last">Since <a href="#">Mar 5</a></span></div>
+        <p class="patient">83M · resistant HTN, T2DM, HLD</p>
+        <div class="since-strip"><strong>Since last visit:</strong> 7 new meds <span class="bullet">·</span> 8 refill visits <span class="bullet">·</span> no new labs</div>
+        <div class="sec-head"><span class="name"><span class="icon orange">H</span> Hospitalizations</span><span class="count">none</span></div>
+        <div class="sec-head"><span class="name"><span class="icon blue">V</span> Recent visits</span><span class="count">8 refill · 5 providers</span></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>PCP</strong> <span class="why">— 5 refill encounters</span></div></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Cardiology</strong> <span class="why">— CHF regimen initiation</span></div></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Urology · Behavioral Health · Derm</strong></div></div>
+        <div class="sec-head"><span class="name"><span class="icon">M</span> Medications</span><span class="count">7 new starts</span></div>
+        <div class="med-row"><span class="badge badge-new">New</span><div><div class="med-name">Sac/valsartan + Carvedilol</div><div class="med-why">CHF · Cardiology</div></div></div>
+        <div class="med-row"><span class="badge badge-new">New</span><div><div class="med-name">Metformin</div><div class="med-why">T2DM · PCP</div></div></div>
+        <div class="med-row"><span class="badge badge-new">New</span><div><div class="med-name">Finasteride</div><div class="med-why">BPH · Urology</div></div></div>
+        <div class="med-row"><span class="badge badge-new">New</span><div><div class="med-name">Sertraline · Donepezil · Clobetasol</div></div></div>
+        <div class="sec-head"><span class="name"><span class="icon red">L</span> Labs</span><span class="count">none since last visit</span></div>
+        <div class="visit-foot" style="margin-top:12px;">Visit <span class="muted">— 12 dx · 1 care gap</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">A3</div>
+</div>
+
+<!-- APPENDIX 4 -->
+<div class="slide tall">
+  <div class="content">
+    <div class="slide-kicker"><span class="scen-pill scen-4">Scenario 4</span> Sparse / stable · routine follow-up</div>
+    <h2>72F · HTN, HLD, chronic AFib, hypothyroid · nothing acute</h2>
+    <p class="subtitle" style="margin:8px 0 20px;">Length matches content. Sparse patients get sparse Briefs — the section headers stay the same, but each section is short. Honest to the data.</p>
+    <div class="grow" style="display:flex; justify-content:center; align-items:flex-start;">
+      <div class="phone" style="max-width:360px;">
+        <div class="brief-head"><span>Brief</span><span class="last">Since <a href="#">Jan 12</a></span></div>
+        <p class="patient">72F · HTN, HLD, chronic AFib, hypothyroid</p>
+        <div class="since-strip"><strong>Since last visit:</strong> routine follow-up · no significant changes</div>
+        <div class="sec-head"><span class="name"><span class="icon orange">H</span> Hospitalizations</span><span class="count">none</span></div>
+        <div class="sec-head"><span class="name"><span class="icon blue">V</span> Recent visits</span><span class="count">2</span></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Podiatry</strong> <span class="why">— foot care</span></div></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Internal Medicine</strong> <span class="why">— chronic care</span></div></div>
+        <div class="sec-head"><span class="name"><span class="icon">M</span> Medications</span><span class="count">no changes</span></div>
+        <div class="sec-head"><span class="name"><span class="icon red">L</span> Labs</span><span class="count">2 trending</span></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>TSH</strong></div><div class="value"><span class="hl hl-H">H</span>12.4<span class="delta up">↑</span></div></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>DEXA LS</strong></div><div class="value">T −3.6<span class="delta up">↓ worsening</span></div></div>
+        <div class="visit-foot" style="margin-top:12px;">Visit <span class="muted">— 9 dx · 1 care gap</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">A4</div>
+</div>
+
+<!-- APPENDIX 5 -->
+<div class="slide xtall">
+  <div class="content">
+    <div class="slide-kicker"><span class="scen-pill scen-5">Scenario 5</span> Single-domain deep · one specialty dominates</div>
+    <h2>62M · T2DM, CKD 3a, HTN, HLD, MCI · 3 psych visits + drifting DM/renal</h2>
+    <p class="subtitle" style="margin:8px 0 20px;">Repeated visits collapse cleanly into the Recent visits section without pushing everything else off-screen. Key labs still surface because they're abnormal — same rules, applied consistently.</p>
+    <div class="grow" style="display:flex; justify-content:center; align-items:flex-start;">
+      <div class="phone" style="max-width:360px;">
+        <div class="brief-head"><span>Brief</span><span class="last">Since <a href="#">Dec 20</a></span></div>
+        <p class="patient">62M · T2DM, CKD 3a, HTN, HLD, MCI</p>
+        <div class="since-strip"><strong>Since last visit:</strong> 3 psych visits · UACR ↑</div>
+        <div class="sec-head"><span class="name"><span class="icon orange">H</span> Hospitalizations</span><span class="count">none</span></div>
+        <div class="sec-head"><span class="name"><span class="icon blue">V</span> Recent visits</span><span class="count">3 · all Behavioral Health</span></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Psychiatry</strong> <span class="why">— GAD, PTSD, MDD, sed/hyp dep · same provider ×3</span></div><div class="value">Mar–May</div></div>
+        <div class="sec-head"><span class="name"><span class="icon">M</span> Medications</span><span class="count">no changes</span></div>
+        <div class="sec-head"><span class="name"><span class="icon red">L</span> Labs</span><span class="count">2 abnormal</span></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>HbA1c</strong></div><div class="value"><span class="hl hl-H">H</span>10.2%</div></div>
+        <div class="list-item"><span class="marker">•</span><div class="primary"><strong>UACR</strong> <span class="why">CKD 3a</span></div><div class="value"><span class="hl hl-H">H</span>88<span class="delta up">↑</span></div></div>
+        <div class="visit-foot" style="margin-top:12px;">Visit <span class="muted">— 7 dx · 2 care gaps</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">A5</div>
+</div>
+
+<!-- APPENDIX 6 · RESPONSIVE DESKTOP -->
+<div class="slide xtall">
+  <div class="content">
+    <div class="slide-kicker">Appendix · responsive</div>
+    <h1>Desktop layout.</h1>
+    <p class="subtitle">Same content model, same section order, wider canvas. Brief sits in a two-panel context alongside the visit — matching Bryan's "let them live together when there's room" principle from the July 13 responsive session.</p>
+
+    <div class="grow" style="display:flex; flex-direction:column; gap:14px;">
+
+      <div style="display:flex; gap:12px; align-items:center; margin-bottom:2px;">
+        <span class="breakpoint-legend"><strong>Breakpoint:</strong> LG · 1280+</span>
+        <span style="font-size:11px; color:#8a9099;">Same design system as mobile. No adaptive fork — responsive composition of the same components.</span>
+      </div>
+
+      <div class="desktop">
+        <div class="chrome">
+          <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <div class="url">clover · v3xp · patient visit</div>
+        </div>
+        <div class="layout">
+          <!-- Left nav -->
+          <div class="nav">
+            <div class="nav-section">
+              <div class="nav-label">Today</div>
+              <div class="nav-item"><span class="icon-dot"></span> Schedule</div>
+              <div class="nav-item active"><span class="icon-dot"></span> Current visit</div>
+              <div class="nav-item"><span class="icon-dot"></span> Review &amp; sign</div>
+            </div>
+            <div class="nav-section">
+              <div class="nav-label">Patient</div>
+              <div class="nav-item"><span class="icon-dot"></span> Overview</div>
+              <div class="nav-item"><span class="icon-dot"></span> Chart</div>
+              <div class="nav-item"><span class="icon-dot"></span> Care team</div>
+            </div>
+          </div>
+
+          <!-- Center: Brief -->
+          <div class="brief-panel">
+            <div class="header">
+              <h2>Brief</h2>
+              <span class="since">Since <a href="#">Feb 14</a> · 4 mo</span>
+            </div>
+            <p class="patient">68M · T2DM, HTN, CAD, COPD</p>
+
+            <div class="since-strip">
+              <strong>Since last visit:</strong>
+              <span class="newdx">new dx foot ulcer</span>
+              <span class="bullet">·</span> 2 new meds
+              <span class="bullet">·</span> PSA ↑↑
+            </div>
+
+            <div class="brief-two-col">
+              <div class="col-full">
+                <div class="sec-head"><span class="name"><span class="icon orange">H</span> Hospitalizations</span><span class="count">none</span></div>
+              </div>
+
+              <div>
+                <div class="sec-head"><span class="name"><span class="icon blue">V</span> Recent visits</span><span class="count">3</span></div>
+                <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Podiatry</strong> <span class="why">— foot ulcer</span></div><div class="value">2 wk</div></div>
+                <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Internal Medicine</strong></div><div class="value">6 wk</div></div>
+                <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Radiology</strong> <span class="why">— PET/CT</span></div><div class="value">2 mo</div></div>
+
+                <div class="sec-head"><span class="name"><span class="icon">M</span> Medications</span><span class="count">2 new · 1 dose</span></div>
+                <div class="med-row"><span class="badge badge-new">New</span><div><div class="med-name">Doxy · Mupirocin</div><div class="med-why">Foot ulcer</div></div></div>
+                <div class="med-row"><span class="badge badge-dose">Dose</span><div><div class="med-name">Metformin ↑</div><div class="med-why">T2DM</div></div></div>
+              </div>
+
+              <div>
+                <div class="sec-head"><span class="name"><span class="icon red">L</span> Labs</span><span class="count">3 abnormal</span></div>
+                <div class="list-item"><span class="marker">•</span><div class="primary"><strong>HbA1c</strong></div><div class="value"><span class="hl hl-H">H</span>8.4%<span class="delta up">↑ 7.6</span></div></div>
+                <div class="list-item"><span class="marker">•</span><div class="primary"><strong>PSA</strong></div><div class="value"><span class="hl hl-H">H</span>28.6<span class="delta up">↑ 9.2</span></div></div>
+                <div class="list-item"><span class="marker">•</span><div class="primary"><strong>Triglycerides</strong></div><div class="value"><span class="hl hl-H">H</span>512<span class="delta up">↑ 380</span></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: This Visit / Assessments -->
+          <div class="visit-panel">
+            <div class="panel-title">This visit</div>
+            <h3>4 assessments</h3>
+            <div class="assess">
+              <div class="assess-title">Diabetes control</div>
+              <div class="assess-meta">HbA1c ↑ · foot ulcer complication</div>
+            </div>
+            <div class="assess">
+              <div class="assess-title">Diabetic foot ulcer</div>
+              <div class="assess-meta">New dx · Podiatry coordination</div>
+            </div>
+            <div class="assess">
+              <div class="assess-title">Elevated PSA</div>
+              <div class="assess-meta">Referral decision</div>
+            </div>
+            <div class="assess">
+              <div class="assess-title">Hyperlipidemia</div>
+              <div class="assess-meta">Statin optimization</div>
+            </div>
+            <div style="margin-top:14px; padding:8px 10px; background:#fdf6ec; border:1px solid #f0dcb2; border-radius:5px; font-size:11.5px; color:#8a5a10;">
+              <strong>2 care gaps</strong> · colorectal screen · diabetic eye
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="annot teal" style="margin-top:6px;"><strong>Key composition decisions:</strong> Brief columns split visits/meds from labs at wider breakpoints (mobile stacks them). Assessments live in the right panel — separate surface, connected context — reinforcing Kevin's Brief-vs-Agenda architecture rather than collapsing it. Left nav is standard v3xp navigation.</div>
+    </div>
+  </div>
+  <div class="slide-num">A6</div>
+</div>
+
+<!-- EDGE CASE DIVIDER -->
+<div class="slide section">
+  <div class="content" style="text-align:center; align-items:center; justify-content:center; display:flex; flex-direction:column;">
+    <div class="kicker">Appendix · edge cases</div>
+    <h1>What happens when the<br/>data isn't clean.</h1>
+    <p class="subtitle" style="max-width:950px; text-align:center;">Real patients don't have complete records. Feeds fail. AI generation takes time. These states need to be as designed as the happy path — otherwise clinicians see broken empty sections and lose trust.</p>
+  </div>
+  <div class="slide-num">E0</div>
+</div>
+
+<!-- EDGE 1: NO DATA + PARTIAL DATA -->
+<div class="slide xtall">
+  <div class="content">
+    <div class="slide-kicker">Edge cases · data availability</div>
+    <h1>No data. Partial data.</h1>
+    <p class="subtitle">The Brief has to hold up when the underlying feed is thin or missing sections. Silence beats fake summarization; incompleteness beats invented completeness.</p>
+    <div class="edge-grid grow">
+      <div class="edge-cell">
+        <div class="edge-label">Case 1</div>
+        <h3 class="edge-title">New patient · no prior visit</h3>
+        <p class="edge-desc">First encounter — no lookback window exists. Since-last framing collapses to a demographic + known dx summary.</p>
+        <div class="phone phone-sm">
+          <div class="brief-head"><span>Brief</span><span class="last">First visit</span></div>
+          <p class="patient">54F · new to practice</p>
+          <div class="empty-state">No prior visits at Clover — this is a new patient. Chart imported from prior provider.</div>
+          <div class="sec-head"><span class="name"><span class="icon orange">H</span> Hospitalizations</span><span class="count">none on file</span></div>
+          <div class="sec-head"><span class="name"><span class="icon blue">V</span> Recent visits</span><span class="count">imported records only</span></div>
+          <div class="sec-head"><span class="name"><span class="icon">M</span> Medications</span><span class="count">5 on file</span></div>
+          <div class="sec-head"><span class="name"><span class="icon red">L</span> Labs</span><span class="count">none in last 12 mo</span></div>
+        </div>
+      </div>
+      <div class="edge-cell">
+        <div class="edge-label">Case 2</div>
+        <h3 class="edge-title">Partial data · labs feed unavailable</h3>
+        <p class="edge-desc">The Brief renders what it has and is honest about what it doesn't. Missing sections show why they're missing, not just a zero count.</p>
+        <div class="phone phone-sm">
+          <div class="brief-head"><span>Brief</span><span class="last">Since <a href="#">Mar 5</a></span></div>
+          <p class="patient">68M · T2DM, HTN, CAD</p>
+          <div class="since-strip"><strong>Since last visit:</strong> 2 new meds</div>
+          <div class="sec-head"><span class="name"><span class="icon orange">H</span> Hospitalizations</span><span class="count">none</span></div>
+          <div class="sec-head"><span class="name"><span class="icon blue">V</span> Recent visits</span><span class="count">2</span></div>
+          <div class="sec-head"><span class="name"><span class="icon">M</span> Medications</span><span class="count">2 new</span></div>
+          <div class="sec-head"><span class="name"><span class="icon red">L</span> Labs</span><span class="count">unavailable</span></div>
+          <div class="partial-note"><span class="badge-icon">!</span><span>Lab feed not connected for this patient's outside providers. <a href="#" style="color:#8a5a10; text-decoration:underline;">Request access ›</a></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">E1</div>
+</div>
+
+<!-- EDGE 2: ERRORS -->
+<div class="slide xtall">
+  <div class="content">
+    <div class="slide-kicker">Edge cases · errors</div>
+    <h1>When something fails.</h1>
+    <p class="subtitle">Errors surface in-place, at the level of the affected section — not as a global page failure. The rest of the Brief still works.</p>
+    <div class="edge-grid grow">
+      <div class="edge-cell">
+        <div class="edge-label">Case 3</div>
+        <h3 class="edge-title">Section-level generation error</h3>
+        <p class="edge-desc">One section failed to generate. The rest of the Brief renders normally. Clear escape hatch to retry or view the raw data.</p>
+        <div class="phone phone-sm">
+          <div class="brief-head"><span>Brief</span><span class="last">Since <a href="#">Feb 14</a></span></div>
+          <p class="patient">68M · T2DM, HTN, CAD, COPD</p>
+          <div class="since-strip"><strong>Since last visit:</strong> new dx foot ulcer · 2 new meds</div>
+          <div class="sec-head"><span class="name"><span class="icon orange">H</span> Hospitalizations</span><span class="count">none</span></div>
+          <div class="sec-head"><span class="name"><span class="icon blue">V</span> Recent visits</span><span class="count">3</span></div>
+          <div class="sec-head"><span class="name"><span class="icon">M</span> Medications</span><span class="count">2 new · 1 dose</span></div>
+          <div class="sec-head"><span class="name"><span class="icon red">L</span> Labs</span><span class="count">error</span></div>
+          <div class="error-note"><span class="badge-icon">⚠</span><span>Lab summary couldn't be generated. <a href="#">Retry</a> · <a href="#">View raw values</a></span></div>
+        </div>
+      </div>
+      <div class="edge-cell">
+        <div class="edge-label">Case 4</div>
+        <h3 class="edge-title">Whole-Brief failure with fallback</h3>
+        <p class="edge-desc">When AI generation completely fails, the Brief falls back to a structural skeleton with counts pulled directly from the data layer. Clinician still walks in with something usable.</p>
+        <div class="phone phone-sm">
+          <div class="brief-head"><span>Brief</span><span class="last">Since <a href="#">Feb 14</a></span></div>
+          <p class="patient">68M · T2DM, HTN, CAD, COPD</p>
+          <div class="error-note"><span class="badge-icon">⚠</span><span>AI summary unavailable — showing raw counts. <a href="#">Retry</a></span></div>
+          <div class="sec-head"><span class="name"><span class="icon orange">H</span> Hospitalizations</span><span class="count">0</span></div>
+          <div class="sec-head"><span class="name"><span class="icon blue">V</span> Recent visits</span><span class="count">7 specialist · 2 other</span></div>
+          <div class="sec-head"><span class="name"><span class="icon">M</span> Medications</span><span class="count">9 active · 2 changed</span></div>
+          <div class="sec-head"><span class="name"><span class="icon red">L</span> Labs</span><span class="count">10 panels</span></div>
+          <div class="visit-foot" style="margin-top:12px;">Visit <span class="muted">— 22 dx · 2 care gaps</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">E2</div>
+</div>
+
+<!-- EDGE 3: SYSTEM STATUS -->
+<div class="slide xtall">
+  <div class="content">
+    <div class="slide-kicker">Edge cases · visibility of system status</div>
+    <h1>Show what the system is doing.</h1>
+    <p class="subtitle">Nielsen heuristic #1. Especially important for AI-generated content — clinicians need to know when the Brief is generating, when it's fresh, and when it's stale.</p>
+    <div class="edge-grid grow">
+      <div class="edge-cell">
+        <div class="edge-label">Case 5</div>
+        <h3 class="edge-title">Generating · in progress</h3>
+        <p class="edge-desc">First time opening a patient with recent activity. Brief renders progressively as sections complete. No spinner over the whole page — sections light up as they resolve.</p>
+        <div class="phone phone-sm">
+          <div class="brief-head"><span>Brief</span><span class="last">Since <a href="#">Feb 14</a></span></div>
+          <p class="patient">68M · T2DM, HTN, CAD, COPD</p>
+          <div class="status-strip"><span class="dot"></span><span>Generating Brief · pulling recent data</span><span class="meta">~5s</span></div>
+          <div class="sec-head"><span class="name"><span class="icon orange">H</span> Hospitalizations</span><span class="count">none</span></div>
+          <div class="sec-head"><span class="name"><span class="icon blue">V</span> Recent visits</span><span class="count">3</span></div>
+          <div class="sec-head"><span class="name"><span class="icon">M</span> Medications</span><span class="count" style="color:#b5bac0;">generating…</span></div>
+          <div class="sec-head"><span class="name"><span class="icon red">L</span> Labs</span><span class="count" style="color:#b5bac0;">generating…</span></div>
+        </div>
+      </div>
+      <div class="edge-cell">
+        <div class="edge-label">Case 6</div>
+        <h3 class="edge-title">Fresh · stale · time-stamped</h3>
+        <p class="edge-desc">Every Brief carries a "generated at" timestamp. If underlying data has changed since generation, the strip shifts to "stale" with a refresh affordance. Consistent with existing decision #1 — surface the state, don't hide it.</p>
+        <div class="phone phone-sm">
+          <div class="brief-head"><span>Brief</span><span class="last">Since <a href="#">Feb 14</a></span></div>
+          <p class="patient">68M · T2DM, HTN, CAD, COPD</p>
+          <div class="status-strip stale"><span class="dot"></span><span>New lab result since generation</span><span class="meta"><a href="#" style="color:#8a5a10; text-decoration:underline;">Refresh</a></span></div>
+          <div class="since-strip"><strong>Since last visit:</strong> new dx foot ulcer · 2 new meds · PSA ↑↑</div>
+          <div class="sec-head"><span class="name"><span class="icon orange">H</span> Hospitalizations</span><span class="count">none</span></div>
+          <div class="sec-head"><span class="name"><span class="icon blue">V</span> Recent visits</span><span class="count">3</span></div>
+          <div class="sec-head"><span class="name"><span class="icon">M</span> Medications</span><span class="count">2 new · 1 dose</span></div>
+          <div class="sec-head"><span class="name"><span class="icon red">L</span> Labs</span><span class="count">3 abnormal · 1 new</span></div>
+          <div class="visit-foot" style="margin-top:10px; color:#8a9099; font-size:10.5px; border-color:#eef0f2;">Generated 2h ago · 1 update pending</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">E3</div>
+</div>
+
+<!-- EDGE 4: PRINCIPLES -->
+<div class="slide">
+  <div class="content">
+    <div class="slide-kicker">Edge cases · principles</div>
+    <h1>Design principles across all edge states.</h1>
+    <div class="two-col grow">
+      <div>
+        <ul>
+          <li><strong>Missing ≠ zero.</strong> "unavailable," "not on file," "none in last 12 mo" — say <em>why</em> the section is empty, not just show a 0.</li>
+          <li><strong>Errors are section-scoped.</strong> One failed section doesn't fail the Brief. Every error carries a retry + a raw-data escape hatch.</li>
+          <li><strong>Time is always visible.</strong> "Generated 2h ago" · "since last visit" · "new since generation" — the clinician always knows what era of data they're looking at.</li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <li><strong>Progressive rendering, not spinners.</strong> Sections light up as they complete. The clinician sees the shape of the Brief immediately, even while content fills in.</li>
+          <li><strong>Fallback is structural, not narrative.</strong> When AI fails entirely, we still know how to count medications and lab panels. That deterministic skeleton is the safety net.</li>
+          <li><strong>Consistent with existing decision #1</strong> — "surface data, don't editorialize." Edge states show the truth of the system rather than pretending things are cleaner than they are.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="annot teal" style="margin-top:16px;"><strong>Why these matter for the leadership conversation:</strong> Vitale, Roque, and Quiñones all cited trust incidents rooted in <em>silent</em> failure — the system looked confident when it shouldn't have been. Designing edge states well is a direct answer to that concern.</div>
+  </div>
+  <div class="slide-num">E4</div>
+</div>
+
+<!-- APPENDIX · ADDITIONAL EXPLORATIONS -->
+<div class="slide xtall">
+  <div class="content">
+    <div class="slide-kicker">Appendix · additional explorations</div>
+    <h1>What if the Brief led with an AI read of the story?</h1>
+    <p class="subtitle">Not part of this proposal. An earlier exploration — shown here for transparency about the design space we considered and where the ceiling might live in future work.</p>
+
+    <div class="grow" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; align-items:start; margin-top:6px;">
+
+      <!-- Scenario 1 · high-acuity -->
+      <div>
+        <div style="margin-bottom:8px;">
+          <span class="scen-pill scen-1">Scenario 1</span>
+          <div style="font-size:12px; color:#4a5058; margin-top:4px;">68M · high-acuity · foot ulcer + PSA + HbA1c</div>
+        </div>
+        <div class="phone" style="max-width:none;">
+          <div class="brief-head"><span>Brief</span><span class="last">Since <a href="#">Feb 14</a></span></div>
+          <p class="patient">68M · T2DM, HTN, CAD, COPD</p>
+          <div class="ai-story">
+            <div class="label"><span class="dot"></span> AI read of the story</div>
+            <div class="body">New <em>foot ulcer</em> in a patient whose DM has slipped (HbA1c 7.6 → 8.4). Podiatry started antibiotics; tight glycemic control now the anchor. Separately, <em>PSA has tripled</em> — likely warrants urology.</div>
+            <div class="actions"><span class="pill">→ Intensify DM</span><span class="pill">→ Urology?</span></div>
+          </div>
+          <div class="sec-head"><span class="name"><span class="icon">M</span> Medications</span><span class="count">2 new · 1 dose</span></div>
+          <div class="med-row"><span class="badge badge-new">New</span><div><div class="med-name">Doxy · Mupirocin</div></div></div>
+          <div class="sec-head"><span class="name"><span class="icon red">L</span> Labs</span><span class="count">3 abnormal</span></div>
+          <div class="list-item"><span class="marker">•</span><div class="primary"><strong>PSA</strong></div><div class="value"><span class="hl hl-H">H</span>28.6<span class="delta up">↑ 9.2</span></div></div>
+        </div>
+      </div>
+
+      <!-- Scenario 2 · post-discharge -->
+      <div>
+        <div style="margin-bottom:8px;">
+          <span class="scen-pill scen-2">Scenario 2</span>
+          <div style="font-size:12px; color:#4a5058; margin-top:4px;">76F · post-hospitalization · AKI worsening</div>
+        </div>
+        <div class="phone" style="max-width:none;">
+          <div class="brief-head"><span>Brief</span><span class="last">Since <a href="#">Feb 8</a></span></div>
+          <p class="patient">76F · T2DM, HTN, HLD, COPD, dementia</p>
+          <div class="ai-story">
+            <div class="label"><span class="dot"></span> AI read of the story</div>
+            <div class="body">Discharged 4d ago with new AKI. Kidney function has <em>worsened since discharge</em> (Cr 1.7 → 2.1), K⁺ trending up. Lisinopril was stopped at d/c — worth confirming renal trajectory.</div>
+            <div class="actions"><span class="pill">→ Nephrology?</span><span class="pill">→ Recheck K in 48h</span></div>
+          </div>
+          <div class="sec-head"><span class="name"><span class="icon orange">H</span> Hospitalizations</span><span class="count">1 · 4d ago</span></div>
+          <div class="sec-head"><span class="name"><span class="icon">M</span> Medications</span><span class="count">changes at d/c</span></div>
+          <div class="med-row"><span class="badge badge-new">New</span><div><div class="med-name">ASA · saxagliptin · meclizine</div></div></div>
+          <div class="med-row"><span class="badge badge-stop">Stop</span><div><div class="med-name">Cipro · donepezil · lisinopril</div></div></div>
+        </div>
+      </div>
+
+      <!-- Scenario 5 · single-domain -->
+      <div>
+        <div style="margin-bottom:8px;">
+          <span class="scen-pill scen-5">Scenario 5</span>
+          <div style="font-size:12px; color:#4a5058; margin-top:4px;">62M · single-domain · 3 psych visits + drifting DM</div>
+        </div>
+        <div class="phone" style="max-width:none;">
+          <div class="brief-head"><span>Brief</span><span class="last">Since <a href="#">Dec 20</a></span></div>
+          <p class="patient">62M · T2DM, CKD 3a, HTN, HLD, MCI</p>
+          <div class="ai-story">
+            <div class="label"><span class="dot"></span> AI read of the story</div>
+            <div class="body">Behavioral health is being actively managed (3 psych visits, stable regimen). Meanwhile <em>primary care indicators are drifting</em> — HbA1c 10.2%, UACR 88 in a CKD 3a patient. Psych workload may be crowding out DM/renal.</div>
+            <div class="actions"><span class="pill">→ Intensify DM</span><span class="pill">→ ACE/ARB for renal</span></div>
+          </div>
+          <div class="sec-head"><span class="name"><span class="icon blue">V</span> Recent visits</span><span class="count">3 · all Psych</span></div>
+          <div class="sec-head"><span class="name"><span class="icon red">L</span> Labs</span><span class="count">2 abnormal</span></div>
+          <div class="list-item"><span class="marker">•</span><div class="primary"><strong>HbA1c</strong></div><div class="value"><span class="hl hl-H">H</span>10.2%</div></div>
+          <div class="list-item"><span class="marker">•</span><div class="primary"><strong>UACR</strong></div><div class="value"><span class="hl hl-H">H</span>88<span class="delta up">↑</span></div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="annot" style="margin-top:16px;"><strong>Why this isn't the proposal:</strong> concept testing surfaced concerns about clinicians skipping the narrative, and the sales-prep reference class has converged away from AI-authored toplines. Deferred for now — likely re-emerges in the Assessments surface, where synthesis has a clearer job. Kept in the deck for honesty about what was explored.</div>
+  </div>
+  <div class="slide-num">A7</div>
+</div>
+
+<!-- 9: CLOSE -->
+<div class="slide title">
+  <div class="content" style="justify-content:center;">
+    <div class="slide-kicker">In summary</div>
+    <h1 class="big">Same Brief.<br/>Scannable.</h1>
+    <p class="subtitle">Narrow improvements, within the existing architecture, validated by prior art. Buildable inside the current prototype.</p>
+  </div>
+  <div class="meta">Companion memo + full research trail available on request · Design</div>
+  <div class="slide-num">09</div>
+</div>
+
+</div>
+</body>
+</html>

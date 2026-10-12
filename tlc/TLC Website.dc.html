@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>TLC Website | John Blanco-Slingerland</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#fff;color:#1d1b22;font-family:'Museo Sans Rounded','Nunito',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#5b3cc4;text-decoration:none}a:hover{color:#3f2a8c}
+button{font-family:inherit}
+input,select,textarea{font-family:inherit}
+input::placeholder,textarea::placeholder{color:#5b3cc4;opacity:.75;font-weight:700;letter-spacing:.04em}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column;padding-bottom:{{ bottomPad }}">
+
+<sc-if value="{{ isArticle }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;top:0;left:0;height:5px;background:#d3ec1a;z-index:80;width:{{ readPct }};transition:width .1s linear"></div>
+</sc-if>
+
+<header style="position:sticky;top:0;z-index:60;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:5px solid #5b3cc4;box-shadow:0 1px 0 rgba(29,27,34,.08)">
+  <div style="max-width:1240px;margin:0 auto;padding:10px clamp(16px,4vw,40px);display:flex;align-items:center;justify-content:space-between;gap:24px">
+    <button onClick="{{ goHome }}" aria-label="The Learning Choice Academy home" style="border:none;background:none;padding:0;cursor:pointer;display:flex;align-items:center">
+      <sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><img src="assets/k/logo-full-fixed.png" alt="The Learning Choice Academy" style="height:64px;display:block"></sc-if>
+      <sc-if value="{{ notDesk }}" hint-placeholder-val="{{ false }}"><img src="assets/logo-tlc.png" alt="TLC Academy" style="height:40px;display:block"></sc-if>
+    </button>
+    <sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}">
+      <nav style="display:flex;align-items:center;gap:6px">
+        <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+          <button onClick="{{ n.go }}" style="border:none;background:none;cursor:pointer;padding:12px 12px;font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#5b3cc4;box-shadow:inset 0 -3px 0 {{ n.line }};transition:box-shadow .2s" style-hover="box-shadow:inset 0 -3px 0 #d3ec1a">{{ n.label }}</button>
+        </sc-for>
+        <button onClick="{{ goEnroll }}" style="margin-left:10px;border:none;cursor:pointer;background:#5b3cc4;color:#fff;padding:14px 22px;font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 4px 0 #3f2a8c;transition:transform .15s,box-shadow .15s" style-hover="transform:translateY(2px);box-shadow:0 2px 0 #3f2a8c">Enroll</button>
+      </nav>
+    </sc-if>
+    <sc-if value="{{ notDesk }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button onClick="{{ goEnroll }}" style="border:none;cursor:pointer;background:#5b3cc4;color:#fff;padding:12px 16px;font-size:13px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 3px 0 #3f2a8c">Enroll</button>
+        <button onClick="{{ toggleMenu }}" aria-label="Menu" style="width:48px;height:48px;border:none;background:#f3f0e8;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px">
+          <span style="display:block;width:22px;height:3px;background:#5b3cc4"></span>
+          <span style="display:block;width:22px;height:3px;background:#5b3cc4"></span>
+          <span style="display:block;width:14px;height:3px;background:#5b3cc4;align-self:center;margin-left:8px"></span>
+        </button>
+      </div>
+    </sc-if>
+  </div>
+</header>
+
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;z-index:90;background:#5b3cc4;color:#fff;display:flex;flex-direction:column;padding:20px 24px 32px;overflow:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#d3ec1a">Menu</span>
+      <button onClick="{{ toggleMenu }}" aria-label="Close menu" style="width:48px;height:48px;border:2px solid rgba(255,255,255,.4);background:none;color:#fff;font-size:26px;cursor:pointer;line-height:1">×</button>
+    </div>
+    <nav style="display:flex;flex-direction:column;margin-top:32px">
+      <button onClick="{{ goHome }}" style="text-align:left;border:none;border-bottom:1px solid rgba(255,255,255,.2);background:none;color:#fff;cursor:pointer;padding:16px 0;font-size:32px;font-weight:900;text-transform:uppercase;letter-spacing:-.01em">Home</button>
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+        <button onClick="{{ n.go }}" style="text-align:left;border:none;border-bottom:1px solid rgba(255,255,255,.2);background:none;color:#fff;cursor:pointer;padding:16px 0;font-size:32px;font-weight:900;text-transform:uppercase;letter-spacing:-.01em">{{ n.label }}</button>
+      </sc-for>
+    </nav>
+    <button onClick="{{ goEnroll }}" style="margin-top:28px;border:none;cursor:pointer;background:#d3ec1a;color:#1d1b22;padding:18px;font-size:16px;font-weight:900;letter-spacing:.1em;text-transform:uppercase">Enroll today — it's free</button>
+    <div style="display:flex;gap:18px;margin-top:24px;font-size:14px;font-weight:700;opacity:.85">
+      <span>Staff login</span><span>Student login</span>
+    </div>
+  </div>
+</sc-if>
+
+<main style="flex:1">
+
+<!-- ============ HOME ============ -->
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <section style="position:relative;color:#fff;overflow:hidden;background-color:#6b45d8;background-image:linear-gradient(120deg,rgba(214,64,150,.55),rgba(214,64,150,0) 55%),linear-gradient(0deg,rgba(63,42,140,.55),rgba(63,42,140,0) 60%),url(assets/hero-kids.png);background-size:cover;background-position:center 25%;background-blend-mode:normal,normal,luminosity">
+    <div style="max-width:1240px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(16px,4vw,40px) {{ heroPadB }}">
+      <h1 data-reveal="1" style="margin:0;font-weight:900;text-transform:uppercase;letter-spacing:-.025em;line-height:.84;text-shadow:0 4px 30px rgba(40,20,90,.35)">
+        <span style="display:block;font-size:clamp(60px,15.4vw,200px)">Education</span>
+        <span style="display:block;padding-left:clamp(90px,34vw,440px);font-size:clamp(38px,8.6vw,112px);margin-top:.06em">Made</span>
+        <span style="display:block;padding-left:clamp(90px,34vw,440px);font-size:clamp(38px,8.6vw,112px)">Personal</span>
+      </h1>
+    </div>
+  </section>
+
+  <div style="position:relative;z-index:2;max-width:1240px;margin:{{ rowMargin }};display:grid;grid-template-columns:{{ rowCols }}">
+    <div style="display:flex;flex-direction:column;min-width:0">
+      <div style="background-color:#ee5b36;background-image:linear-gradient(125deg,rgba(255,255,255,.1) 0 38%,transparent 38%),linear-gradient(235deg,rgba(255,255,255,.07) 0 30%,transparent 30%),linear-gradient(60deg,rgba(0,0,0,.05) 0 22%,transparent 22%);padding:clamp(26px,4vw,48px) clamp(20px,4vw,48px);display:flex;align-items:center;gap:clamp(18px,3vw,36px)">
+        <img src="assets/ic-house.png" alt="" style="flex:none;width:clamp(64px,9vw,112px);display:block">
+        <p style="margin:0;color:#fff;font-size:clamp(18px,2.3vw,28px);line-height:1.3;font-weight:800;text-wrap:pretty">The Learning Choice Academy is a free public charter home–school serving students and parents in the San Diego area. <button onClick="{{ goAbout }}" style="border:none;background:none;padding:0;cursor:pointer;color:#fff;font-size:15px;font-weight:700;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Learn more</button></p>
+      </div>
+      <div style="flex:1;display:grid;grid-template-columns:{{ tileCols }}">
+        <sc-for list="{{ locTiles }}" as="l" hint-placeholder-count="4">
+          <button onClick="{{ l.go }}" style="position:relative;overflow:hidden;border:none;cursor:pointer;color:#fff;display:flex;align-items:center;flex-direction:{{ tileDir }};justify-content:{{ tileJustify }};text-align:{{ tileAlign }};gap:{{ tileGap }};padding:{{ tilePad }};min-height:{{ tileMinH }};background-color:#3b2a82;background-image:linear-gradient(rgba(34,22,84,.62),rgba(34,22,84,.78)),url(assets/hero-kids.png);background-size:auto,{{ l.size }};background-position:center,{{ l.pos }};background-blend-mode:normal,luminosity;border-right:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);transition:background-color .3s" style-hover="background-color:#5b3cc4">
+            <img src="{{ l.icon }}" alt="" style="flex:none;height:{{ iconH }};display:block;transition:transform .35s cubic-bezier(.2,.7,.2,1)" style-hover="transform:scale(1.08) rotate(-4deg)">
+            <span style="display:flex;flex-direction:column;gap:2px">
+              <span style="font-size:clamp(17px,1.6vw,20px);font-weight:900;text-transform:uppercase;letter-spacing:.02em">{{ l.name }}</span>
+              <span style="font-size:15px;font-weight:600;opacity:.9">Visit Resource Center</span>
+            </span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;background:#fff;min-width:0;box-shadow:{{ evShadow }}">
+      <div style="background:#1d1b22;color:#fff;padding:18px 22px;display:flex;align-items:center;justify-content:center;gap:12px">
+        <span style="width:22px;height:20px;border:2px solid #fff;border-top-width:5px;display:block"></span>
+        <span style="font-size:14px;font-weight:900;letter-spacing:.12em;text-transform:uppercase">Upcoming Events</span>
+      </div>
+      <div style="flex:1">
+        <sc-for list="{{ homeEvents }}" as="ev" hint-placeholder-count="5">
+          <button onClick="{{ ev.open }}" style="width:100%;border:none;border-bottom:1px solid #ecebef;background:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:16px 18px;text-align:center;transition:background .2s" style-hover="background:#f5f2ff">
+            <span style="font-size:16px;font-weight:900;color:#1d1b22">{{ ev.title }}</span>
+            <span style="font-size:15px;color:#35323c">{{ ev.long }}</span>
+            <span style="font-size:15px;color:#35323c">{{ ev.time }}</span>
+          </button>
+        </sc-for>
+        <sc-if value="{{ noHomeEvents }}" hint-placeholder-val="{{ false }}"><div style="padding:28px;text-align:center;font-size:15px;color:#5d5a66">No upcoming events at this center.</div></sc-if>
+      </div>
+      <div style="background:#fbbd3a;padding:18px 22px;display:flex;flex-direction:column;gap:10px">
+        <select value="{{ homeFilter }}" onChange="{{ onHomeFilter }}" aria-label="Resource center" style="height:44px;border:2px solid #1d1b22;background:#fff;color:#1d1b22;font-size:15px;font-weight:800;padding:0 10px">
+          <option value="All">Resource Center</option>
+          <option value="Chula Vista">Chula Vista</option>
+          <option value="La Mesa">La Mesa</option>
+          <option value="Scripps Ranch">Scripps Ranch</option>
+          <option value="Temecula">Temecula</option>
+        </select>
+        <button onClick="{{ goEventsHome }}" style="align-self:flex-start;border:none;background:none;padding:4px 0;cursor:pointer;font-size:15px;font-weight:900;color:#3f2a8c" style-hover="text-decoration:underline">View The Full Calendar</button>
+      </div>
+    </div>
+  </div>
+
+  <section style="position:relative;max-width:1240px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(20px,4vw,40px) clamp(32px,4vw,48px);overflow:hidden">
+    <h2 data-reveal="1" style="position:relative;z-index:1;margin:0;font-size:clamp(54px,10.6vw,138px);line-height:.95;font-weight:900;color:#ee5b36;letter-spacing:-.025em;white-space:{{ loveWrap }}">Parents Love Us</h2>
+    <sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}">
+      <img src="assets/family-cut.png" alt="A TLC family" style="position:absolute;z-index:2;right:clamp(0px,3vw,40px);top:clamp(24px,3vw,40px);width:min(38%,470px);display:block">
+    </sc-if>
+    <div data-reveal="1" style="position:relative;z-index:3;margin-top:clamp(20px,3vw,36px);max-width:{{ quoteMax }};display:flex;gap:clamp(12px,2vw,22px)">
+      <span style="flex:none;font-family:Georgia,serif;font-size:clamp(90px,10vw,140px);line-height:.72;font-weight:900;color:#5b3cc4">“</span>
+      <div>
+        <p style="margin:0;font-size:clamp(19px,2.1vw,26px);line-height:1.45;color:#35323c;text-wrap:pretty">TLC is committed to providing homeschooled children with opportunities to love learning. TLC provides innovative ways to keep kids interested in learning and has resources for the children to have opportunities for social interactions.</p>
+        <div style="margin-top:18px;font-size:14px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#35323c">– Magnolia Silverfish</div>
+      </div>
+    </div>
+    <sc-if value="{{ notDesk }}" hint-placeholder-val="{{ false }}">
+      <img src="assets/family-cut.png" alt="A TLC family" style="margin:28px auto 0;width:min(100%,420px);display:block">
+    </sc-if>
+  </section>
+
+  <section style="max-width:1240px;margin:0 auto;padding:0 clamp(20px,4vw,40px) clamp(64px,8vw,104px)" onMouseEnter="{{ pause }}" onMouseLeave="{{ resume }}">
+    <div style="position:relative;display:flex;flex-direction:{{ spotDir }};align-items:flex-start">
+      <div style="flex:none;width:{{ spotImgW }};min-height:{{ spotImgH }};background-image:url({{ spot.img }});background-size:cover;background-position:{{ spot.pos }};transition:background-image .4s"></div>
+      <div style="position:relative;z-index:2;background:#fff;border-top:4px solid #ee5b36;width:{{ spotCardW }};margin:{{ spotCardM }};display:flex;flex-direction:column">
+        <div style="padding:clamp(24px,4vw,52px) clamp(22px,4vw,52px) clamp(24px,3vw,36px);display:flex;flex-direction:column;gap:16px">
+          <h2 style="margin:0;font-size:clamp(40px,5.4vw,68px);line-height:.92;font-weight:900;text-transform:uppercase;color:#ee5b36;letter-spacing:-.01em">Student<br>Spotlight</h2>
+          <div style="font-size:clamp(19px,1.9vw,23px);line-height:1.3;font-weight:900;color:#35323c;text-wrap:pretty">{{ spot.headline }}</div>
+          <p style="margin:0;font-size:16px;line-height:1.6;color:#5d5a66;text-wrap:pretty">{{ spot.text }}</p>
+        </div>
+        <button onClick="{{ spotNext }}" style="display:flex;align-items:stretch;border:none;padding:0;cursor:pointer;background:#efeef1;text-align:left;transition:background .2s" style-hover="background:#e4e2e8">
+          <span style="flex:none;width:72px;min-height:72px;background:#ee5b36;display:flex;align-items:center;justify-content:center"><img src="assets/ic-bulb.png" alt="" style="width:44px;display:block"></span>
+          <span style="flex:1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 22px;font-size:16px;color:#35323c">Read The Next Student Spotlight <span style="font-size:13px;font-weight:900;color:#5d5a66">{{ spotCount }}</span></span>
+        </button>
+      </div>
+    </div>
+  </section>
+</sc-if>
+
+<!-- ============ EVENTS ============ -->
+<sc-if value="{{ isEvents }}" hint-placeholder-val="{{ false }}">
+  <section style="background:linear-gradient(180deg,rgba(91,60,196,.35),rgba(63,42,140,.95)),url(assets/events-group.png) center/cover;color:#fff">
+    <div style="max-width:1200px;margin:0 auto;padding:clamp(72px,10vw,140px) clamp(20px,5vw,56px) clamp(32px,4vw,48px)">
+      <div style="font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#d3ec1a">Field trips · testing · graduations · community</div>
+      <h1 style="margin:12px 0 0;font-size:clamp(52px,9vw,112px);line-height:.9;font-weight:900;text-transform:uppercase;letter-spacing:-.02em">Events</h1>
+    </div>
+  </section>
+  <section style="padding:clamp(40px,6vw,72px) clamp(20px,5vw,56px) clamp(64px,8vw,104px)">
+    <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:clamp(28px,4vw,56px);align-items:flex-start">
+      <div style="flex:1 1 300px;max-width:420px;position:{{ calPos }};top:110px;display:flex;flex-direction:column;gap:22px">
+        <div style="background:#fff;border:2px solid #ece8f6;padding:22px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <button onClick="{{ monPrev }}" aria-label="Previous month" style="width:44px;height:44px;border:none;background:#f3f0e8;color:#ee5b36;font-size:18px;font-weight:900;cursor:pointer">‹</button>
+            <div style="font-size:18px;font-weight:900;letter-spacing:.14em;text-transform:uppercase">{{ monthLabel }}</div>
+            <button onClick="{{ monNext }}" aria-label="Next month" style="width:44px;height:44px;border:none;background:#f3f0e8;color:#ee5b36;font-size:18px;font-weight:900;cursor:pointer">›</button>
+          </div>
+          <div style="margin-top:18px;display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center">
+            <sc-for list="{{ dow }}" as="d" hint-placeholder-count="7"><div style="font-size:12px;font-weight:900;color:#5d5a66;padding:6px 0">{{ d }}</div></sc-for>
+            <sc-for list="{{ calDays }}" as="c" hint-placeholder-count="35">
+              <button onClick="{{ c.pick }}" style="position:relative;aspect-ratio:1;border:none;border-radius:50%;cursor:pointer;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:background .2s;background:{{ c.bg }};color:{{ c.color }};box-shadow:{{ c.ring }}" style-hover="background:#ece8f6">
+                {{ c.num }}
+                <span style="position:absolute;bottom:3px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:{{ c.dot }}"></span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="margin-top:14px;display:flex;gap:16px;font-size:13px;color:#5d5a66;flex-wrap:wrap">
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#ee5b36"></span>Has events</span>
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:12px;border-radius:50%;box-shadow:inset 0 0 0 2px #5b3cc4"></span>Today</span>
+          </div>
+        </div>
+        <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#5d5a66">Resource center
+          <select value="{{ filter }}" onChange="{{ onFilter }}" style="height:52px;border:2px solid #5b3cc4;background:#fff;color:#5b3cc4;font-size:16px;font-weight:800;padding:0 14px;letter-spacing:0;text-transform:none">
+            <option value="All">All resource centers</option>
+            <option value="Chula Vista">Chula Vista</option>
+            <option value="La Mesa">La Mesa</option>
+            <option value="Scripps Ranch">Scripps Ranch</option>
+            <option value="Temecula">Temecula</option>
+          </select>
+        </label>
+      </div>
+      <div style="flex:2 1 440px;min-width:0;display:flex;flex-direction:column;gap:18px">
+        <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+          <div style="background:#fff">
+            <div style="padding:16px 22px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font-weight:900;text-transform:uppercase;letter-spacing:.06em;background:{{ g.hbg }};color:{{ g.hcolor }}">
+              <span style="font-size:15px">{{ g.rel }}</span>
+              <span style="font-size:18px">{{ g.label }}</span>
+            </div>
+            <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="2">
+              <div style="display:grid;grid-template-columns:minmax(96px,140px) minmax(0,1fr);border-bottom:1px solid #ece8f6;transition:background .2s" style-hover="background:#faf8ff">
+                <div style="padding:18px 22px;font-size:15px;font-weight:700;color:#5d5a66;border-right:1px solid #ece8f6">{{ r.time }}</div>
+                <div style="padding:18px 22px;display:flex;flex-direction:column;gap:4px">
+                  <span style="font-size:18px;font-weight:800">{{ r.title }}</span>
+                  <span style="font-size:14px;color:#5d5a66">{{ r.loc }} · {{ r.note }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+        <sc-if value="{{ noGroups }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:40px;background:#f3f0e8;font-size:18px;font-weight:700;color:#5d5a66">No events from this date for this resource center. Try another date or center.</div>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+</sc-if>
+
+<!-- ============ ARTICLE ============ -->
+<sc-if value="{{ isArticle }}" hint-placeholder-val="{{ false }}">
+  <section style="background:linear-gradient(180deg,rgba(91,60,196,.2),rgba(63,42,140,.95)),url(assets/forest.png) center/cover;color:#fff">
+    <div style="max-width:820px;margin:0 auto;padding:clamp(80px,12vw,160px) clamp(20px,5vw,40px) clamp(36px,5vw,56px)">
+      <button onClick="{{ goHome }}" style="border:none;background:none;color:#d3ec1a;cursor:pointer;padding:0;font-size:13px;font-weight:900;letter-spacing:.16em;text-transform:uppercase">← News &amp; announcements</button>
+      <h1 style="margin:16px 0 0;font-size:clamp(48px,8vw,96px);line-height:.9;font-weight:900;text-transform:uppercase;letter-spacing:-.02em">Mindfulness</h1>
+      <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 24px;font-size:15px;font-weight:700;opacity:.9">
+        <span>Erik Delgado, School Psychologist</span><span>May 10, 2015</span><span>6 min read</span>
+      </div>
+    </div>
+  </section>
+  <article style="max-width:820px;margin:0 auto;padding:clamp(40px,6vw,72px) clamp(20px,5vw,40px);font-size:18px;line-height:1.7;color:#35323c">
+    <p style="margin:0 0 24px;font-size:clamp(20px,2.2vw,24px);line-height:1.5;font-weight:700;color:#5b3cc4;text-wrap:pretty">Mindfulness has its roots in the teaching of the Buddha and other Eastern religious traditions. However, in the 1970s it began to be thought of as a cognitive ability, a personality trait, a mindset, a quality of consciousness, and life orientation or a set of psychological skills.</p>
+    <p style="margin:0 0 20px">Mindfulness is composed of three main subskills: mindful awareness, mindful responsivity, and mindful effort. These skills can be used and developed separately; however, it is only when they are used in combination that mindfulness is fully practiced, especially in stressful moments.</p>
+    <p style="margin:0 0 20px"><strong>Mindful awareness</strong> is the ability to actively observe what is going on here and now within yourself and your environment. <strong>Mindful responsivity</strong> refers to how we respond to the present moment: being friendly to ourselves and others as we react. <strong>Mindful effort</strong> is the ability to engage in intentional action, especially when faced with a difficult situation.</p>
+    <p style="margin:0 0 20px">Research has demonstrated positive effects on social skills and social emotional learning in students and parents. When practiced by students, studies suggest improvements ranging from happiness to academic success to physical health.</p>
+    <blockquote data-reveal="1" style="margin:44px 0;padding:clamp(28px,4vw,44px);background:#ece8fc;border-left:8px solid #5b3cc4;position:relative">
+      <span style="position:absolute;top:-34px;left:18px;font-size:110px;line-height:1;font-weight:900;color:#5b3cc4">“</span>
+      <p style="margin:0;font-size:clamp(22px,2.6vw,28px);line-height:1.4;font-weight:800;color:#1d1b22;text-wrap:pretty">In summary mindfulness is being attentive to what is happening right now, while being kind to yourself and those around you, even when it is very difficult.</p>
+      <div style="margin-top:16px;font-size:13px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#5b3cc4">— Erik Delgado</div>
+    </blockquote>
+    <p style="margin:0 0 20px">In order for you to learn these skills, here are two exercises: mindful breathing and mindful STOP.</p>
+    <h2 style="margin:44px 0 14px;font-size:clamp(28px,3.4vw,38px);line-height:1.1;font-weight:900;color:#5b3cc4">Mindful breathing</h2>
+    <p style="margin:0 0 20px">You can practice mindful breathing every day, anytime, anywhere. It means paying attention to your breath in the here and now and being kind toward whatever you notice along the way.</p>
+    <p style="margin:0 0 20px">Sit comfortably in your chair with both feet on the floor, place your hands on your lap, and close your eyes. Take 3 deep breaths. Feel the air entering your body from your nose or mouth, and your stomach going in and out as it comes and goes. Practice it for 30 seconds and repeat one more time.</p>
+    <figure data-reveal="1" style="margin:40px 0">
+      <img src="assets/meditate.png" alt="Student meditating in grass" style="width:100%;display:block">
+      <figcaption style="margin-top:0;padding:12px 18px;background:#ece8fc;border-left:4px solid #5b3cc4;font-size:14px;font-style:italic;color:#5d5a66">Student meditating in grass</figcaption>
+    </figure>
+    <h2 style="margin:44px 0 14px;font-size:clamp(28px,3.4vw,38px);line-height:1.1;font-weight:900;color:#5b3cc4">Mindful STOP</h2>
+    <p style="margin:0 0 24px">Mindful breathing is a good tool to start building mindfulness; however, you will need a different skill when you encounter difficult challenges. <strong>STOP</strong> is an acronym to help you remember the steps.</p>
+    <div data-reveal="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:12px">
+      <sc-for list="{{ stop }}" as="s" hint-placeholder-count="4">
+        <div style="background:#f3f0e8;padding:22px;display:flex;flex-direction:column;gap:10px">
+          <span style="width:56px;height:56px;border-radius:50%;background:{{ s.color }};color:{{ s.ink }};display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900">{{ s.l }}</span>
+          <span style="font-size:17px;font-weight:900;color:#1d1b22;line-height:1.2">{{ s.t }}</span>
+          <span style="font-size:15px;line-height:1.5;color:#5d5a66">{{ s.d }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </article>
+  <section style="background:#f3f0e8;padding:clamp(48px,7vw,88px) clamp(20px,5vw,56px)">
+    <div style="max-width:1200px;margin:0 auto">
+      <h2 style="margin:0;font-size:clamp(28px,3.6vw,40px);font-weight:900;color:#5b3cc4">Related articles</h2>
+      <div style="margin-top:28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px">
+        <sc-for list="{{ related }}" as="r" hint-placeholder-count="3">
+          <button onClick="{{ r.go }}" style="border:none;cursor:pointer;min-height:180px;padding:24px;display:flex;align-items:flex-end;text-align:left;color:#fff;font-size:24px;font-weight:900;text-transform:uppercase;line-height:1;background-image:linear-gradient(180deg,rgba(91,60,196,.45),rgba(63,42,140,.92)),url({{ r.img }});background-size:cover;background-position:center;transition:transform .25s" style-hover="transform:translateY(-4px)">{{ r.title }} →</button>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+</sc-if>
+
+<!-- ============ ENROLL ============ -->
+<sc-if value="{{ isEnroll }}" hint-placeholder-val="{{ false }}">
+  <section style="background:#5b3cc4;color:#fff;position:relative;overflow:hidden">
+    <div style="position:absolute;right:-8%;top:-30%;width:min(60vw,640px);aspect-ratio:1;border-radius:50%;background:#ee5b36"></div>
+    <div style="position:absolute;right:18%;bottom:-60px;width:120px;height:120px;background:#d3ec1a;transform:rotate(45deg)"></div>
+    <div style="position:relative;max-width:1200px;margin:0 auto;padding:clamp(64px,10vw,128px) clamp(20px,5vw,56px) clamp(48px,6vw,80px)">
+      <div style="font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#d3ec1a">2015–16 enrollment is open</div>
+      <h1 style="margin:12px 0 0;font-size:clamp(52px,9vw,112px);line-height:.9;font-weight:900;text-transform:uppercase;letter-spacing:-.02em">Enroll</h1>
+      <p style="margin:22px 0 0;max-width:560px;font-size:clamp(18px,2vw,22px);line-height:1.5;font-weight:600;text-wrap:pretty">Free public education, shaped around your child. Four steps from first question to first day.</p>
+    </div>
+  </section>
+  <section style="padding:clamp(48px,7vw,88px) clamp(20px,5vw,56px) 0">
+    <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:0">
+      <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+        <div style="padding:24px 24px 28px 0;border-top:4px solid {{ s.line }};display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:48px;font-weight:900;line-height:1;color:{{ s.line }}">{{ s.n }}</span>
+          <span style="font-size:20px;font-weight:900">{{ s.t }}</span>
+          <span style="font-size:16px;line-height:1.5;color:#5d5a66">{{ s.d }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+  <section style="padding:clamp(40px,6vw,72px) clamp(20px,5vw,56px)">
+    <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:24px;align-items:start">
+      <div style="background:#f3f0e8;padding:clamp(24px,4vw,40px)">
+        <h2 style="margin:0;font-size:28px;font-weight:900">Enrollment checklist</h2>
+        <p style="margin:8px 0 0;font-size:16px;color:#5d5a66">Gather these before orientation. Your progress is saved on this device.</p>
+        <div style="margin-top:22px;display:flex;align-items:center;gap:14px">
+          <div style="flex:1;height:12px;background:#fff;overflow:hidden"><div style="height:100%;background:#5b3cc4;transition:width .4s cubic-bezier(.2,.7,.2,1);width:{{ checkPct }}"></div></div>
+          <span style="font-size:15px;font-weight:900;color:#5b3cc4;min-width:48px;text-align:right">{{ checkLabel }}</span>
+        </div>
+        <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ checklist }}" as="c" hint-placeholder-count="6">
+            <button onClick="{{ c.toggle }}" style="display:flex;align-items:center;gap:14px;text-align:left;border:none;background:#fff;cursor:pointer;padding:14px 16px;min-height:56px;font-size:16px;font-weight:700;color:#1d1b22;transition:transform .15s" style-hover="transform:translateX(4px)">
+              <span style="flex:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;transition:background .2s;background:{{ c.boxBg }};color:#fff;box-shadow:{{ c.boxRing }}">{{ c.mark }}</span>
+              <span style="text-decoration:{{ c.strike }};opacity:{{ c.op }}">{{ c.label }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="border:2px solid #5b3cc4;padding:clamp(24px,4vw,40px)">
+        <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+          <h2 style="margin:0;font-size:28px;font-weight:900">Register for orientation</h2>
+          <p style="margin:8px 0 0;font-size:16px;color:#5d5a66">Orientations run monthly at every resource center.</p>
+          <form onSubmit="{{ submit }}" style="margin-top:22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px">
+            <input required="required" placeholder="FIRST NAME" style="height:52px;border:2px solid #5b3cc4;padding:0 14px;font-size:16px;color:#1d1b22">
+            <input required="required" placeholder="LAST NAME" style="height:52px;border:2px solid #5b3cc4;padding:0 14px;font-size:16px;color:#1d1b22">
+            <input required="required" type="email" placeholder="EMAIL" style="height:52px;border:2px solid #5b3cc4;padding:0 14px;font-size:16px;color:#1d1b22">
+            <input type="tel" placeholder="PHONE" style="height:52px;border:2px solid #5b3cc4;padding:0 14px;font-size:16px;color:#1d1b22">
+            <select style="grid-column:1/-1;height:52px;border:2px solid #5b3cc4;padding:0 14px;font-size:16px;font-weight:800;color:#5b3cc4;background:#fff">
+              <option>Chula Vista — Wed, June 24</option>
+              <option>La Mesa — Thu, June 25</option>
+              <option>Scripps Ranch — Mon, June 29</option>
+              <option>Temecula — Tue, June 30</option>
+            </select>
+            <button type="submit" style="grid-column:1/-1;height:56px;border:none;background:#5b3cc4;color:#fff;cursor:pointer;font-size:15px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 4px 0 #3f2a8c" style-hover="background:#3f2a8c">Submit</button>
+          </form>
+        </sc-if>
+        <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+          <div style="width:72px;height:72px;border-radius:50%;background:#d3ec1a;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900">✓</div>
+          <h2 style="margin:20px 0 0;font-size:28px;font-weight:900">You're registered. Thank you!</h2>
+          <p style="margin:10px 0 0;font-size:17px;line-height:1.55;color:#5d5a66">A confirmation email with directions and what to bring is on its way. Questions before then? The FAQ below covers the most common ones.</p>
+          <button onClick="{{ resetForm }}" style="margin-top:20px;border:none;background:none;padding:0;cursor:pointer;font-size:14px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#5b3cc4">Register another student</button>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+  <section style="padding:0 clamp(20px,5vw,56px) clamp(64px,8vw,104px)">
+    <div style="max-width:880px;margin:0 auto">
+      <h2 style="margin:0 0 20px;font-size:clamp(28px,3.6vw,40px);font-weight:900;text-transform:uppercase">FAQ</h2>
+      <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="4">
+        <div style="border-top:2px solid #ece8f6">
+          <button onClick="{{ f.toggle }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px;text-align:left;border:none;background:none;cursor:pointer;padding:20px 0;font-size:19px;font-weight:800;color:#1d1b22">
+            {{ f.q }}<span style="flex:none;width:36px;height:36px;border-radius:50%;background:#5b3cc4;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px">{{ f.sign }}</span>
+          </button>
+          <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}">
+            <p style="margin:0;padding:0 52px 22px 0;font-size:17px;line-height:1.6;color:#5d5a66">{{ f.a }}</p>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+</sc-if>
+
+<!-- ============ LOCATIONS ============ -->
+<sc-if value="{{ isLocations }}" hint-placeholder-val="{{ false }}">
+  <section style="background:linear-gradient(180deg,rgba(63,42,140,.5),rgba(40,26,96,.95)),url(assets/hero-kids.png);background-size:cover;background-position:{{ curLoc.pos }};color:#fff">
+    <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,112px) clamp(20px,5vw,56px) clamp(32px,4vw,48px)">
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{ locPills }}" as="p" hint-placeholder-count="4">
+          <button onClick="{{ p.go }}" style="border:2px solid {{ p.border }};background:{{ p.bg }};color:{{ p.color }};cursor:pointer;padding:10px 16px;min-height:44px;font-size:14px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;transition:background .2s">{{ p.label }}</button>
+        </sc-for>
+      </div>
+      <div style="margin-top:clamp(40px,6vw,72px);font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#d3ec1a">Resource center {{ curLoc.num }}</div>
+      <h1 style="margin:10px 0 0;font-size:clamp(48px,8.4vw,108px);line-height:.9;font-weight:900;text-transform:uppercase;letter-spacing:-.02em">{{ curLoc.name }}</h1>
+      <p style="margin:18px 0 0;font-size:clamp(18px,2vw,22px);font-weight:700">{{ curLoc.focus }}</p>
+    </div>
+  </section>
+  <section style="padding:clamp(40px,6vw,72px) clamp(20px,5vw,56px)">
+    <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(28px,4vw,56px)">
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <p style="margin:0;font-size:20px;line-height:1.6;color:#35323c;text-wrap:pretty">{{ curLoc.blurb }}</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px">
+          <div style="background:#f3f0e8;padding:18px"><div style="font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#5d5a66">On-site days</div><div style="margin-top:6px;font-size:20px;font-weight:900">{{ curLoc.days }}</div></div>
+          <div style="background:#f3f0e8;padding:18px"><div style="font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#5d5a66">Grades</div><div style="margin-top:6px;font-size:20px;font-weight:900">{{ curLoc.grades }}</div></div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:12px">
+          <button onClick="{{ goEnroll }}" style="border:none;cursor:pointer;background:#ee5b36;color:#fff;padding:16px 22px;font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 4px 0 #b8401f">Schedule a visit</button>
+          <button onClick="{{ goStaff }}" style="border:2px solid #5b3cc4;cursor:pointer;background:#fff;color:#5b3cc4;padding:14px 20px;font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase">Meet the staff</button>
+        </div>
+      </div>
+      <div>
+        <div style="background:#1d1b22;color:#fff;padding:16px 22px;font-size:13px;font-weight:900;letter-spacing:.14em;text-transform:uppercase">Upcoming at {{ curLoc.name }}</div>
+        <sc-for list="{{ locEvents }}" as="ev" hint-placeholder-count="3">
+          <button onClick="{{ ev.open }}" style="width:100%;text-align:left;border:none;border-bottom:1px solid #ece8f6;background:#fff;cursor:pointer;display:flex;gap:16px;align-items:center;padding:14px 22px" style-hover="background:#f5f2ff">
+            <span style="flex:none;width:52px;height:52px;background:#5b3cc4;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1"><span style="font-size:11px;font-weight:800;letter-spacing:.1em">{{ ev.mon }}</span><span style="font-size:22px;font-weight:900">{{ ev.day }}</span></span>
+            <span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:16px;font-weight:800;color:#1d1b22">{{ ev.title }}</span><span style="font-size:14px;color:#5d5a66">{{ ev.time }}</span></span>
+          </button>
+        </sc-for>
+        <button onClick="{{ goEventsLoc }}" style="width:100%;border:none;background:#fbbd3a;cursor:pointer;padding:16px 22px;display:flex;justify-content:space-between;font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#1d1b22">See this center's calendar <span>→</span></button>
+      </div>
+    </div>
+  </section>
+</sc-if>
+
+<!-- ============ PROGRAMS ============ -->
+<sc-if value="{{ isPrograms }}" hint-placeholder-val="{{ false }}">
+  <section style="background:#f3f0e8">
+    <div style="max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,112px) clamp(20px,5vw,56px) clamp(32px,4vw,48px)">
+      <div style="font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#5b3cc4">Our programs</div>
+      <h1 style="margin:10px 0 0;font-size:clamp(48px,8.4vw,108px);line-height:.9;font-weight:900;text-transform:uppercase;letter-spacing:-.02em">Learning,<br>your way</h1>
+      <div style="margin-top:36px;display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{ progPills }}" as="p" hint-placeholder-count="5">
+          <button onClick="{{ p.go }}" style="border:2px solid #5b3cc4;background:{{ p.bg }};color:{{ p.color }};cursor:pointer;padding:10px 16px;min-height:44px;font-size:14px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;transition:background .2s">{{ p.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+  <section style="padding:clamp(40px,6vw,72px) clamp(20px,5vw,56px) clamp(64px,8vw,104px)">
+    <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:clamp(28px,5vw,64px);align-items:start">
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div style="display:flex;align-items:center;gap:20px">
+          <span style="flex:none;width:112px;height:112px;border-radius:50%;background:{{ curProg.color }};color:{{ curProg.ink }};display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900">{{ curProg.grades }}</span>
+          <h2 style="margin:0;font-size:clamp(34px,4.6vw,56px);line-height:.95;font-weight:900;text-transform:uppercase">{{ curProg.label }}</h2>
+        </div>
+        <p style="margin:0;font-size:20px;line-height:1.6;color:#35323c;text-wrap:pretty">{{ curProg.blurb }}</p>
+        <button onClick="{{ goEnroll }}" style="align-self:flex-start;border:none;cursor:pointer;background:#5b3cc4;color:#fff;padding:16px 22px;font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 4px 0 #3f2a8c">Enroll in {{ curProg.label }}</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ progLinks }}" as="l" hint-placeholder-count="4">
+          <button onClick="{{ l.go }}" style="display:flex;justify-content:space-between;align-items:center;gap:16px;text-align:left;border:none;background:#f3f0e8;cursor:pointer;padding:22px 24px;transition:background .2s,transform .2s" style-hover="background:#ece8fc;transform:translateX(4px)">
+            <span style="display:flex;flex-direction:column;gap:4px"><span style="font-size:19px;font-weight:900;color:#1d1b22">{{ l.t }}</span><span style="font-size:15px;color:#5d5a66">{{ l.d }}</span></span>
+            <span style="font-size:22px;color:#5b3cc4;font-weight:900">→</span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+</sc-if>
+
+<!-- ============ ABOUT ============ -->
+<sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
+  <section style="background:#1d1b22;color:#fff;position:relative;overflow:hidden">
+    <div style="position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:#5b3cc4"></div>
+    <div style="position:relative;max-width:1200px;margin:0 auto;padding:clamp(56px,8vw,112px) clamp(20px,5vw,56px) clamp(32px,4vw,48px)">
+      <div style="font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#d3ec1a">About us</div>
+      <h1 style="margin:10px 0 0;max-width:900px;font-size:clamp(34px,5.6vw,68px);line-height:1;font-weight:900;letter-spacing:-.015em;text-wrap:pretty">To empower students to reach their full potential by providing choice in education.</h1>
+      <div style="margin-top:36px;display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{ aboutTabs }}" as="p" hint-placeholder-count="3">
+          <button onClick="{{ p.go }}" style="border:2px solid #fff;background:{{ p.bg }};color:{{ p.color }};cursor:pointer;padding:10px 16px;min-height:44px;font-size:14px;font-weight:900;letter-spacing:.06em;text-transform:uppercase">{{ p.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+  <section style="padding:clamp(40px,6vw,72px) clamp(20px,5vw,56px) clamp(64px,8vw,104px)">
+    <div style="max-width:1200px;margin:0 auto">
+      <sc-if value="{{ tabStory }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:clamp(28px,5vw,64px)">
+          <div>
+            <h2 style="margin:0;font-size:clamp(28px,3.6vw,40px);font-weight:900">What makes TLC unique</h2>
+            <p style="margin:14px 0 0;font-size:18px;line-height:1.6;color:#5d5a66">We work within collaborative triads of parents, students, and school, so every learning plan has three people behind it.</p>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px">
+            <sc-for list="{{ unique }}" as="u" hint-placeholder-count="4">
+              <div style="background:#f3f0e8;padding:22px;display:flex;flex-direction:column;gap:12px">
+                <span style="width:40px;height:40px;background:{{ u.color }};border-radius:{{ u.radius }};transform:{{ u.rot }}"></span>
+                <span style="font-size:18px;font-weight:900;line-height:1.25">{{ u.t }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="margin-top:48px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px">
+          <sc-for list="{{ govern }}" as="g" hint-placeholder-count="4">
+            <div style="border-top:4px solid #5b3cc4;padding-top:16px"><div style="font-size:19px;font-weight:900">{{ g.t }}</div><div style="margin-top:6px;font-size:16px;line-height:1.5;color:#5d5a66">{{ g.d }}</div></div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ tabStaff }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <input value="{{ q }}" onChange="{{ onQ }}" placeholder="SEARCH BY NAME OR SUBJECT" style="flex:1 1 260px;height:52px;border:2px solid #5b3cc4;padding:0 16px;font-size:16px;color:#1d1b22">
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ staffPills }}" as="p" hint-placeholder-count="5">
+              <button onClick="{{ p.go }}" style="border:2px solid #5b3cc4;background:{{ p.bg }};color:{{ p.color }};cursor:pointer;padding:8px 12px;min-height:44px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.04em">{{ p.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="margin-top:24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:14px">
+          <sc-for list="{{ staff }}" as="s" hint-placeholder-count="6">
+            <div style="background:#f3f0e8;padding:22px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;gap:14px;align-items:center">
+                <span style="flex:none;width:60px;height:60px;border-radius:50%;background:{{ s.color }};color:{{ s.ink }};display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900">{{ s.ini }}</span>
+                <span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:18px;font-weight:900">{{ s.n }}</span><span style="font-size:14px;color:#5d5a66">{{ s.r }}</span></span>
+              </div>
+              <div style="font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#ee5b36">{{ s.l }}</div>
+              <sc-if value="{{ s.open }}" hint-placeholder-val="{{ false }}">
+                <div style="background:#fff;padding:12px 14px;font-size:15px;line-height:1.5"><strong>{{ s.email }}</strong><br><span style="color:#5d5a66">Replies within one school day</span></div>
+              </sc-if>
+              <div style="display:flex;gap:8px">
+                <button onClick="{{ s.toggle }}" style="flex:1;border:none;background:#5b3cc4;color:#fff;cursor:pointer;min-height:44px;font-size:13px;font-weight:900;letter-spacing:.08em;text-transform:uppercase">{{ s.cta }}</button>
+                <button style="flex:1;border:2px solid #5b3cc4;background:#fff;color:#5b3cc4;cursor:pointer;min-height:44px;font-size:13px;font-weight:900;letter-spacing:.08em;text-transform:uppercase">Teacher page</button>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ noStaff }}" hint-placeholder-val="{{ false }}"><div style="margin-top:24px;padding:32px;background:#f3f0e8;font-size:17px;font-weight:700;color:#5d5a66">No staff match that search.</div></sc-if>
+      </sc-if>
+      <sc-if value="{{ tabForms }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:10px;max-width:880px">
+          <sc-for list="{{ forms }}" as="f" hint-placeholder-count="5">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;background:#f3f0e8;padding:20px 24px">
+              <span style="display:flex;flex-direction:column;gap:4px"><span style="font-size:18px;font-weight:900">{{ f.t }}</span><span style="font-size:14px;color:#5d5a66">{{ f.d }}</span></span>
+              <button style="border:none;background:#ee5b36;color:#fff;cursor:pointer;min-height:44px;padding:0 18px;font-size:13px;font-weight:900;letter-spacing:.08em;text-transform:uppercase">Download PDF</button>
+            </div>
+          </sc-for>
+          <button onClick="{{ goEnroll }}" style="margin-top:12px;align-self:flex-start;border:none;background:none;padding:0;cursor:pointer;font-size:14px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#5b3cc4">Enrollment FAQ →</button>
+        </div>
+      </sc-if>
+    </div>
+  </section>
+</sc-if>
+
+</main>
+
+<sc-if value="{{ showBand }}" hint-placeholder-val="{{ true }}">
+  <section style="background:#d3ec1a">
+    <div style="max-width:1200px;margin:0 auto;padding:clamp(28px,4vw,40px) clamp(20px,5vw,56px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px">
+      <p style="margin:0;max-width:720px;font-size:clamp(22px,2.6vw,30px);line-height:1.25;font-weight:800;color:#1d1b22;text-wrap:pretty">Free, personalized public education for every K–12 student in San Diego County.</p>
+      <button onClick="{{ goEnroll }}" style="border:none;cursor:pointer;background:#5b3cc4;color:#fff;padding:16px 24px;font-size:14px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 4px 0 #3f2a8c;transition:transform .15s" style-hover="transform:translateY(-2px)">Enroll today</button>
+    </div>
+  </section>
+</sc-if>
+
+<footer style="background-color:#3d3c41;background-image:url(assets/footer-pat.png);background-size:300px 230px;color:#fff">
+  <div style="max-width:1200px;margin:0 auto;padding:clamp(48px,7vw,80px) clamp(20px,5vw,56px) 40px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:24px">
+    <img src="assets/k/logo-full-white.png" alt="The Learning Choice Academy" style="width:clamp(180px,22vw,240px);display:block">
+    <p style="margin:0;max-width:680px;font-size:17px;line-height:1.5">To empower students to reach their full potential by providing choice in education within collaborative triads of parents, students, and school.</p>
+    <nav style="display:flex;flex-wrap:wrap;justify-content:center;gap:4px 24px">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+        <button onClick="{{ n.go }}" style="border:none;background:none;color:#fff;cursor:pointer;padding:8px 0;font-size:15px;font-weight:900;text-transform:uppercase" style-hover="color:#d3ec1a">{{ n.label }}</button>
+      </sc-for>
+      <button onClick="{{ goArticle }}" style="border:none;background:none;color:#fff;cursor:pointer;padding:8px 0;font-size:15px;font-weight:900;text-transform:uppercase" style-hover="color:#d3ec1a">News</button>
+    </nav>
+    <nav style="display:flex;flex-wrap:wrap;justify-content:center;gap:0 24px;margin-top:-10px">
+      <sc-for list="{{ locTiles }}" as="l" hint-placeholder-count="4">
+        <button onClick="{{ l.go }}" style="border:none;background:none;color:#fff;cursor:pointer;padding:6px 0;font-size:15px;font-weight:700" style-hover="color:#d3ec1a">{{ l.name }}</button>
+      </sc-for>
+    </nav>
+    <div style="font-size:14px;line-height:1.6">Legal &nbsp;|&nbsp; © 2015<br>Website design by Digital Gear. Icons designed by Freepik</div>
+  </div>
+</footer>
+
+<sc-if value="{{ isMob }}" hint-placeholder-val="{{ false }}">
+  <nav style="position:fixed;left:0;right:0;bottom:0;z-index:70;background:#fff;box-shadow:0 -1px 0 rgba(29,27,34,.1),0 -8px 24px rgba(29,27,34,.08);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom)">
+    <sc-for list="{{ tabbar }}" as="t" hint-placeholder-count="5">
+      <button onClick="{{ t.go }}" style="border:none;background:{{ t.bg }};cursor:pointer;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:{{ t.color }}">
+        <span style="width:18px;height:18px;background:{{ t.shape }};border-radius:{{ t.radius }};transform:{{ t.rot }}"></span>
+        {{ t.label }}
+      </button>
+    </sc-for>
+  </nav>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const P='#5b3cc4',O='#ee5b36',L='#d3ec1a',Y='#fbbd3a',INK='#1d1b22';
+const TODAY='2015-06-10';
+const PAGES=['home','about','programs','locations','events','article','enroll'];
+const LOCS=[
+ {name:'Chula Vista',focus:'Bilingual learning & visual arts',days:'Tue & Thu',grades:'K–8',pos:'15% 40%',color:L,blurb:'Our South Bay center pairs home-based learning with on-site art studios and Spanish-English enrichment. Families meet here for classes twice a week and for our biggest community events, including graduation.'},
+ {name:'La Mesa',focus:'STEM labs & robotics',days:'Mon & Wed',grades:'K–12',pos:'45% 35%',color:Y,blurb:'La Mesa is home to our science labs and robotics club. Students build, test and present projects alongside credentialed educational partners, with testing and counseling services on site.'},
+ {name:'Scripps Ranch',focus:'High school & college prep',days:'Tue & Fri',grades:'6–12',pos:'70% 35%',color:O,blurb:'Scripps Ranch focuses on middle and high school students: A–G courses, test prep, and college and career planning, with seminar-style on-site classes that feel like a small campus.'},
+ {name:'Temecula',focus:'Outdoor science & field studies',days:'Wed & Thu',grades:'K–8',pos:'95% 40%',color:'#c9c0f0',blurb:'Our northern center takes learning outside. Garden science, nature journaling and regular field studies across the valley, with a close-knit community of Riverside County families.'}
+];
+const EVENTS=[
+ {d:'2015-06-04',time:'10:00 AM',title:'Legoland Field Trip',loc:'Scripps Ranch',note:'Permission form required'},
+ {d:'2015-06-09',time:'All day',title:'STAR Testing',loc:'All centers',note:'Grades 3–8'},
+ {d:'2015-06-11',time:'6:00 PM',title:'Parent Advisory Committee',loc:'La Mesa',note:'Open to all families'},
+ {d:'2015-06-12',time:'3:00–5:00 PM',title:'Chula Vista Graduation',loc:'Chula Vista',note:'Families welcome'},
+ {d:'2015-06-12',time:'10:00 AM',title:'Legoland Field Trip',loc:'Scripps Ranch',note:'Bus departs 9:15 AM'},
+ {d:'2015-06-16',time:'10:00 AM–3:00 PM',title:'CAHSEE Testing',loc:'La Mesa',note:'Grades 10–12'},
+ {d:'2015-06-16',time:'All day',title:'STAR Testing',loc:'Temecula',note:'Make-up session'},
+ {d:'2015-06-19',time:'9:00 AM',title:'Robotics Showcase',loc:'La Mesa',note:'Student demos'},
+ {d:'2015-06-20',time:'All day',title:'Garden Science Day',loc:'Temecula',note:'Bring sun protection'},
+ {d:'2015-06-24',time:'10:00 AM',title:'New Family Orientation',loc:'Chula Vista',note:'Registration required'},
+ {d:'2015-06-24',time:'1:00 PM',title:'Enrichment Art Show',loc:'Chula Vista',note:'Gallery walk'},
+ {d:'2015-06-25',time:'10:00 AM',title:'New Family Orientation',loc:'La Mesa',note:'Registration required'},
+ {d:'2015-06-26',time:'4:00 PM',title:'Scripps Ranch Graduation',loc:'Scripps Ranch',note:'Families welcome'},
+ {d:'2015-06-29',time:'10:00 AM',title:'New Family Orientation',loc:'Scripps Ranch',note:'Registration required'},
+ {d:'2015-06-30',time:'10:00 AM',title:'New Family Orientation',loc:'Temecula',note:'Registration required'},
+ {d:'2015-07-02',time:'10:00 AM',title:'Birch Aquarium Field Trip',loc:'La Mesa',note:'Permission form required'},
+ {d:'2015-07-09',time:'All day',title:'Summer Reading Kickoff',loc:'All centers',note:'Pick up reading logs'},
+ {d:'2015-07-21',time:'10:00 AM',title:'Legoland Field Trip',loc:'Chula Vista',note:'Permission form required'}
+];
+const PROGS=[
+ {label:'Elementary',grades:'K–5',color:O,ink:'#fff',short:'Foundations in reading, math and discovery, guided by a credentialed partner.',blurb:'Parents lead day-to-day learning at home with a credentialed educational partner who helps build the plan, choose curriculum and track progress. Two days a week, students join on-site classes and enrichment with friends.'},
+ {label:'Middle School',grades:'6–8',color:P,ink:'#fff',short:'More choice, more independence, and on-site classes in core subjects.',blurb:'Middle schoolers begin taking ownership of their learning. Core subjects blend home study with teacher-led on-site classes, while electives and clubs let students explore what interests them at their own pace.'},
+ {label:'High School',grades:'9–12',color:L,ink:INK,short:'A–G courses, test prep and a clear path to college and career.',blurb:'WASC-accredited high school coursework, including A–G courses for UC/CSU eligibility, CAHSEE preparation, dual enrollment options and one-on-one college and career counseling.'},
+ {label:'Enrichment',grades:'K–12',color:Y,ink:INK,short:'Field trips, arts, music and PE that build friendships and community.',blurb:'Enrichment classes and field trips give homeschooled students the social side of school: art, music, robotics, PE and trips across Southern California, organized by resource center.'},
+ {label:'Extended Units',grades:'+',color:'#c9c0f0',ink:INK,short:'Deep-dive units that extend the core curriculum.',blurb:'Extended units are multi-week, project-based studies that go deeper into a topic, from marine biology to local history, and can be taken alongside any grade-level program.'}
+];
+const SPOTS=[
+ {img:'assets/gloria.png',pos:'center 20%',loc:'La Mesa',headline:'Gloria, 13, has been doing gymnastics for 5 years.',text:'She continues to grow with every competition, in strength and in heart. TLC\'s flexible schedule lets her balance school and gymnastics as she trains 24 hours a week.'},
+ {img:'assets/p-jared.png',pos:'center 30%',loc:'Scripps Ranch',headline:'Jared, 13, found a school that moves at his pace.',text:'After feeling bored in a traditional classroom, Jared now chooses curriculum he\'s interested in and spends his on-site days with friends at enrichment classes and field trips.'},
+ {img:'assets/friends.png',pos:'center',loc:'Chula Vista',headline:'Lasting friendships, two days a week.',text:'On-site classes and events give homeschooled students a community of peers. Many of our families say it\'s where their kids met their best friends.'}
+];
+const STAFF=[
+ {n:'Erik Delgado',r:'School Psychologist',l:'La Mesa'},
+ {n:'Maria Santos',r:'Educational Partner, K–5',l:'Chula Vista'},
+ {n:'David Kim',r:'Math & Science, 6–8',l:'La Mesa'},
+ {n:'Rachel Moore',r:'English & History, 9–12',l:'Scripps Ranch'},
+ {n:'Luis Herrera',r:'Enrichment Coordinator',l:'Temecula'},
+ {n:'Anna Patel',r:'Educational Partner, K–5',l:'Temecula'},
+ {n:'James Carter',r:'College & Career Counselor',l:'Scripps Ranch'},
+ {n:'Sofia Reyes',r:'Enrollment Coordinator',l:'Chula Vista'}
+];
+const CHECK=['Proof of residency in an eligible county','Birth certificate','Immunization records','Most recent report card or transcript','Signed master agreement','IEP or 504 plan (if applicable)'];
+const FAQ=[
+ {q:'Is TLC really free?',a:'Yes. TLC is a public charter school, so there is no tuition. Families also receive instructional funds for approved curriculum and enrichment.'},
+ {q:'How often do students come on site?',a:'Most students attend on-site classes and enrichment two days a week at their resource center. The rest of the week they learn at home.'},
+ {q:'Do I need a teaching credential to homeschool?',a:'No. Every family is paired with a credentialed educational partner who helps plan curriculum, reviews work samples and meets with you regularly.'},
+ {q:'Can we switch resource centers?',a:'Yes. Families can attend events at any center and may transfer their home center at the start of each semester.'}
+];
+const pad=n=>String(n).padStart(2,'0');
+const key=(y,m,d)=>`${y}-${pad(m+1)}-${pad(d)}`;
+const toDate=k=>{const [y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d)};
+const MON=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+class Component extends DCLogic {
+  state={page:'home',menu:false,w:typeof window!=='undefined'?window.innerWidth:1280,sel:'2015-06-12',ym:[2015,5],filter:'All',homeFilter:'All',spot:0,loc:0,prog:0,tab:0,checks:[true,true,false,false,false,false],sent:false,faq:0,q:'',staffLoc:'All',contact:-1,rp:0};
+  componentDidMount(){
+    this.onR=()=>this.setState({w:window.innerWidth});
+    window.addEventListener('resize',this.onR);
+    this.onS=()=>{ if(this.state.page!=='article')return; const h=document.documentElement; this.setState({rp:Math.min(1,h.scrollTop/((h.scrollHeight-h.clientHeight)||1))}); };
+    window.addEventListener('scroll',this.onS,{passive:true});
+    this.timer=setInterval(()=>{ if(!this.paused&&this.state.page==='home') this.setState(s=>({spot:(s.spot+1)%SPOTS.length})); },6500);
+    this.io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.style.opacity='1'; e.target.style.transform='none'; this.io.unobserve(e.target);} }),{threshold:.1});
+    try{ const c=JSON.parse(localStorage.getItem('tlc-checklist')||'null'); if(Array.isArray(c)) this.setState({checks:c}); }catch(e){}
+    const h=(location.hash||'').slice(1); if(PAGES.includes(h)) this.setState({page:h});
+    this.scan();
+  }
+  componentDidUpdate(){ this.scan(); }
+  componentWillUnmount(){ window.removeEventListener('resize',this.onR); window.removeEventListener('scroll',this.onS); clearInterval(this.timer); this.io&&this.io.disconnect(); }
+  scan(){
+    if(!this.io)return;
+    document.querySelectorAll('[data-reveal]:not([data-rv])').forEach(el=>{
+      el.setAttribute('data-rv','1');
+      const r=el.getBoundingClientRect(); if(r.top<window.innerHeight) return;
+      el.style.opacity='0'; el.style.transform='translateY(28px)'; el.style.transition='opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1)';
+      this.io.observe(el);
+    });
+  }
+  go(page,extra){ this.setState({page,menu:false,rp:0,...(extra||{})}); window.scrollTo(0,0); try{history.replaceState(null,'','#'+page)}catch(e){} }
+  evRow(e){ const dt=toDate(e.d); return {...e,mon:MON[dt.getMonth()],day:dt.getDate(),long:`${MONTHS[dt.getMonth()]} ${dt.getDate()}, ${dt.getFullYear()}`,open:()=>this.go('events',{sel:e.d,ym:[dt.getFullYear(),dt.getMonth()],filter:'All'})}; }
+  renderVals(){
+    const s=this.state, w=s.w, isMob=w<720, isDesk=w>=1000;
+    const pill=(a,dark)=>a?{bg:dark?'#fff':P,color:dark?INK:'#fff',border:dark?'#fff':P}:{bg:'transparent',color:dark?'#fff':P,border:dark?'rgba(255,255,255,.5)':P};
+    const nav=[['About Us','about',{tab:0}],['Our Programs','programs'],['Locations','locations'],['Resources','about',{tab:1}],['Events','events']];
+    const navItems=nav.map(([label,p,ex])=>{ const act=s.page===p&&(!ex||ex.tab===s.tab)||(p==='events'&&s.page==='article'&&false); return {label,go:()=>this.go(p,ex),line:act?O:'transparent'}; });
+    // calendar
+    const [y,m]=s.ym, first=new Date(y,m,1), start=new Date(y,m,1-first.getDay());
+    const evDates=new Set(EVENTS.filter(e=>s.filter==='All'||e.loc===s.filter||e.loc==='All centers').map(e=>e.d));
+    const calDays=[]; const cells=(first.getDay()+new Date(y,m+1,0).getDate())>35?42:35;
+    for(let i=0;i<cells;i++){ const d=new Date(start); d.setDate(start.getDate()+i); const k=key(d.getFullYear(),d.getMonth(),d.getDate()); const inM=d.getMonth()===m, sel=k===s.sel, today=k===TODAY;
+      calDays.push({num:pad(d.getDate()),pick:()=>this.setState({sel:k,ym:[d.getFullYear(),d.getMonth()]}),bg:sel?O:'transparent',color:sel?'#fff':(inM?INK:'#b3afbb'),ring:today&&!sel?'inset 0 0 0 2px '+P:'none',dot:evDates.has(k)&&!sel?O:'transparent'}); }
+    const fil=EVENTS.filter(e=>s.filter==='All'||e.loc===s.filter||e.loc==='All centers');
+    const dates=[...new Set(fil.map(e=>e.d))].filter(d=>d>=s.sel).sort().slice(0,5);
+    const rel=d=>{ const diff=Math.round((toDate(d)-toDate(TODAY))/864e5); return diff===0?'Today ›':diff===1?'Tomorrow ›':DAYS[toDate(d).getDay()]+' ›'; };
+    const groups=dates.map(d=>{ const dt=toDate(d); const on=d===s.sel; return {rel:rel(d),label:`${MONTHS[dt.getMonth()]} ${dt.getDate()}, ${dt.getFullYear()}`,hbg:on?L:'#f3f0e8',hcolor:INK,rows:fil.filter(e=>e.d===d)}; });
+    const upcoming=EVENTS.filter(e=>e.d>=TODAY);
+    const homeEv=upcoming.filter(e=>s.homeFilter==='All'||e.loc===s.homeFilter||e.loc==='All centers').slice(0,5);
+    const curLoc={...LOCS[s.loc],num:pad(s.loc+1)};
+    const cp=PROGS[s.prog];
+    const done=s.checks.filter(Boolean).length;
+    const setChecks=c=>{ this.setState({checks:c}); try{localStorage.setItem('tlc-checklist',JSON.stringify(c))}catch(e){} };
+    const q=s.q.trim().toLowerCase();
+    const avatarC=[[P,'#fff'],[O,'#fff'],[L,INK],[Y,INK]];
+    const staff=STAFF.map((p,i)=>({...p,i})).filter(p=>(s.staffLoc==='All'||p.l===s.staffLoc)&&(!q||(p.n+' '+p.r).toLowerCase().includes(q))).map(p=>({...p,ini:p.n.split(' ').map(x=>x[0]).join(''),color:avatarC[p.i%4][0],ink:avatarC[p.i%4][1],email:p.n.split(' ')[0][0].toLowerCase()+'.'+p.n.split(' ')[1].toLowerCase()+'@learningchoice.org',open:s.contact===p.i,cta:s.contact===p.i?'Hide':'Contact',toggle:()=>this.setState({contact:s.contact===p.i?-1:p.i})}));
+    const shapes=[{shape:P,radius:'50%',rot:'none'},{shape:O,radius:'0',rot:'none'},{shape:L,radius:'0',rot:'rotate(45deg)'},{shape:Y,radius:'50%',rot:'none'},{shape:P,radius:'0',rot:'rotate(45deg)'}];
+    const tb=[['Home','home'],['Events','events'],['Centers','locations'],['Programs','programs'],['Enroll','enroll']];
+    return {
+      isMob,isDesk,notDesk:!isDesk,calPos:isDesk?'sticky':'static',bottomPad:isMob?'64px':'0',
+      isHome:s.page==='home',isEvents:s.page==='events',isArticle:s.page==='article',isEnroll:s.page==='enroll',isLocations:s.page==='locations',isPrograms:s.page==='programs',isAbout:s.page==='about',
+      showBand:s.page!=='enroll',menuOpen:s.menu,readPct:(s.rp*100).toFixed(1)+'%',
+      toggleMenu:()=>this.setState({menu:!s.menu}),
+      goHome:()=>this.go('home'),goEnroll:()=>this.go('enroll'),goEvents:()=>this.go('events',{sel:TODAY,ym:[2015,5]}),goAbout:()=>this.go('about',{tab:0}),goStaff:()=>this.go('about',{tab:1,staffLoc:LOCS[s.loc].name}),
+      goEventsLoc:()=>this.go('events',{filter:LOCS[s.loc].name,sel:TODAY,ym:[2015,5]}),
+      navItems,
+      homeEvents:homeEv.map(e=>this.evRow(e)),noHomeEvents:homeEv.length===0,homeFilter:s.homeFilter,
+      onHomeFilter:e=>this.setState({homeFilter:e.target.value}),
+      goEventsHome:()=>this.go('events',{sel:TODAY,ym:[2015,5],filter:s.homeFilter}),goArticle:()=>this.go('article'),
+      heroPadB:isDesk?'124px':isMob?'40px':'80px',rowMargin:isDesk?'-76px auto 0':isMob?'0':'-40px auto 0',
+      rowCols:isDesk?'minmax(0,1.85fr) minmax(0,1fr)':'minmax(0,1fr)',tileCols:isMob?'1fr':'1fr 1fr',
+      tileDir:isMob?'row':'column',tileJustify:isMob?'flex-start':'center',tileAlign:isMob?'left':'center',tileGap:isMob?'18px':'12px',
+      tilePad:isMob?'18px 24px':'32px 20px',tileMinH:isMob?'96px':'210px',iconH:isMob?'46px':'66px',
+      evShadow:isDesk?'0 24px 48px -24px rgba(29,27,34,.35)':'none',
+      loveWrap:isDesk?'nowrap':'normal',quoteMax:isDesk?'58%':'100%',
+      spotDir:isDesk?'row':'column',spotImgW:isDesk?'62%':'100%',spotImgH:isDesk?'600px':isMob?'340px':'440px',
+      spotCardW:isDesk?'50%':'100%',spotCardM:isDesk?'64px 0 0 -12%':'0',
+      spot:SPOTS[s.spot],spotCount:`${s.spot+1} / ${SPOTS.length}`,
+      locTiles:LOCS.map((l,i)=>({...l,num:pad(i+1),icon:['assets/ic-chula.png','assets/ic-lamesa.png','assets/ic-scripps.png','assets/ic-temecula.png'][i],size:'cover',go:()=>this.go('locations',{loc:i})})),
+      progCards:PROGS.slice(0,4).map((p,i)=>({...p,go:()=>this.go('programs',{prog:i})})),
+      spots:SPOTS,spotX:`-${s.spot*100}%`,
+      spotDots:SPOTS.map((_,i)=>({w:i===s.spot?'40px':'16px',bg:i===s.spot?L:'rgba(255,255,255,.4)',go:()=>this.setState({spot:i})})),
+      spotPrev:()=>this.setState({spot:(s.spot+SPOTS.length-1)%SPOTS.length}),spotNext:()=>this.setState({spot:(s.spot+1)%SPOTS.length}),
+      pause:()=>{this.paused=true},resume:()=>{this.paused=false},
+      news:[
+        {img:'assets/forest.png',tag:'Wellness',title:'Mindfulness: two exercises for calmer days',meta:'Erik Delgado · May 10, 2015',go:()=>this.go('article')},
+        {img:'assets/friends.png',tag:'Enrollment',title:'Fall registration opens for 2015–16',meta:'Orientations at all four centers',go:()=>this.go('enroll')},
+        {img:'assets/fieldtrip.png',tag:'Field trips',title:'Summer field trip calendar is live',meta:'Legoland, Birch Aquarium and more',go:()=>this.go('events',{sel:TODAY,ym:[2015,5]})}
+      ],
+      // events
+      monthLabel:`${MONTHS[m]} ${y}`,dow:['S','M','T','W','T','F','S'],calDays,groups,noGroups:groups.length===0,filter:s.filter,
+      onFilter:e=>this.setState({filter:e.target.value}),
+      monPrev:()=>this.setState({ym:m===0?[y-1,11]:[y,m-1]}),monNext:()=>this.setState({ym:m===11?[y+1,0]:[y,m+1]}),
+      // article
+      stop:[
+        {l:'S',t:'Stop',d:'When you notice you are in a difficult situation.',color:P,ink:'#fff'},
+        {l:'T',t:'Take 3 deep breaths',d:'This will help you relax.',color:O,ink:'#fff'},
+        {l:'O',t:'Observe what is happening',d:'Notice what you are thinking, feeling, and what actions you want to take.',color:L,ink:INK},
+        {l:'P',t:'Proceed positively',d:'You are more likely to make good choices by being kind to yourself and others.',color:Y,ink:INK}
+      ],
+      related:[
+        {title:'Fall registration',img:'assets/friends.png',go:()=>this.go('enroll')},
+        {title:'Curriculum catalogs',img:'assets/hero-kids.png',go:()=>this.go('programs',{prog:0})},
+        {title:'On-site classes',img:'assets/fieldtrip.png',go:()=>this.go('locations',{loc:0})}
+      ],
+      // enroll
+      steps:[
+        {n:'01',t:'Learn about TLC',d:'Explore programs and visit a resource center near you.',line:P},
+        {n:'02',t:'Complete the checklist',d:'Gather the documents below for each student.',line:O},
+        {n:'03',t:'Register for orientation',d:'Meet staff and other families at your center.',line:'#9bb00a'},
+        {n:'04',t:'Meet your partner',d:'Build a learning plan with your credentialed teacher.',line:INK}
+      ],
+      checklist:CHECK.map((label,i)=>{ const d=s.checks[i]; return {label,mark:d?'✓':'',boxBg:d?P:'#fff',boxRing:d?'none':'inset 0 0 0 2px '+P,strike:d?'line-through':'none',op:d?.6:1,toggle:()=>{const c=[...s.checks];c[i]=!c[i];setChecks(c);}}; }),
+      checkPct:Math.round(done/CHECK.length*100)+'%',checkLabel:`${done}/${CHECK.length}`,
+      sent:s.sent,notSent:!s.sent,submit:e=>{e.preventDefault();this.setState({sent:true});},resetForm:()=>this.setState({sent:false}),
+      faqs:FAQ.map((f,i)=>({...f,open:s.faq===i,sign:s.faq===i?'–':'+',toggle:()=>this.setState({faq:s.faq===i?-1:i})})),
+      // locations
+      curLoc,locPills:LOCS.map((l,i)=>({label:l.name,...pill(i===s.loc,true),go:()=>this.setState({loc:i})})),
+      locEvents:upcoming.filter(e=>e.loc===curLoc.name||e.loc==='All centers').slice(0,4).map(e=>this.evRow(e)),
+      // programs
+      curProg:cp,progPills:PROGS.map((p,i)=>({label:p.label,...pill(i===s.prog),go:()=>this.setState({prog:i})})),
+      progLinks:[
+        {t:'Curriculum catalog',d:`Approved curriculum for ${cp.label.toLowerCase()} students`,go:()=>{}},
+        {t:'Course listing',d:'On-site classes by resource center',go:()=>this.go('locations')},
+        {t:'Academic calendar',d:'Testing dates, breaks and graduations',go:()=>this.go('events',{sel:TODAY,ym:[2015,5]})},
+        {t:'Staff & teachers',d:'Meet the educators behind the program',go:()=>this.go('about',{tab:1,staffLoc:'All'})}
+      ],
+      // about
+      aboutTabs:['Our story','Staff directory','Forms & FAQ'].map((label,i)=>({label,...pill(i===s.tab,true),go:()=>this.setState({tab:i})})),
+      tabStory:s.tab===0,tabStaff:s.tab===1,tabForms:s.tab===2,
+      unique:[
+        {t:'Caring, credentialed educational partners',color:P,radius:'50%',rot:'none'},
+        {t:'A variety of curriculum and supplemental materials',color:O,radius:'0',rot:'none'},
+        {t:'High quality on-site classes',color:L,radius:'0',rot:'rotate(45deg)'},
+        {t:'Engaging field trips and special events',color:Y,radius:'50%',rot:'none'}
+      ],
+      govern:[
+        {t:'Board of Directors',d:'Public meetings are held monthly and open to all families.'},
+        {t:'Parent Advisory Committee',d:'Parents shape events, enrichment and school priorities.'},
+        {t:'WASC Accreditation',d:'Fully accredited by the Western Association of Schools and Colleges.'},
+        {t:'Support us',d:'Volunteer at your center or donate to enrichment programs.'}
+      ],
+      q:s.q,onQ:e=>this.setState({q:e.target.value}),
+      staffPills:['All',...LOCS.map(l=>l.name)].map(n=>({label:n,...pill(s.staffLoc===n),go:()=>this.setState({staffLoc:n})})),
+      staff,noStaff:staff.length===0,
+      forms:[
+        {t:'Parent & Student Handbook 2015–16',d:'Policies, attendance and expectations'},
+        {t:'Field trip permission form',d:'Required for every off-site trip'},
+        {t:'Master agreement',d:'Signed each learning period'},
+        {t:'Instructional funds request',d:'Order approved curriculum and classes'},
+        {t:'Testing calendar',d:'STAR and CAHSEE dates by center'}
+      ],
+      tabbar:tb.map(([label,p],i)=>{ const a=s.page===p; return {label,...shapes[i],go:()=>this.go(p,p==='events'?{sel:TODAY,ym:[2015,5]}:null),color:a?P:'#5d5a66',bg:a?'#f5f2ff':'#fff'}; })
+    };
+  }
+}
+</script>
+</body>
+</html>

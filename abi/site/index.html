@@ -1,0 +1,767 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><script>if(/[?&]back=1/.test(location.search)){document.addEventListener('DOMContentLoaded',function(){var a=document.createElement('a');a.href='../../Case Study - ABI Mastermind.dc.html#website';a.textContent='← Back to case study';a.style.cssText="position:fixed;left:16px;bottom:16px;z-index:2147483647;padding:12px 18px;border-radius:999px;background:#120A08;color:#fff;font:600 13px/1 system-ui,sans-serif;letter-spacing:.06em;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.35)";document.body.appendChild(a)})}</script></head><body>
+<title>ABI MasterMind Redesign</title>
+<link rel="preload" as="image" href="img/fire-poster.jpg" imagesrcset="img/fire-poster-640.jpg 640w, img/fire-poster.jpg 1280w" imagesizes="100vw" fetchpriority="high">
+<link rel="preload" as="font" type="font/woff2" href="fonts/saira-latin-standard-normal.woff2" crossorigin>
+<meta name="description" content="Concept redesign of the ABI MasterMind site: workforce management for live-event venues.">
+<style>
+@font-face{font-family:"Saira";font-style:normal;font-display:swap;font-weight:100 900;font-stretch:50% 125%;src:url(fonts/saira-latin-standard-normal.woff2) format("woff2-variations")}
+@font-face{font-family:"Saira";font-style:italic;font-display:swap;font-weight:100 900;font-stretch:50% 125%;src:url(fonts/saira-latin-standard-italic.woff2) format("woff2-variations")}
+:root{
+  color-scheme:dark;
+  --red:#d72518; --red-deep:#a81a10; --navy:#142930; --navy-2:#1c3640; --sky:#62bde4;
+  --ink:#0a1216; --paper:#ffffff; --mute:rgba(255,255,255,.62); --line:rgba(255,255,255,.28);
+  --rail:64px; --gutter:clamp(16px,2.8vw,40px);
+  --ease:cubic-bezier(.2,.7,.1,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--paper);font-family:"Saira",system-ui,sans-serif;font-stretch:100%;font-weight:400;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.wide{font-stretch:125%;text-transform:uppercase;letter-spacing:-.01em;line-height:.92}
+.eyebrow{font-stretch:125%;text-transform:uppercase;letter-spacing:.32em;font-size:10px;font-weight:500}
+.reg{font-size:.55em;vertical-align:super;font-weight:400}
+
+/* ---------- fixed chrome ---------- */
+.logo-tab{position:fixed;top:0;padding-top:calc(22px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:60;background:#fff;padding:22px 20px 16px;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:transform .5s var(--ease)}
+.logo-tab img{width:148px;height:auto}
+body.scrolled .logo-tab{transform:translate(-50%,-10px) scale(.86)}
+.menu-btn{position:fixed;top:calc(22px + env(safe-area-inset-top,0px));right:var(--gutter);z-index:80;display:flex;align-items:center;gap:14px;font-size:11px;letter-spacing:.42em;text-transform:uppercase;font-stretch:125%;font-weight:500}
+.menu-btn .bars{width:28px;height:8px;position:relative}
+.menu-btn .bars i{position:absolute;left:0;right:0;height:1.5px;background:currentColor;transition:transform .45s var(--ease),top .45s var(--ease)}
+.menu-btn .bars i:first-child{top:0}.menu-btn .bars i:last-child{top:6px}
+body.menu-open .menu-btn .bars i:first-child{top:3px;transform:rotate(45deg)}
+body.menu-open .menu-btn .bars i:last-child{top:3px;transform:rotate(-45deg)}
+
+.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail);background:var(--red);z-index:70;display:flex;flex-direction:column;align-items:center;padding-top:96px;gap:10px}
+.rail a{position:relative;width:var(--rail);height:52px;display:grid;place-items:center}
+.rail .ic{width:30px;height:30px;background:#fff;-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat;transition:transform .35s var(--ease)}
+.rail a:hover .ic{transform:scale(1.15)}
+.rail .whisper{position:absolute;left:calc(var(--rail) - 4px);top:50%;transform:translate(-8px,-50%);opacity:0;pointer-events:none;white-space:nowrap;background:var(--red);padding:10px 16px 10px 12px;font-stretch:125%;text-transform:uppercase;font-weight:700;font-size:12px;letter-spacing:.08em;transition:opacity .3s,transform .35s var(--ease)}
+.rail a:hover .whisper,.rail a:focus-visible .whisper{opacity:1;transform:translate(0,-50%)}
+.rail a.active::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;background:#fff}
+
+.counter{position:fixed;right:var(--gutter);top:50%;transform:translateY(-50%);z-index:50;width:82px;height:120px;mix-blend-mode:difference}
+.counter .tick{position:absolute;right:0;height:1px;background:#fff;transition:width .6s var(--ease),top .6s var(--ease),opacity .6s}
+.counter .num{position:absolute;left:0;font-size:10px;letter-spacing:.5em;font-stretch:125%;transition:top .6s var(--ease)}
+
+/* ---------- menu overlay ---------- */
+.menu{position:fixed;inset:0;z-index:75;background:var(--red);clip-path:inset(0 0 100% 0);transition:clip-path .8s var(--ease);display:grid;grid-template-columns:1.3fr 1fr;padding:140px calc(var(--gutter) + var(--rail)) 48px calc(var(--rail) + var(--gutter)*2);gap:40px}
+body.menu-open .menu{clip-path:inset(0 0 0 0)}
+.menu nav{display:flex;flex-direction:column;gap:6px}
+.menu nav a{display:flex;align-items:center;gap:22px;font-size:clamp(28px,4.6vw,64px);font-weight:800;opacity:0;transform:translateY(30px);transition:opacity .5s,transform .7s var(--ease),padding .4s var(--ease)}
+.menu nav a .ic{width:.8em;height:.8em;background:#fff;-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat;flex:none}
+.menu nav a:hover{padding-left:20px}
+body.menu-open .menu nav a{opacity:1;transform:none}
+body.menu-open .menu nav a:nth-child(2){transition-delay:.06s}
+body.menu-open .menu nav a:nth-child(3){transition-delay:.12s}
+body.menu-open .menu nav a:nth-child(4){transition-delay:.18s}
+body.menu-open .menu nav a:nth-child(5){transition-delay:.24s}
+.menu aside{align-self:end;font-size:15px;line-height:1.6}
+.menu aside .big{font-size:clamp(28px,3vw,44px);font-weight:800;font-stretch:125%;line-height:1;margin:10px 0 24px}
+
+/* ---------- shared section ---------- */
+section{position:relative;overflow:hidden}
+.pad{padding-left:calc(var(--rail) + var(--gutter));padding-right:calc(var(--gutter) + 110px)}
+.bg{position:absolute;inset:-8% 0;background-size:cover;background-position:center;will-change:transform}
+.shade{position:absolute;inset:0}
+.line-mask{display:block;overflow:hidden;padding-bottom:.04em}
+.line-mask>span{display:inline-block;transform:translateY(105%);transition:transform 1.1s var(--ease)}
+.in .line-mask>span{transform:none}
+.in .line-mask:nth-child(2)>span{transition-delay:.08s}
+.in .line-mask:nth-child(3)>span{transition-delay:.16s}
+.in .line-mask:nth-child(4)>span{transition-delay:.24s}
+.in .l:nth-child(2) .line-mask>span{transition-delay:.1s}
+.in .l:nth-child(3) .line-mask>span{transition-delay:.2s}
+.in .l:nth-child(4) .line-mask>span{transition-delay:.3s}
+.fade{opacity:0;transform:translateY(24px);transition:opacity .9s var(--ease),transform 1s var(--ease)}
+.in .fade,.fade.in{opacity:1;transform:none}
+.btn{display:inline-flex;align-items:center;gap:12px;background:var(--red);color:#fff;padding:13px 20px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;font-stretch:115%;transition:background .3s,gap .3s var(--ease)}
+.btn:hover{background:var(--red-deep);gap:18px}
+.btn.ghost{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
+.btn.ghost:hover{background:rgba(255,255,255,.08)}
+.arrow-ne{width:14px;height:14px;flex:none}
+
+/* ---------- 001 hero ---------- */
+#hero{height:100vh;min-height:700px}
+#hero .bg{background:var(--ink)}
+.hero-media img,.hero-media video,.bg-media img,.bg-media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-media video,.bg-media video{opacity:0;transition:opacity 1.2s var(--ease)}
+.hero-media video.is-playing,.bg-media video.is-playing{opacity:1}
+#hero .shade{background:linear-gradient(90deg,rgba(10,18,22,.85) 0%,rgba(10,18,22,.5) 50%,rgba(10,18,22,.15) 100%),linear-gradient(0deg,rgba(10,18,22,.9) 0%,transparent 45%),radial-gradient(60% 60% at 70% 40%,rgba(215,37,24,.28),transparent 70%)}
+.hero-h1{position:absolute;left:calc(var(--rail) + var(--gutter));top:clamp(120px,17vh,170px);font-size:clamp(40px,6.4vw,96px);font-weight:800}
+.hero-h1 .l{display:block;will-change:transform}
+.hero-h1 .l:nth-child(1){padding-left:0}
+.hero-h1 .l:nth-child(2){padding-left:1.9em}
+.hero-h1 .l:nth-child(3){padding-left:.9em}
+.hero-h1 .l:nth-child(4){padding-left:0}
+.hero-h1 .dot{color:var(--red)}
+.hero-h1{text-shadow:0 2px 30px rgba(10,18,22,.45)}
+.hero-left{position:absolute;left:calc(var(--rail) + var(--gutter) + min(29vw,420px));top:calc(clamp(120px,17vh,170px) + clamp(40px,6.4vw,96px)*4.1);width:220px}
+.hero-left h3{font-size:17px;font-weight:600;line-height:1.25;margin-bottom:16px}
+.hero-left p{font-size:13px;line-height:1.55;color:var(--mute);padding-left:28px}
+.cards{position:absolute;left:calc(var(--rail) + var(--gutter));bottom:34px;display:flex;align-items:flex-end;gap:10px}
+.card{position:relative;width:150px;height:190px;background:rgba(255,255,255,.1);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);overflow:hidden;display:block;transition:transform .5s var(--ease)}
+.card:nth-child(2){height:210px}
+.card img{position:absolute;inset:0;width:100%;height:78%;object-fit:cover;transition:transform .8s var(--ease)}
+.card:hover img{transform:scale(1.08)}
+.card .t{position:absolute;left:12px;bottom:10px;font-size:20px;font-weight:700;font-stretch:125%}
+.card .s{position:absolute;right:10px;bottom:13px;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+.card svg{position:absolute;right:10px;top:10px;width:14px;height:14px;z-index:2}
+.play{position:absolute;left:54%;top:58%;width:150px;height:150px;display:grid;place-items:center}
+.play::before{content:"";position:absolute;inset:0;border:1px solid rgba(255,255,255,.35);transform:rotate(45deg) scale(.72);transition:transform .7s var(--ease)}
+.play .dia{width:64px;height:64px;background:#fff;transform:rotate(45deg);display:grid;place-items:center;transition:transform .5s var(--ease),background .3s}
+.play .dia svg{transform:rotate(-45deg);width:18px;height:18px;margin-left:3px}
+.play:hover::before{transform:rotate(135deg) scale(.9)}
+.play:hover .dia{transform:rotate(45deg) scale(1.1);background:var(--red)}
+.play:hover .dia svg path{fill:#fff}
+.play .ring{position:absolute;inset:-6px;animation:spin 18s linear infinite}
+.play .ring text{font-size:8.6px;letter-spacing:.34em;fill:rgba(255,255,255,.8);font-stretch:125%;text-transform:uppercase}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero-right{position:absolute;right:calc(var(--gutter) + 120px);bottom:48px;display:flex;align-items:center;gap:26px}
+.hero-right .stack{text-align:right;font-size:clamp(22px,2.3vw,34px);font-weight:700}
+.hero-right .mark{width:86px;height:86px;background:#fff;-webkit-mask:url(img/i-mastermind-o.png) center/contain no-repeat;mask:url(img/i-mastermind-o.png) center/contain no-repeat;animation:bob 6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px) rotate(-4deg)}}
+
+/* ---------- 002 platform ---------- */
+#platform{min-height:115vh;padding-top:22vh;padding-bottom:10vh}
+#platform .bg{background:var(--ink)}
+#platform .shade{background:linear-gradient(180deg,var(--ink) 0%,rgba(10,18,22,.45) 22%,rgba(10,18,22,.6) 65%,var(--ink) 100%)}
+.h2{position:relative;font-size:clamp(34px,5.6vw,82px);font-weight:300;max-width:13.5em}
+.h2 b{font-weight:800}
+.plat-grid{position:relative;display:grid;grid-template-columns:minmax(260px,1fr) 1.8fr;gap:40px;margin-top:12vh;align-items:end}
+.plat-copy h4{font-size:clamp(20px,1.7vw,24px);font-weight:700;margin-bottom:22px}
+.plat-copy .row{display:flex;gap:26px;align-items:flex-start}
+.plat-copy p{font-size:14px;line-height:1.6;color:var(--mute);max-width:230px}
+.plat-copy .btn{margin-top:30px}
+.mosaic{position:relative;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,minmax(150px,17vw));max-height:420px}
+.tile{position:relative;padding:22px 20px;background:rgba(160,175,182,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:flex;flex-direction:column;justify-content:space-between;will-change:transform;transition:background .4s}
+.tile:hover{background:rgba(215,37,24,.8)}
+.tile .n{font-size:clamp(26px,2.6vw,38px);font-weight:300;font-stretch:125%;line-height:1}
+.tile .d{font-size:12px;line-height:1.35;color:rgba(255,255,255,.8);max-width:13ch}
+.tile svg{position:absolute;right:14px;top:14px;width:13px;height:13px}
+.tile.img{padding:0;background:none;overflow:hidden}
+.tile.img picture{display:block;width:100%;height:100%}
+.tile.img img{width:100%;height:100%;object-fit:cover;transition:transform 1s var(--ease)}
+.tile.img:hover img{transform:scale(1.05)}
+.tile.dark{background:rgba(10,18,22,.72)}
+.tile.photo{overflow:hidden;background:var(--ink)}
+.tile.photo picture,.tile.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:45% 60%;transition:transform 1s var(--ease)}
+.tile.photo::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(10,18,22,.55) 0%,rgba(10,18,22,.1) 45%,rgba(10,18,22,.8) 100%)}
+.tile.photo .n,.tile.photo .d{position:relative;z-index:2}
+.tile.photo:hover{background:var(--ink)}
+.tile.photo:hover img{transform:scale(1.07)}
+.m1{grid-column:2;grid-row:1}.m2{grid-column:3/5;grid-row:1}
+.m3{grid-column:1;grid-row:2}.m4{grid-column:2;grid-row:2}.m5{grid-column:3;grid-row:2}.m6{grid-column:4;grid-row:2}
+
+/* ---------- 003 venues ---------- */
+#venues{padding-top:14vh;padding-bottom:12vh;background:var(--ink)}
+.venues-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:48px}
+.venues-head .h2{font-weight:800}
+.venues-head .h2 .l2{display:block;padding-left:1.4em;font-weight:300}
+.rail-ctl{display:flex;gap:8px;flex:none}
+.rail-ctl button{width:48px;height:48px;border:1px solid var(--line);display:grid;place-items:center;transition:background .3s}
+.rail-ctl button:hover{background:var(--red);border-color:var(--red)}
+.vtrack{scroll-padding-left:calc(var(--rail) + var(--gutter));display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x proximity;padding-left:calc(var(--rail) + var(--gutter));padding-right:var(--gutter);scrollbar-width:none;cursor:grab}
+.vtrack::-webkit-scrollbar{display:none}
+.vtrack.drag{cursor:grabbing;scroll-snap-type:none}
+.vcard{position:relative;flex:none;width:clamp(230px,22vw,320px);aspect-ratio:3/4;overflow:hidden;scroll-snap-align:start;background:var(--red)}
+.vcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.15) brightness(1.1);mix-blend-mode:luminosity;opacity:.85;transition:filter .7s var(--ease),transform 1s var(--ease),mix-blend-mode 0s .1s}
+.vcard::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,41,48,.25) 0%,rgba(20,41,48,0) 25%,rgba(20,41,48,0) 45%,rgba(20,41,48,.85) 100%);opacity:.75;transition:opacity .6s}
+.vcard:hover img{filter:none;mix-blend-mode:normal;transform:scale(1.06)}
+.vcard:hover::after{opacity:1}
+.vcard .idx{position:absolute;top:16px;left:18px;z-index:2;font-size:12px;letter-spacing:.2em;font-stretch:125%}
+.vcard h3{position:absolute;left:18px;right:18px;bottom:20px;z-index:2;font-size:clamp(20px,1.8vw,26px);font-weight:800;line-height:1}
+.vcard .stat{position:absolute;right:16px;top:12px;z-index:2;text-align:right;font-weight:800;font-stretch:125%;font-size:42px;line-height:1}
+.vcard .stat small{display:block;font-size:9px;letter-spacing:.2em;font-weight:500}
+.progress{height:1px;background:var(--line);margin:34px calc(var(--gutter) + 110px) 0 calc(var(--rail) + var(--gutter));position:relative}
+.progress i{position:absolute;left:0;top:-1px;height:3px;background:var(--red);width:20%}
+
+/* ---------- 004 mastermind (palette shift) ---------- */
+#mastermind{background:var(--navy);padding-top:16vh;padding-bottom:14vh}
+#mastermind::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,transparent 0 118px,rgba(255,255,255,.035) 118px 119px);pointer-events:none}
+.mm-top{position:relative;display:grid;grid-template-columns:1.1fr 1fr;gap:30px;align-items:center}
+.mm-h{font-size:clamp(44px,7vw,108px);font-weight:300}
+.mm-h .l{display:block}
+.mm-h .l:nth-child(2){padding-left:1.4em;font-weight:800}
+.mm-h .l:nth-child(3){padding-left:.6em;color:var(--sky)}
+.brain{position:relative;width:min(100%,520px);justify-self:end;aspect-ratio:940/960;will-change:transform}
+.brain img{width:100%;height:100%;object-fit:cover;clip-path:polygon(8% 0,100% 0,100% 88%,88% 100%,0 100%,0 8%)}
+.hot{position:absolute;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;background:var(--red);border:2px solid #fff;display:grid;place-items:center;z-index:2;transition:transform .35s var(--ease),background .3s}
+.hot::before{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(255,255,255,.7);animation:pulse 2.4s var(--ease) infinite}
+.hot svg{width:14px;height:14px;transition:transform .4s var(--ease)}
+.hot.on{background:var(--navy);transform:scale(1.15)}
+.hot.on svg{transform:rotate(45deg)}
+@keyframes pulse{0%{transform:scale(.7);opacity:1}100%{transform:scale(1.6);opacity:0}}
+.callout{position:absolute;z-index:3;width:min(300px,70%);background:var(--navy);border:1px solid rgba(255,255,255,.7);padding:18px 20px;font-size:14px;line-height:1.55;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .35s,transform .45s var(--ease)}
+.callout.on{opacity:1;transform:none}
+.callout b{font-style:italic}
+.modules{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,48px);margin-top:12vh}
+.module{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:18px;row-gap:22px;padding-top:22px;border-top:1px solid var(--line);cursor:pointer;transition:border-color .4s}
+.module h3{font-size:clamp(18px,1.6vw,23px);font-weight:600;grid-column:1;grid-row:1;align-self:start;max-width:7.5em}
+.module p{grid-column:2;grid-row:1/3;font-size:13px;line-height:1.55;color:var(--mute);padding-top:48px;max-width:26ch}
+.module .no{grid-column:1;grid-row:2;align-self:end;font-size:clamp(22px,2vw,28px);font-stretch:125%;font-weight:300;color:rgba(255,255,255,.45);transition:color .3s}
+.module.on,.module:hover{border-color:var(--red)}
+.module.on .no,.module:hover .no{color:var(--red)}
+
+/* ---------- 005 clients ---------- */
+#clients{background:#df2518;min-height:88vh;display:grid;grid-template-columns:1fr 1.15fr}
+.cl-photo{position:relative;min-height:60vh;overflow:hidden}
+.cl-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center;transform:scale(1.04);transition:transform 6s linear}
+#clients.in .cl-photo img{transform:scale(1)}
+.quotes{position:relative;padding:18vh calc(var(--gutter) + 120px) 12vh 0;display:flex;flex-direction:column;justify-content:center}
+.quote{position:absolute;inset:auto calc(var(--gutter) + 120px) auto 0;opacity:0;transform:translateX(30px);transition:opacity .6s,transform .8s var(--ease);pointer-events:none}
+.quote.on{position:relative;inset:auto;opacity:1;transform:none;pointer-events:auto}
+.quote blockquote{font-size:clamp(22px,2.5vw,36px);font-weight:600;line-height:1.2;font-style:italic;text-wrap:balance}
+.quote blockquote::before{content:"“";display:block;font-size:2.8em;line-height:.6;font-style:normal;font-weight:800;margin-bottom:8px}
+.quote cite{display:block;margin-top:28px;font-style:normal;font-size:14px;line-height:1.5}
+.quote cite b{display:block;font-size:16px}
+.q-ctl{display:flex;align-items:center;gap:18px;margin-top:44px}
+.q-ctl button{width:44px;height:44px;border:1px solid rgba(255,255,255,.6);display:grid;place-items:center;transition:background .3s}
+.q-ctl button:hover{background:var(--navy);border-color:var(--navy)}
+.q-ctl .q-no{font-stretch:125%;letter-spacing:.3em;font-size:12px}
+.q-ctl .btn{margin-left:auto;background:var(--navy)}
+.q-ctl .btn:hover{background:#0b1a1f}
+
+/* ---------- gates banner ---------- */
+#gates{height:92vh;min-height:560px;display:flex;align-items:flex-end}
+#gates .bg{background:var(--ink)}
+#gates .shade{background:linear-gradient(0deg,rgba(10,18,22,.95) 5%,rgba(10,18,22,.55) 50%,rgba(10,18,22,.7) 100%)}
+.gates-in{position:relative;width:100%;padding-bottom:22vh;display:flex;justify-content:space-between;align-items:flex-end;gap:40px}
+.gates-in .h2{font-weight:800;font-size:clamp(46px,8vw,128px)}
+.gates-in .h2 .l{display:block}.gates-in .h2 .l:nth-child(2){padding-left:1.2em}
+.gates-in aside{max-width:300px;font-size:15px;line-height:1.6;color:rgba(255,255,255,.82)}
+.gates-in aside .btn{margin-top:22px}
+
+/* ---------- 006 the scene (slate section) ---------- */
+#scene{background:#5e6b72;padding-top:16vh;padding-bottom:14vh}
+.scene-top{position:relative;display:grid;grid-template-columns:1.4fr .6fr;align-items:start;gap:40px}
+.scene-h{font-size:clamp(46px,7.4vw,112px);font-weight:300}
+.scene-h .l{display:block}.scene-h .l:nth-child(2){padding-left:1.6em;font-weight:800}.scene-h .l:nth-child(3){padding-left:3.6em}
+.scene-img{position:relative;width:min(100%,250px);aspect-ratio:195/280;overflow:hidden;margin-top:1vh;will-change:transform}
+.scene-img img{width:100%;height:100%;object-fit:cover}
+.scene-img .icon{position:absolute;left:14px;bottom:14px;width:34px;height:40px;background:#fff;-webkit-mask:url(img/i-scene.png) center/contain no-repeat;mask:url(img/i-scene.png) center/contain no-repeat}
+.posts{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,48px);margin-top:12vh}
+.post{display:grid;grid-template-columns:1fr 1fr;column-gap:18px}
+.post h3{font-size:clamp(17px,1.45vw,21px);font-weight:600;grid-column:1;line-height:1.05}
+.post .meta{grid-column:2;grid-row:1/3;font-size:13px;line-height:1.55;color:rgba(255,255,255,.85);padding-top:52px}
+.post .meta em{display:block;font-style:normal;color:rgba(255,255,255,.62);margin-bottom:10px;font-size:12px}
+.post .no{grid-column:1;grid-row:2;align-self:end;font-size:clamp(22px,2vw,28px);font-stretch:125%;font-weight:300;color:rgba(255,255,255,.55);margin-top:36px}
+.post .read{grid-column:2;margin-top:16px;display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;border-bottom:1px solid #fff;padding-bottom:4px;justify-self:start;transition:gap .3s var(--ease)}
+.post .read:hover{gap:14px}
+
+/* ---------- 007 contact ---------- */
+#contact{min-height:100vh;padding-top:20vh;padding-bottom:10vh}
+#contact .bg{background:var(--ink)}
+#contact .shade{background:linear-gradient(180deg,rgba(10,18,22,.1) 0%,rgba(10,18,22,.35) 50%,var(--ink) 96%)}
+.ct-grid{position:relative;display:grid;grid-template-columns:1.2fr 1fr;gap:6vw;align-items:end}
+.ct-h{font-size:clamp(40px,5.8vw,92px);font-weight:800;white-space:nowrap}
+.ct-h .l{display:block}.ct-h .l:nth-child(2){padding-left:1.3em;font-weight:300}.ct-h .l:nth-child(3){padding-left:.5em;color:var(--red)}
+.form .phone{font-size:clamp(34px,3.6vw,54px);font-weight:700;font-stretch:115%;letter-spacing:.01em;display:inline-block;margin:10px 0 24px;transition:color .3s}
+.form .phone:hover{color:var(--sky)}
+.form textarea,.form input{width:100%;background:rgba(255,255,255,.06);border:0;border-bottom:1px solid var(--line);color:#fff;font:inherit;font-size:15px;padding:16px 14px;outline:none;transition:border-color .3s,background .3s}
+.form textarea{height:120px;resize:none}
+.form textarea:focus,.form input:focus{border-color:var(--sky);background:rgba(255,255,255,.1)}
+.form ::placeholder{color:rgba(255,255,255,.5);font-style:italic}
+.form .row{display:grid;grid-template-columns:1fr 1fr auto}
+.form .send{width:58px;background:var(--red);display:grid;place-items:center;transition:background .3s}
+.form .send:hover{background:var(--red-deep)}
+.form .note{font-size:12px;color:var(--mute);margin-top:12px;min-height:1.4em}
+
+/* ---------- footer ---------- */
+footer{display:grid;grid-template-columns:1fr 1fr;background:var(--red)}
+.ft-img{position:relative;min-height:380px;overflow:hidden}
+.ft-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;transition:transform 8s linear}
+footer:hover .ft-img img{transform:scale(1.04)}
+.ft-copy{padding:48px calc(var(--gutter) + 20px) 44px 40px;display:flex;flex-direction:column;justify-content:space-between;gap:30px}
+.ft-copy address{font-style:normal;font-size:15px;line-height:1.55}
+.ft-copy address b{font-weight:800}
+.ft-big{font-size:clamp(46px,6.2vw,92px);font-weight:800}
+.ft-big .l{display:block}.ft-big .l:nth-child(2){padding-left:.9em}.ft-big .l:nth-child(3){padding-left:1.8em}
+.ft-copy small{font-size:13px;font-weight:500}
+.legal{background:var(--ink);padding:18px var(--gutter) 18px calc(var(--rail) + var(--gutter));font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+/* ---------- article drawer ---------- */
+.drawer{position:fixed;inset:0;z-index:90;pointer-events:none}
+.drawer .veil{position:absolute;inset:0;background:rgba(10,18,22,.7);opacity:0;transition:opacity .5s}
+.drawer .panel{position:absolute;top:0;right:0;bottom:0;width:min(760px,100%);background:#fff;color:#1a2328;overflow-y:auto;transform:translateX(100%);transition:transform .8s var(--ease)}
+.drawer.on{pointer-events:auto}.drawer.on .veil{opacity:1}.drawer.on .panel{transform:none}
+.panel .cover{position:relative;height:300px;background:url(img/field.jpg) center 60%/cover;display:flex;align-items:flex-end;padding:30px 40px}
+.panel .cover::before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(10,18,22,.85),rgba(10,18,22,.1))}
+.panel .cover h2{position:relative;color:#fff;font-size:clamp(28px,3.4vw,44px);font-weight:800}
+.panel .tag{position:relative;display:inline-block;background:var(--red);color:#fff;font-size:11px;letter-spacing:.2em;text-transform:uppercase;padding:6px 10px;margin-bottom:14px}
+.panel .x{position:absolute;top:18px;right:18px;z-index:2;width:44px;height:44px;background:#fff;display:grid;place-items:center}
+.panel article{padding:36px 40px 70px;font-size:16px;line-height:1.72}
+.panel article p{margin-bottom:1.1em}
+.panel article h4{font-stretch:125%;text-transform:uppercase;font-weight:800;font-size:15px;margin:2em 0 .5em;color:var(--navy)}
+.panel .by{font-size:14px;color:#56646b;margin-bottom:1.6em}
+.panel .pull{background:var(--red);color:#fff;padding:24px 26px;margin:1.8em 0;font-style:italic;font-weight:600;font-size:19px;line-height:1.4}
+.panel .pull cite{display:block;font-style:normal;font-weight:400;font-size:13px;margin-top:12px}
+
+/* ---------- responsive ---------- */
+@media (max-width:1024px){
+  .hero-left{display:none}
+  .play{left:auto;right:12%;top:auto;bottom:24%}
+  .plat-grid{grid-template-columns:1fr}
+  .mm-top,.scene-top{grid-template-columns:1fr}
+  .brain{justify-self:start}
+  .modules,.posts{grid-template-columns:1fr;gap:30px}
+  .module p,.post .meta{padding-top:0}
+  #clients{grid-template-columns:1fr}
+  .cl-photo{clip-path:polygon(0 0,100% 0,100% 80%,0 100%);min-height:44vh}
+  .quotes{padding:40px var(--gutter) 60px calc(var(--rail) + var(--gutter))}
+  .quote{inset:auto var(--gutter) auto calc(var(--rail) + var(--gutter))}
+  .ct-grid{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  :root{--rail:0px}
+  .rail,.counter{display:none}
+  .pad{padding-left:16px;padding-right:16px}
+  .logo-tab{padding:16px 14px 12px}.logo-tab img{width:112px}
+  .menu-btn span.lbl{display:none}
+  .menu{grid-template-columns:1fr;padding:110px 20px 32px}
+  .hero-h1{left:16px;top:120px;font-size:clamp(34px,10vw,54px)}
+  .cards{left:16px;bottom:24px}
+  .card{width:112px;height:150px}.card:nth-child(2){height:164px}
+  .play{width:110px;height:110px;right:16px;bottom:210px}
+  .hero-right{right:16px;bottom:auto;top:calc(120px + clamp(34px,10vw,54px)*4.2)}
+  .hero-right .mark{display:none}
+  .hero-right .stack{font-size:18px}
+  .mosaic{grid-template-columns:repeat(2,1fr);grid-template-rows:none;max-height:none}
+  .mosaic .tile{min-height:150px}
+  .m1,.m2,.m3,.m4,.m5,.m6{grid-column:auto;grid-row:auto}
+  .m2{grid-column:1/3}
+  .venues-head{flex-direction:column;align-items:flex-start}
+  .vtrack{padding-left:16px}
+  .progress{margin-left:16px;margin-right:16px}
+  .quotes,.quote{padding-left:16px;padding-right:16px}
+  .quote{inset:auto 16px}
+  .q-ctl{flex-wrap:wrap}.q-ctl .btn{margin-left:0}
+  .gates-in{flex-direction:column;align-items:flex-start}
+  .post{grid-template-columns:1fr}.post .meta,.post .read{grid-column:1;grid-row:auto}.post .no{margin-top:14px}
+  .form .row{grid-template-columns:1fr}.form .send{width:100%;height:52px}
+  footer{grid-template-columns:1fr}.ft-img{min-height:240px}.ft-copy{padding:36px 16px}
+  .legal{padding-left:16px}
+  .panel .cover,.panel article{padding-left:20px;padding-right:20px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+  .line-mask>span,.fade{transform:none!important;opacity:1!important}
+  html{scroll-behavior:auto}
+}
+</style>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ne" viewBox="0 0 14 14"><path d="M2 12 12 2M4 2h8v8" fill="none" stroke="currentColor" stroke-width="1.3"/></symbol>
+  <symbol id="plus" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2.4"/></symbol>
+  <symbol id="arr" viewBox="0 0 16 16"><path d="M1 8h13M9 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+</svg>
+
+<a class="logo-tab" href="#hero" aria-label="ABI MasterMind home"><img src="img/logo.jpg" alt="ABI MasterMind"></a>
+<button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu"><span class="lbl">Menu</span><span class="bars"><i></i><i></i></span></button>
+
+<nav class="rail" aria-label="Quick links">
+  <a href="#mastermind" data-sec="mastermind"><span class="ic" style="--m:url(img/i-mastermind.png)"></span><span class="whisper">ABI MasterMind®</span></a>
+  <a href="#venues" data-sec="venues"><span class="ic" style="--m:url(img/i-about.png)"></span><span class="whisper">Venues</span></a>
+  <a href="#clients" data-sec="clients"><span class="ic" style="--m:url(img/i-peripherals.png)"></span><span class="whisper">Clients</span></a>
+  <a href="#scene" data-sec="scene"><span class="ic" style="--m:url(img/i-scene.png)"></span><span class="whisper">The Scene</span></a>
+  <a href="#contact" data-sec="contact"><span class="ic" style="--m:url(img/i-support.png)"></span><span class="whisper">Support</span></a>
+</nav>
+
+<div class="menu" id="menu" aria-hidden="true">
+  <nav class="wide">
+    <a href="#mastermind"><span class="ic" style="--m:url(img/i-mastermind.png)"></span>ABI MasterMind®</a>
+    <a href="#venues"><span class="ic" style="--m:url(img/i-about.png)"></span>Venues</a>
+    <a href="#clients"><span class="ic" style="--m:url(img/i-peripherals.png)"></span>Clients</a>
+    <a href="#scene"><span class="ic" style="--m:url(img/i-scene.png)"></span>The Scene</a>
+    <a href="#contact"><span class="ic" style="--m:url(img/i-support.png)"></span>Support</a>
+  </nav>
+  <aside>
+    <div class="eyebrow">Talk to us today</div>
+    <div class="big">1.916.381.3809</div>
+    ABI · 4150 Florin Perkins Road, Suite B<br>Sacramento, CA 95826<br>info@abico.com
+  </aside>
+</div>
+
+<div class="counter" aria-hidden="true" id="counter"></div>
+
+<main>
+<!-- 001 -->
+<section id="hero" data-num="1">
+  <div class="bg hero-media" data-scale>
+    <img src="img/fire-poster.jpg" srcset="img/fire-poster-640.jpg 640w, img/fire-poster.jpg 1280w" sizes="100vw" alt="" fetchpriority="high" decoding="async">
+    <video id="heroVideo" data-bgvideo="hero" muted playsinline loop preload="none" disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
+  </div><div class="shade"></div>
+  <h1 class="hero-h1 wide">
+    <span class="l" data-drift="-60"><span class="line-mask"><span>Proudly</span></span></span>
+    <span class="l" data-drift="50"><span class="line-mask"><span>Serving</span></span></span>
+    <span class="l" data-drift="-30"><span class="line-mask"><span>400+ Venue</span></span></span>
+    <span class="l" data-drift="70"><span class="line-mask"><span>Clients<span class="dot">.</span></span></span></span>
+  </h1>
+  <div class="hero-left fade">
+    <h3>Across North America</h3>
+    <p>ABI MasterMind® is the world’s premier workforce management solution for the venues that run the show.</p>
+  </div>
+  <div class="cards fade">
+    <a class="card" href="#mastermind" data-par="-.08"><img src="img/brain.jpg" alt=""><svg><use href="#ne"/></svg><span class="t">MM®</span><span class="s">Platform</span></a>
+    <a class="card" href="#venues" data-par="-.16"><picture><source srcset="img/v-fnb.webp" type="image/webp"><img src="img/v-fnb.jpg" alt="" decoding="async"></picture><svg><use href="#ne"/></svg><span class="t">93</span><span class="s">F&amp;B</span></a>
+  </div>
+  <a class="play" href="#contact" aria-label="Request a demo" data-par=".1">
+    <svg class="ring" viewBox="0 0 162 162"><defs><path id="circ" d="M81 81m-70 0a70 70 0 1 1 140 0a70 70 0 1 1-140 0"/></defs><text><textPath href="#circ">Request a demo · Request a demo · Request a demo ·</textPath></text></svg>
+    <span class="dia"><svg viewBox="0 0 18 18"><path d="M3 1l13 8-13 8z" fill="#142930"/></svg></span>
+  </a>
+  <div class="hero-right fade">
+    <div class="stack wide">We<br>Run This<br>Show.</div>
+    <span class="mark" aria-hidden="true"></span>
+  </div>
+</section>
+
+<!-- 002 -->
+<section id="platform" class="pad" data-num="2">
+  <div class="bg bg-media" data-par=".12">
+    <img src="img/lights-poster.jpg" srcset="img/lights-poster-640.jpg 640w, img/lights-poster.jpg 1280w" sizes="100vw" alt="" loading="lazy" decoding="async">
+    <video data-bgvideo="lights" data-lazy muted playsinline loop preload="none" disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
+  </div><div class="shade"></div>
+  <h2 class="h2 wide reveal">
+    <span class="line-mask"><span>The world’s</span></span>
+    <span class="line-mask"><span><b>premier workforce</b></span></span>
+    <span class="line-mask"><span>management</span></span>
+    <span class="line-mask"><span><b>solution</b></span></span>
+  </h2>
+  <div class="plat-grid">
+    <div class="plat-copy fade">
+      <h4 class="wide">An Art<br>And a<br>Science</h4>
+      <div class="row">
+        <svg style="width:48px;height:48px;flex:none;margin-top:6px"><use href="#ne"/></svg>
+        <p>Making sure you have enough staff to give every guest the best experience is an art and a science. MasterMind® helps you strike that balance, and be smart about every hour of labor.</p>
+      </div>
+      <a class="btn" href="#mastermind">Explore MasterMind® <svg class="arrow-ne"><use href="#arr"/></svg></a>
+    </div>
+    <div class="mosaic">
+      <div class="tile dark m1" data-par="-.05"><span class="n">400+</span><span class="d">Venue clients in North America</span></div>
+      <div class="tile img m2" data-par="-.12"><picture><source srcset="img/arena.webp" type="image/webp"><img src="img/arena.jpg" alt="Packed arena during pregame introductions" loading="lazy" decoding="async" width="1000" height="563" style="object-position:50% 60%"></picture></div>
+      <div class="tile m3" data-par=".06"><svg><use href="#ne"/></svg><span class="n">93</span><span class="d">Food &amp; beverage venue clients</span></div>
+      <div class="tile img m4" data-par=".14"><img src="img/field.jpg" alt="Empty stadium field before gates open" loading="lazy"></div>
+      <div class="tile m5" data-par="-.02"><svg><use href="#ne"/></svg><span class="n">~9%</span><span class="d">Annual labor cost saved with staggered staffing</span></div>
+      <div class="tile dark m6" data-par=".1"><svg><use href="#ne"/></svg><span class="n">10</span><span class="d">Venue types, one platform</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 003 -->
+<section id="venues" data-num="3">
+  <div class="venues-head pad">
+    <h2 class="h2 wide reveal"><span class="line-mask"><span>Every venue.</span></span><span class="line-mask l2"><span>Every shift.</span></span></h2>
+    <div class="rail-ctl"><button id="vPrev" aria-label="Previous"><svg style="width:16px;height:16px;transform:scaleX(-1)"><use href="#arr"/></svg></button><button id="vNext" aria-label="Next"><svg style="width:16px;height:16px"><use href="#arr"/></svg></button></div>
+  </div>
+  <div class="vtrack" id="vtrack">
+    <article class="vcard"><picture><source srcset="img/v-arenas.webp" type="image/webp"><img src="img/v-arenas.jpg" alt="" loading="lazy" decoding="async" width="600" height="800"></picture><span class="idx">01</span><h3 class="wide">Arenas</h3></article>
+    <article class="vcard"><picture><source srcset="img/v-stadiums.webp" type="image/webp"><img src="img/v-stadiums.jpg" alt="" loading="lazy" decoding="async" width="600" height="800"></picture><span class="idx">02</span><h3 class="wide">Stadiums</h3></article>
+    <article class="vcard"><picture><source srcset="img/v-clubs.webp" type="image/webp"><img src="img/v-clubs.jpg" alt="" loading="lazy" decoding="async" width="600" height="800"></picture><span class="idx">03</span><h3 class="wide">Clubs, Theatres &amp; Performing Arts</h3></article>
+    <article class="vcard"><picture><source srcset="img/v-colleges.webp" type="image/webp"><img src="img/v-colleges.jpg" alt="" loading="lazy" decoding="async" width="600" height="800"></picture><span class="idx">04</span><h3 class="wide">Colleges &amp; Universities</h3></article>
+    <article class="vcard"><picture><source srcset="img/v-convention.webp" type="image/webp"><img src="img/v-convention.jpg" alt="" loading="lazy" decoding="async" width="600" height="800"></picture><span class="idx">05</span><h3 class="wide">Convention Centers</h3></article>
+    <article class="vcard"><picture><source srcset="img/v-festivals.webp" type="image/webp"><img src="img/v-festivals.jpg" alt="" loading="lazy" decoding="async" width="600" height="800"></picture><span class="idx">06</span><h3 class="wide">Festivals</h3></article>
+    <article class="vcard"><picture><source srcset="img/v-fnb.webp" type="image/webp"><img src="img/v-fnb.jpg" alt="" loading="lazy" decoding="async" width="600" height="800"></picture><span class="idx">07</span><span class="stat">93<small>Venue clients</small></span><h3 class="wide">Food &amp; Beverage</h3></article>
+    <article class="vcard"><picture><source srcset="img/v-motorsports.webp" type="image/webp"><img src="img/v-motorsports.jpg" alt="" loading="lazy" decoding="async" width="600" height="800"></picture><span class="idx">08</span><h3 class="wide">Motorsports</h3></article>
+    <article class="vcard"><img src="img/v-resorts.jpg" alt="" loading="lazy"><span class="idx">09</span><h3 class="wide">Resorts &amp; Destinations</h3></article>
+    <article class="vcard"><img src="img/v-staffing.jpg" alt="" loading="lazy"><span class="idx">10</span><h3 class="wide">Staffing Services</h3></article>
+  </div>
+  <div class="progress"><i id="vbar"></i></div>
+</section>
+
+<!-- 004 -->
+<section id="mastermind" class="pad" data-num="4">
+  <div class="mm-top">
+    <h2 class="mm-h wide reveal">
+      <span class="l" data-drift="-40"><span class="line-mask"><span>ABI</span></span></span>
+      <span class="l" data-drift="40"><span class="line-mask"><span>Master</span></span></span>
+      <span class="l" data-drift="-20"><span class="line-mask"><span>Mind<span class="reg">®</span></span></span></span>
+    </h2>
+    <div class="brain fade" id="brain" data-par="-.06">
+      <img src="img/brain.jpg" alt="Low-poly brain illustration from the original ABI MasterMind site">
+      <button class="hot" style="left:24.7%;top:68%" data-m="0" aria-label="Lost and Found"><svg><use href="#plus"/></svg></button>
+      <button class="hot" style="left:45.4%;top:22.7%" data-m="1" aria-label="Employee Self Service"><svg><use href="#plus"/></svg></button>
+      <button class="hot" style="left:86%;top:50.6%" data-m="2" aria-label="Labor Cost Reporting"><svg><use href="#plus"/></svg></button>
+      <div class="callout" id="callout"></div>
+    </div>
+  </div>
+  <div class="modules">
+    <div class="module fade" data-m="0"><h3 class="wide">Lost &amp; Found Tracking</h3><p>Helps reunite your guests with their missing items. It tracks what was lost or found, when, and where.</p><span class="no">[001]</span></div>
+    <div class="module fade" data-m="1"><h3 class="wide">Employee Self Service</h3><p>Saves you time dealing with employee-generated paper and gets information into the hands of your employees faster, from any web or mobile browser.</p><span class="no">[002]</span></div>
+    <div class="module fade" data-m="2"><h3 class="wide">Labor Cost Reporting</h3><p>Staff to attendance, not to habit. Staggered staffing levels saved the Oakland A’s approximately 9% in annual labor costs.</p><span class="no">[003]</span></div>
+  </div>
+</section>
+
+<!-- 005 -->
+<section id="clients" data-num="5">
+  <div class="cl-photo"><img src="img/face.jpg" alt="Fan watching from the stands"></div>
+  <div class="quotes">
+    <div class="eyebrow" style="margin-bottom:28px">Client testimonials</div>
+    <figure class="quote on">
+      <blockquote>The ABI MasterMind® system … gave us instant infrastructure and served us better than any system that I had seen or used in my 41 years in the crowd management business.</blockquote>
+      <cite><b>Peter C. Kranske</b>President — COO, Landmark Event Services</cite>
+    </figure>
+    <figure class="quote">
+      <blockquote>I feel that is a huge benefit for any company small or large as it will alleviate the need for extra spreadsheets and paperwork — it’s all in the system for you to print out.</blockquote>
+      <cite><b>Julia Hill</b>Facility Security Manager, Rose Quarter</cite>
+    </figure>
+    <div class="q-ctl">
+      <button id="qPrev" aria-label="Previous testimonial"><svg style="width:16px;height:16px;transform:scaleX(-1)"><use href="#arr"/></svg></button>
+      <span class="q-no" id="qNo">01 / 02</span>
+      <button id="qNext" aria-label="Next testimonial"><svg style="width:16px;height:16px"><use href="#arr"/></svg></button>
+      <a class="btn" href="#contact">See more client testimonials</a>
+    </div>
+  </div>
+</section>
+
+<!-- gates banner -->
+<section id="gates" class="pad" data-num="5">
+  <div class="bg bg-media" data-par=".15">
+    <img src="img/gates-poster.jpg" srcset="img/gates-poster-640.jpg 640w, img/gates-poster.jpg 960w" sizes="100vw" alt="" loading="lazy" decoding="async">
+    <video data-bgvideo="gates" data-lazy muted playsinline loop preload="none" disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
+  </div><div class="shade"></div>
+  <div class="gates-in">
+    <h2 class="h2 wide reveal"><span class="l" data-drift="-50"><span class="line-mask"><span>Gates open,</span></span></span><span class="l" data-drift="50"><span class="line-mask"><span>game on!</span></span></span></h2>
+    <aside class="fade">Right staff, right post, right time. See exactly where labor goes from ingress to egress.<br><a class="btn" href="#mastermind">Learn more about labor cost reporting</a></aside>
+  </div>
+</section>
+
+<!-- 006 -->
+<section id="scene" class="pad" data-num="6">
+  <div class="scene-top">
+    <h2 class="scene-h wide reveal">
+      <span class="l" data-drift="-40"><span class="line-mask"><span>Stories</span></span></span>
+      <span class="l" data-drift="30"><span class="line-mask"><span>From the</span></span></span>
+      <span class="l" data-drift="-60"><span class="line-mask"><span>Scene</span></span></span>
+    </h2>
+    <div class="scene-img fade" data-par="-.1"><img src="img/night.jpg" alt=""><span class="icon"></span></div>
+  </div>
+  <div class="posts">
+    <div class="post fade">
+      <h3 class="wide">Staggered Staffing and Staggering Costs</h3>
+      <div class="meta"><em>By Aaron Dukovich · Oct 19, 2015</em>It was a beautiful evening before the game. The venue was prepped and clean. The team was getting ready in the locker room…</div>
+      <span class="no">[001]</span>
+      <button class="read" data-open>Read more <svg style="width:14px;height:14px"><use href="#arr"/></svg></button>
+    </div>
+    <div class="post fade">
+      <h3 class="wide">Story From the Field</h3>
+      <div class="meta"><em>From “Staggered Staffing”</em>A section only sold ten tickets, so one usher covered a wider area. One of those ten tickets belonged to a brutally rude heckler…</div>
+      <span class="no">[002]</span>
+      <button class="read" data-open="field">Read more <svg style="width:14px;height:14px"><use href="#arr"/></svg></button>
+    </div>
+    <div class="post fade">
+      <h3 class="wide">Blogs Are On Their Way</h3>
+      <div class="meta"><em>By Michael Haarstad · Sep 10, 2015</em>Soon enough our blogs will be here and updated regularly.</div>
+      <span class="no">[003]</span>
+    </div>
+  </div>
+</section>
+
+<!-- 007 -->
+<section id="contact" class="pad" data-num="7">
+  <div class="bg bg-media" data-par=".12">
+    <img src="img/rock-poster.jpg" srcset="img/rock-poster-640.jpg 640w, img/rock-poster.jpg 1280w" sizes="100vw" alt="" loading="lazy" decoding="async">
+    <video data-bgvideo="rock" data-lazy muted playsinline loop preload="none" disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
+  </div><div class="shade"></div>
+  <div class="ct-grid">
+    <h2 class="ct-h wide reveal">
+      <span class="l" data-drift="-40"><span class="line-mask"><span>Ready to</span></span></span>
+      <span class="l" data-drift="40"><span class="line-mask"><span>Rock n’</span></span></span>
+      <span class="l" data-drift="-20"><span class="line-mask"><span>Roll?</span></span></span>
+    </h2>
+    <form class="form fade" id="form" novalidate>
+      <div class="eyebrow">Talk to us today to get started</div>
+      <a class="phone" href="tel:+19163813809">1.916.381.3809</a>
+      <textarea placeholder="Send us a message…" aria-label="Message"></textarea>
+      <div class="row">
+        <input placeholder="Your name" aria-label="Your name">
+        <input placeholder="Your email" type="email" aria-label="Your email">
+        <button class="send" type="submit" aria-label="Request a demo"><svg style="width:18px;height:18px"><use href="#arr"/></svg></button>
+      </div>
+      <div class="note" id="note"></div>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="ft-img"><picture><source srcset="img/show.webp" type="image/webp"><img src="img/show.jpg" alt="Aerial view of a packed crowd in front of a festival stage" loading="lazy" decoding="async" width="960" height="720"></picture></div>
+  <div class="ft-copy">
+    <address><b>ABI</b><br>4150 Florin Perkins Road, Suite B<br>Sacramento, CA 95826<br>info@abico.com<br>(916) 381-3809</address>
+    <div class="ft-big wide"><span class="l">We run</span><span class="l">this</span><span class="l">show.</span></div>
+    <small>The World’s Premier Workforce Management Solution</small>
+  </div>
+</footer>
+<div class="legal"><span>Concept redesign · John Blanco-Slingerland · 2026</span><span>Content &amp; imagery from the 2016 abico.com site</span></div>
+
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="veil" data-close></div>
+  <div class="panel" role="dialog" aria-label="Article">
+    <button class="x" data-close aria-label="Close"><svg style="width:16px;height:16px;color:#142930"><use href="#plus" transform="rotate(45 7 7)"/></svg></button>
+    <div class="cover"><div><span class="tag">The Scene</span><h2 class="wide">Staggered Staffing and Staggering Costs</h2></div></div>
+    <article>
+      <div class="by">By <b>Aaron Dukovich</b> · October 19, 2015</div>
+      <p>It was a beautiful evening before the game. The venue was prepped and clean. The team was getting ready in the locker room. The game was only two hours away. Popcorn was popping and retail merchandise was being straightened up. Young fans are excited for their first professional sports game ever! Then, with hundreds of staff ready and waiting, the doors were finally unlocked AND… half a dozen fans trickled in slowly. Not the most climactic opening, but the children who are enjoying their first game ever with dad don’t care. On the other hand, the venue manager with a labor budget is a little more concerned.</p>
+      <p>It happens, and the fact is, sometimes attendance is lackluster or people decide that showing up a few minutes late isn’t a big deal. In my experience described above, the team’s record was decent and the opponent was average. It was a Monday night and the weather was perfect. Due to these and many other reasons attendance was projected to be low. Just after doors opened and guests trickled in one or two at a time; one of the directors of the facility and I took a walk around. We noticed every entrance was fully staffed with twenty or more employees and eight metal detectors. With several entrances being utilized, we were looking at almost one hundred staff and most of them with nothing to do. To top it off, peak ingress for guests wasn’t expected until the game started. How many games or events could this happen to? How many thousands of dollars are wasted every year? How many avoidable OT hours are paid and additional ACA healthcare payments made? We cannot avoid all of it, but with a little time and effort spent on staffing we could save many thousands of dollars easily. The Oakland A’s have utilized staggered staffing for years. By utilizing four different staffing levels, including variations for weekday vs. weekend games, they were able to save approximately 9% in annual labor costs.</p>
+      <div class="pull">The ABI MasterMind® system … gave us instant infrastructure and served us better than any system that I had seen or used in my 41 years in the crowd management business.<cite>Peter C. Kranske, President — COO, Landmark Event Services</cite></div>
+      <h4>Staffing levels</h4>
+      <p>The idea of multiple staffing levels based on factors like attendance is not new, but sometimes it is good to revisit the subject and give the facility a quick analysis. Even walking around before certain events and recording what you see can be helpful. Attendance and staffing needs can be driven by many things including, but not limited to: day of the week, weather, a team’s record, the opponent’s record, new players, promotions and giveaways, state/federal holidays, celebrity appearances, etc. The Phoenix Suns’ Analytics Team has worked on several employee staffing metrics using this kind of data to better project attendance. Knowing attendance is only one aspect. Another question is: when should staff arrive, how many, and who? Staggered shifts can be the easiest fix. Bring in the minimum number needed early, and more staff later. This also allows for earlier staff to leave prior to accumulating OT in case the event goes long. There is not a one size fits all solution for all venues, even for the sport or the region.</p>
+      <h4>Positioning and redeployments</h4>
+      <p>Another popular staffing method is to redeploy staff that are primarily used before the event to other positions during the event. For example, ticket takers could be redeployed as ushers after the event has started. Security officers, who are checking bags or wanding at ingress, could be moved to a roving position at the end of ingress. Additionally, positions might be redeployed towards the end of the event to prepare for egress. Sometimes, you may also assign an employee to the same position consistently, but you should always consider the event. For example, Adam may be a great security officer, but during an intense concert you may want to a more physically imposing employee… preferably a veteran with some Jiu Jitsu experience. One of the most unique positioning methodologies I have seen is at AT&amp;T Stadium (at the time Cowboys Stadium). After event staff check-in, a receipt is printed with a section, row, and seat number that the employee reports to. The supervisors received a pre-printed report of the names of their staff and seat numbers assigned to them. If someone is missing they know exactly who it is and can call a fill-in from what they call “Special Teams”. At this point the change is noted, and the staff is off to their briefings and positions. This is a fantastic system, for this venue, while others may need to function differently. I have to give special credit to Mr. Paul Turner for this process.</p>
+      <h4 id="story">Story from the field</h4>
+      <p>One of our clients shared a story they had regarding lower staffing levels. A section only sold ten tickets so they had that usher support a wider area instead of bringing in one per section. This would normally not be a problem, but it just so happens one of these ten tickets was for a brutally rude heckler. Normally, an usher for that section could address the issue immediately, but more time was taken and the guest experience suffered.</p>
+      <p>Making sure you have enough staff to provide the guest with the best experience is an art and a science. In the ever changing world of sports and entertainment, this is something that is always on our mind and to strike that balance can be challenging. However, it doesn’t mean we can’t be smart about managing all those hours and labor too.</p>
+    </article>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (s, c = document) => c.querySelector(s), $$ = (s, c = document) => [...c.querySelectorAll(s)];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* reveal on view */
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .18 });
+  $$('.reveal, .fade, #hero, #clients').forEach(el => io.observe(el));
+  requestAnimationFrame(() => $('#hero').classList.add('in'));
+
+  /* menu */
+  const menuBtn = $('#menuBtn');
+  const setMenu = open => { document.body.classList.toggle('menu-open', open); menuBtn.setAttribute('aria-expanded', open); $('#menu').setAttribute('aria-hidden', !open); menuBtn.querySelector('.lbl').textContent = open ? 'Close' : 'Menu'; };
+  menuBtn.addEventListener('click', () => setMenu(!document.body.classList.contains('menu-open')));
+  $$('#menu a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+
+  /* scroll counter (template: numbered ticks on the right edge) */
+  const secs = $$('main section[id]').filter((s, i, arr) => arr.findIndex(x => x.dataset.num === s.dataset.num) === i);
+  const total = 7, counter = $('#counter');
+  const ticks = [...Array(total)].map(() => { const t = document.createElement('i'); t.className = 'tick'; counter.appendChild(t); return t; });
+  const num = document.createElement('span'); num.className = 'num'; counter.appendChild(num);
+  const setCounter = n => {
+    ticks.forEach((t, i) => { const d = Math.abs(i - (n - 1)); t.style.width = [28, 14, 10, 7, 4, 2, 2][d] + 'px'; t.style.top = (i * 18) + 'px'; t.style.opacity = d > 4 ? .3 : 1; });
+    num.style.top = ((n - 1) * 18 - 4) + 'px'; num.textContent = String(n).padStart(3, '0');
+  };
+  setCounter(1);
+  const railLinks = $$('.rail a');
+  const so = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    setCounter(+e.target.dataset.num);
+    railLinks.forEach(a => a.classList.toggle('active', a.dataset.sec === e.target.id));
+  }), { rootMargin: '-45% 0px -45% 0px' });
+  $$('main section[id]').forEach(s => so.observe(s));
+
+  /* scroll-linked motion: parallax, headline drift, hero zoom */
+  const par = $$('[data-par]'), drift = $$('[data-drift]'), zoom = $('[data-scale]');
+  let ticking = false;
+  const frame = () => {
+    ticking = false;
+    const vh = innerHeight, y = scrollY;
+    document.body.classList.toggle('scrolled', y > 40);
+    if (reduce) return;
+    par.forEach(el => { const r = el.getBoundingClientRect(); const c = r.top + r.height / 2 - vh / 2; el.style.transform = `translate3d(0,${(-c * +el.dataset.par).toFixed(1)}px,0)`; });
+    const k = Math.min(1, innerWidth / 1280) * (innerWidth < 760 ? .35 : 1);
+    drift.forEach(el => { const r = el.getBoundingClientRect(); const p = Math.max(-1, Math.min(1, (r.top + r.height / 2 - vh / 2) / vh)); el.style.transform = `translate3d(${(p * k * +el.dataset.drift).toFixed(1)}px,0,0)`; });
+    if (zoom) { const p = Math.min(1, y / vh); zoom.style.transform = `scale(${1 + p * .12}) translate3d(0,${p * 60}px,0)`; }
+  };
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }, { passive: true });
+  addEventListener('resize', frame); frame();
+
+  /* venue rail: drag, arrows, progress */
+  const track = $('#vtrack'), bar = $('#vbar');
+  const upd = () => { const max = track.scrollWidth - track.clientWidth; const vis = track.clientWidth / track.scrollWidth; bar.style.width = (vis * 100) + '%'; bar.style.left = (max ? track.scrollLeft / max * (100 - vis * 100) : 0) + '%'; };
+  track.addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
+  const step = () => track.querySelector('.vcard').offsetWidth + 10;
+  $('#vNext').onclick = () => track.scrollBy({ left: step() * 2, behavior: 'smooth' });
+  $('#vPrev').onclick = () => track.scrollBy({ left: -step() * 2, behavior: 'smooth' });
+  let down = false, sx = 0, sl = 0, moved = false;
+  track.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; down = true; moved = false; sx = e.clientX; sl = track.scrollLeft; });
+  addEventListener('pointermove', e => { if (!down) return; const dx = e.clientX - sx; if (Math.abs(dx) > 4) { moved = true; track.classList.add('drag'); } track.scrollLeft = sl - dx; });
+  addEventListener('pointerup', () => { down = false; track.classList.remove('drag'); });
+  track.addEventListener('dragstart', e => e.preventDefault());
+
+  /* MasterMind hotspots <-> module columns */
+  const mods = [
+    { t: '<b>ABI MasterMind®</b> Lost and Found tracking helps reunite your guests with their missing items. It tracks what was lost or found, when, and where.', x: 30, y: 30 },
+    { t: 'The <b>ABI MasterMind®</b> ESS module saves you time dealing with employee-generated paper and gets information into the hands of your employees faster.', x: 6, y: 34 },
+    { t: 'Staggered staffing levels (weekday vs. weekend, attendance-driven) saved the Oakland A’s approximately <b>9%</b> in annual labor costs.', x: 20, y: 60 }
+  ];
+  const callout = $('#callout'), hots = $$('.hot'), cols = $$('.module');
+  let cur = -1;
+  const pick = i => {
+    cur = i; hots.forEach(h => h.classList.toggle('on', +h.dataset.m === i)); cols.forEach(c => c.classList.toggle('on', +c.dataset.m === i));
+    if (i < 0) { callout.classList.remove('on'); return; }
+    callout.innerHTML = mods[i].t; callout.style.left = mods[i].x + '%'; callout.style.top = mods[i].y + '%'; callout.classList.add('on');
+  };
+  hots.forEach(h => h.addEventListener('click', () => pick(cur === +h.dataset.m ? -1 : +h.dataset.m)));
+  cols.forEach(c => { c.addEventListener('mouseenter', () => pick(+c.dataset.m)); c.addEventListener('click', () => { pick(+c.dataset.m); $('#brain').scrollIntoView({ behavior: 'smooth', block: 'center' }); }); });
+
+  /* testimonials */
+  const qs = $$('.quote'); let q = 0, qTimer;
+  const showQ = n => { q = (n + qs.length) % qs.length; qs.forEach((el, i) => el.classList.toggle('on', i === q)); $('#qNo').textContent = `0${q + 1} / 0${qs.length}`; };
+  const auto = () => { clearInterval(qTimer); if (!reduce) qTimer = setInterval(() => showQ(q + 1), 7000); };
+  $('#qNext').onclick = () => { showQ(q + 1); auto(); }; $('#qPrev').onclick = () => { showQ(q - 1); auto(); }; auto();
+
+  /* article drawer */
+  const drawer = $('#drawer');
+  const openD = anchor => { drawer.classList.add('on'); drawer.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; const p = drawer.querySelector('.panel'); p.scrollTop = anchor ? $('#story').offsetTop - 30 : 0; };
+  const closeD = () => { drawer.classList.remove('on'); drawer.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; };
+  $$('[data-open]').forEach(b => b.addEventListener('click', () => openD(b.dataset.open === 'field')));
+  $$('[data-close]').forEach(b => b.addEventListener('click', closeD));
+  addEventListener('keydown', e => { if (e.key === 'Escape') { closeD(); setMenu(false); } });
+
+  /* background videos: right size + codec, loaded after the page is ready (or when near view), paused off-screen */
+  (() => {
+    const c = navigator.connection || {};
+    if (reduce || c.saveData || /(^|-)2g$/.test(c.effectiveType || '')) return; // posters only
+    const small = innerWidth * Math.min(devicePixelRatio || 1, 2) <= 1100;
+    const ext = document.createElement('video').canPlayType('video/webm; codecs="vp9"') ? 'webm' : 'mp4';
+    const files = {
+      hero:   { s: { webm: 'vid/fire-640.webm',   mp4: 'vid/fire-640.mp4' },   l: { webm: 'vid/fire-1280.webm',   mp4: 'vid/fire-1280.mp4' } },
+      lights: { s: { webm: 'vid/lights-640.webm', mp4: 'vid/lights-640.mp4' }, l: { webm: 'vid/lights-1280.webm', mp4: 'vid/lights-1280.mp4' } },
+      gates:  { s: { webm: 'vid/gates-640.webm',  mp4: 'vid/gates-640.mp4' },  l: { webm: 'vid/gates-960.webm',  mp4: 'vid/gates-960.mp4' } },
+      rock:   { s: { webm: 'vid/rock-640.webm',   mp4: 'vid/rock-640.mp4' },   l: { webm: 'vid/rock-1280.webm',   mp4: 'vid/rock-1280.mp4' } }
+    };
+    const idle = fn => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 200));
+    const pageReady = new Promise(r => document.readyState === 'complete' ? r() : addEventListener('load', r, { once: true }));
+    const heroV = $('video[data-bgvideo="hero"]');
+    const heroReady = new Promise(r => { heroV ? heroV.addEventListener('playing', r, { once: true }) : r(); setTimeout(r, 5000); });
+    $$('video[data-bgvideo]').forEach(v => {
+      const src = files[v.dataset.bgvideo][small ? 's' : 'l'][ext];
+      let visible = false, loaded = false, triedBlob = false, triedAlt = false;
+      v.muted = true; v.defaultMuted = true; v.setAttribute('muted', '');
+      const play = () => { if (!loaded || !visible || document.hidden) return;
+        const pr = v.play(); if (pr) pr.catch(() => { // autoplay refused: retry on the first interaction
+          const go = () => { ['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(t => removeEventListener(t, go)); v.play().catch(() => {}); };
+          ['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(t => addEventListener(t, go, { once: true, passive: true }));
+        }); };
+      const setSrc = url => { v.src = url; v.load(); play(); };
+      v.addEventListener('playing', () => v.classList.add('is-playing'));
+      v.addEventListener('error', () => {
+        const cur = v.getAttribute('src') || '';
+        if (cur.startsWith('data:') && !triedBlob) { // some embedded viewers block data: video; hand it over as a blob instead
+          triedBlob = true;
+          try { const [head, b64] = cur.split(','); const bin = atob(b64); const u8 = new Uint8Array(bin.length);
+            for (let k = 0; k < bin.length; k++) u8[k] = bin.charCodeAt(k);
+            return setSrc(URL.createObjectURL(new Blob([u8], { type: head.slice(5).split(';')[0] }))); } catch (e) {}
+        }
+        if (!triedAlt) { triedAlt = true; const alt = files[v.dataset.bgvideo][small ? 's' : 'l'][ext === 'webm' ? 'mp4' : 'webm']; if (alt && alt !== cur) return setSrc(alt); }
+        v.removeAttribute('src'); // give up quietly: the poster stays
+      });
+      const load = () => { if (loaded) return; loaded = true; v.preload = 'auto'; setSrc(src); };
+      const host = v.closest('section');
+      // play/pause by visibility
+      new IntersectionObserver(([e]) => { visible = e.isIntersecting; visible ? play() : v.pause(); }).observe(host);
+      if ('lazy' in v.dataset) {
+        // start fetching once the section is within ~1 screen
+        const near = new IntersectionObserver(([e]) => { if (e.isIntersecting) { near.disconnect(); pageReady.then(() => heroReady).then(() => idle(load)); } }, { rootMargin: '75% 0px' });
+        near.observe(host);
+      } else pageReady.then(() => idle(load));
+      document.addEventListener('visibilitychange', () => document.hidden ? v.pause() : play());
+    });
+  })();
+
+  /* contact form (concept: no submission) */
+  $('#form').addEventListener('submit', e => { e.preventDefault(); $('#note').textContent = 'Thanks, you’re on the list. (Concept build: this form doesn’t send.)'; });
+})();
+</script>
+
+</body></html>

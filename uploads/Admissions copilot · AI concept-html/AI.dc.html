@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admissions copilot</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&amp;family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F5F3EE;font-family:'Public Sans',system-ui,sans-serif;color:#1B2220;font-size:14px;line-height:1.45}
+*{box-sizing:border-box}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid #1E5A55;outline-offset:2px}
+.nav{color:#C9CEC9;text-decoration:none;padding:6px 10px;border-radius:6px;font-size:13px;font-weight:500;white-space:nowrap}
+.nav:hover{color:#FFFFFF;background:#2C3532}
+.nav.on{color:#FFFFFF;background:#2C3532}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;border-radius:8px;border:1px solid #D6D1C6;background:#FFFFFF;font-weight:600;font-size:14px;cursor:pointer;white-space:nowrap;color:#1B2220}
+.btn:hover{background:#F3F1EC}
+.btn.primary{background:#1E5A55;border-color:#1E5A55;color:#FFFFFF}
+.btn.primary:hover{background:#174844}
+.btn.small{height:34px;padding:0 12px;font-size:13px}
+.btn.ghost{border-color:transparent;background:transparent;color:#1E5A55}
+.btn.ghost:hover{background:#E8F0EE}
+.btn.urgent{background:#A3241A;border-color:#A3241A;color:#FFFFFF}
+.btn.urgent:hover{background:#8A1D14}
+.icon-btn{width:36px;height:36px;border-radius:8px;border:0;background:transparent;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:#4F5754}
+.icon-btn:hover{background:#ECE9E2;color:#1B2220}
+.lbl{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#5B6461}
+.pill{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.p-urgent{background:#FBE4E1;color:#9B1C12}
+.p-ai{background:#ECEBFA;color:#3F3A93}
+.p-auto{background:#E8F0EE;color:#153F3C}
+.p-muted{background:#EEECE6;color:#4F5754}
+.risk-high{background:#FBE4E1;color:#9B1C12}
+.risk-med{background:#FCEFD9;color:#7A4306}
+.risk-low{background:#E4F0E2;color:#2A5F33}
+.risk-na{background:#EEECE6;color:#4F5754}
+.av{width:30px;height:30px;border-radius:50%;background:#DCE8E5;color:#153F3C;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.tabs{display:flex;gap:4px;padding:4px;background:#ECE9E2;border-radius:10px}
+.tab{height:36px;padding:0 14px;border:0;border-radius:7px;background:transparent;font-weight:600;font-size:13px;cursor:pointer;color:#4F5754;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.tab.on{background:#FFFFFF;color:#1B2220;box-shadow:0 1px 2px rgba(27,34,32,.12)}
+.tab .n{font-weight:500;color:#6B7370}
+.chip{height:34px;padding:0 12px;border-radius:999px;border:1px solid #D6D1C6;background:#FFFFFF;font-size:13px;font-weight:600;cursor:pointer;color:#3E4643;white-space:nowrap}
+.chip:hover{border-color:#1E5A55}
+.chip.on{background:#1B2220;border-color:#1B2220;color:#FFFFFF}
+.ask{display:flex;align-items:center;gap:10px;padding:6px 6px 6px 16px;border:1px solid #CFC9BC;border-radius:12px;background:#FFFFFF}
+.ask:focus-within{border-color:#4B45A8;box-shadow:0 0 0 3px #E2E0F7}
+.ask input{border:0;outline:none;flex-grow:1;min-width:0;height:40px;font-size:15px;background:transparent}
+.qchip{height:32px;padding:0 12px;border-radius:999px;border:1px solid #DAD7F2;background:#F5F4FD;color:#3F3A93;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.qchip:hover{background:#ECEBFA}
+.answer{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:12px;background:#FFFFFF;border:1px solid #DAD7F2}
+.spark{color:#4B45A8;flex-shrink:0}
+.card{background:#FFFFFF;border:1px solid #E3DFD6;border-radius:14px}
+.act{display:flex;flex-direction:column;gap:14px;padding:20px 22px}
+.act.urgent{border-color:#E8B4AE;box-shadow:inset 4px 0 0 #A3241A}
+.act-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.act h3{margin:0;font-size:18px;line-height:1.3;font-weight:700}
+.pt{border:0;background:transparent;padding:0;font-weight:700;color:#1E5A55;cursor:pointer;font-size:14px;text-decoration:underline;text-decoration-color:#B7D1CB;text-underline-offset:3px}
+.pt:hover{text-decoration-color:#1E5A55}
+.draft{border-radius:10px;background:#F7F5F0;border:1px solid #ECE8DF;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.draft p{margin:0;white-space:pre-line;font-size:15px;line-height:1.55}
+.inp{height:40px;padding:0 12px;border-radius:8px;border:1px solid #CFC9BC;background:#FFFFFF;font-size:14px;width:100%}
+.inp:focus{border-color:#1E5A55;outline:none;box-shadow:0 0 0 3px #D5E6E2}
+textarea.inp{height:auto;padding:10px 12px;resize:vertical;line-height:1.5;font-size:15px}
+.src{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:6px;border:1px solid #E3DFD6;background:#FFFFFF;font-size:12px;font-weight:600;color:#3E4643;cursor:pointer}
+.src:hover{border-color:#B9B3A6}
+.evidence{margin:0;padding:12px 14px;border-left:3px solid #4B45A8;background:#F5F4FD;border-radius:0 8px 8px 0;font-size:14px;color:#2E2A6B;line-height:1.5}
+.opt{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid #E3DFD6;cursor:pointer;font-size:14px;background:#FFFFFF}
+.opt.on{border-color:#1E5A55;background:#F1F7F5;font-weight:600}
+.opt input{accent-color:#1E5A55;width:18px;height:18px}
+.seg2{display:inline-flex;padding:3px;background:#ECE9E2;border-radius:8px;gap:2px}
+.seg2 button{height:30px;padding:0 12px;border:0;border-radius:6px;background:transparent;font-size:13px;font-weight:600;cursor:pointer;color:#4F5754}
+.seg2 button.on{background:#FFFFFF;color:#1B2220;box-shadow:0 1px 2px rgba(27,34,32,.12)}
+.seg2 button:disabled{opacity:.4;cursor:not-allowed}
+.act-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-top:14px;border-top:1px solid #EEEAE2}
+.done{display:flex;align-items:center;gap:12px;padding:14px 18px}
+.done .ck{width:26px;height:26px;border-radius:50%;background:#2F6B3A;color:#FFFFFF;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.done.dismissed .ck{background:#B9B3A6}
+.metric{display:flex;flex-direction:column;gap:2px}
+.metric .v{font-family:'Newsreader',Georgia,serif;font-size:34px;line-height:1;font-weight:500}
+.ev{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #EEEAE2;width:100%;background:transparent;border-left:0;border-right:0;border-bottom:0;text-align:left;cursor:pointer}
+.ev:hover .evt{text-decoration:underline}
+.ev .tm{font-size:12px;font-weight:600;color:#5B6461;width:64px;flex-shrink:0;padding-top:1px}
+.dotc{width:8px;height:8px;border-radius:50%;margin-top:7px;flex-shrink:0;background:#1E5A55}
+.dotc.red{background:#A3241A}
+.dotc.ai{background:#4B45A8}
+.segs{display:flex;gap:4px;width:96px}
+.seg{height:6px;flex:1;border-radius:3px;background:#E3DFD6}
+.seg.done{background:#2F6B3A}
+.prow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) minmax(0,.9fr) auto;gap:18px;align-items:center;padding:16px 20px;border-top:1px solid #EEEAE2}
+.prow:first-child{border-top:0}
+.log{display:flex;gap:14px;padding:14px 20px;border-top:1px solid #EEEAE2;align-items:flex-start}
+.log:first-child{border-top:0}
+.scrim{position:fixed;inset:0;background:rgba(27,34,32,.36);z-index:20}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:520px;background:#FFFFFF;z-index:21;box-shadow:-12px 0 32px rgba(27,34,32,.16);display:flex;flex-direction:column}
+.arow{display:flex;flex-direction:column;gap:8px;padding:16px 24px;border-top:1px solid #EEEAE2}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#1B2220;color:#F5F3EE;padding:12px 18px;border-radius:10px;font-size:14px;font-weight:500;z-index:30;box-shadow:0 8px 24px rgba(27,34,32,.25);display:flex;align-items:center;gap:10px;max-width:calc(100% - 32px)}
+.bar-0{width:0%}.bar-10{width:10%}.bar-20{width:20%}.bar-30{width:30%}.bar-40{width:40%}.bar-50{width:50%}.bar-60{width:60%}.bar-70{width:70%}.bar-80{width:80%}.bar-90{width:90%}.bar-100{width:100%}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:1100px){
+.layout{flex-direction:column !important}
+.rail{width:100% !important;position:static !important}
+.main{padding:24px 24px 56px !important}
+.prow{grid-template-columns:minmax(0,1fr) minmax(0,1fr);row-gap:10px}
+}
+@media (max-width:760px){
+body{font-size:15px}
+.topbar{height:auto !important;flex-wrap:wrap;padding:10px 16px 0 !important;row-gap:6px;gap:12px !important}
+.topbar .who{margin-left:auto}
+.topbar .who>div{display:none !important}
+.topnav{order:3;flex-basis:100%;margin:0 -16px;padding:0 10px 8px;overflow-x:auto;scrollbar-width:none}
+.main{padding:18px 14px 48px !important;gap:16px !important}
+.titlebar{flex-wrap:wrap;gap:12px !important}
+.h1{font-size:32px !important}
+.qchips{flex-wrap:nowrap !important;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:0 14px}
+.qtabs{flex-wrap:wrap}
+.tabs{width:100%}
+.tab{flex:1;justify-content:center;padding:0 6px}
+.act{padding:16px}
+.act h3{font-size:17px}
+.act-foot .btn{flex:1 1 auto}
+.act-foot .saves{flex-basis:100%;order:-1}
+.prow{grid-template-columns:minmax(0,1fr);padding:16px}
+.drawer{width:100% !important}
+.metrics{grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+.metric .v{font-size:28px}
+.btn{height:44px}
+.btn.small{height:40px}
+}
+</style>
+</helmet>
+<div style="width: 100%; min-height: 1200px; background: #F5F3EE;">
+
+<header class="topbar" style="height: 56px; background: #1B2220; color: #F5F3EE; display: flex; align-items: center; gap: 24px; padding: 0 24px;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9FC7BF" stroke-width="2" aria-hidden="true"><circle cx="12" cy="5" r="2"></circle><circle cx="5" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="12" cy="19" r="2"></circle><circle cx="12" cy="12" r="1.5"></circle></svg>
+<span style="font-weight: 700; font-size: 14px; letter-spacing: .02em;">Care Hub</span>
+</div>
+<nav class="topnav" aria-label="Primary" style="display: flex; gap: 2px; flex-grow: 1;">
+<a class="nav" href="#copilot">Tasks</a>
+<a class="nav" href="#copilot">Appointments</a>
+<a class="nav" href="#copilot">Docs</a>
+<a class="nav" href="#copilot">Faxes</a>
+<a class="nav" href="#copilot">Contacts</a>
+<a class="nav" href="#copilot">Panel management</a>
+<a class="nav on" href="#copilot" aria-current="page">Admissions</a>
+</nav>
+<div class="who" style="display: flex; align-items: center; gap: 10px;">
+<span class="av" style="background: #2C3532; color: #F5F3EE;">CF</span>
+<div style="display: flex; flex-direction: column; line-height: 1.2;">
+<span style="font-size: 13px; font-weight: 600;">Chris Fitzroy</span>
+<span style="font-size: 12px; color: #A9B0AC;">Health Navigator</span>
+</div>
+</div>
+</header>
+
+<main id="copilot" class="main" style="padding: 28px 40px 64px; display: flex; flex-direction: column; gap: 20px;">
+
+<div class="titlebar" style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;">
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<h1 class="h1" style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 500; font-size: 44px; line-height: 1.05; letter-spacing: -.01em;">Admissions</h1>
+<span class="pill p-ai"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>Copilot</span>
+</div>
+<p style="margin: 0; color: #5B6461; font-size: 15px;">Tuesday, Sep 22 · {{clock}} · the board keeps itself current from ADT feeds, faxes and call notes</p>
+</div>
+<button class="btn" onClick="{{openAuto}}">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"></path><circle cx="16" cy="6" r="2"></circle><circle cx="10" cy="12" r="2"></circle><circle cx="18" cy="18" r="2"></circle></svg>
+Autonomy settings
+</button>
+</div>
+
+<form onSubmit="{{askSubmit}}" style="display: flex; flex-direction: column; gap: 10px; margin: 0;">
+<div class="ask">
+<svg class="spark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>
+<label for="askq" class="sr">Ask about your patients</label>
+<input id="askq" type="text" placeholder="Ask about your patients, like “who’s going home this week?”" value="{{askText}}" onChange="{{setAsk}}">
+<button class="btn primary small" type="submit">Ask</button>
+</div>
+<div class="qchips" style="display: flex; gap: 8px; flex-wrap: wrap;">
+<sc-for list="{{questions}}" as="q" hint-placeholder-count="4">
+<button class="qchip" type="button" onClick="{{q.pick}}">{{q.label}}</button>
+</sc-for>
+</div>
+</form>
+
+<sc-if value="{{hasAnswer}}" hint-placeholder-val="{{ false }}">
+<div class="answer" role="status">
+<svg class="spark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="margin-top: 2px;"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>
+<div style="display: flex; flex-direction: column; gap: 10px; flex-grow: 1; min-width: 0;">
+<span style="font-size: 13px; font-weight: 600; color: #3F3A93;">{{answer.q}}</span>
+<p style="margin: 0; font-size: 16px; line-height: 1.55;">{{answer.text}}</p>
+<sc-if value="{{answer.hasAction}}" hint-placeholder-val="{{ false }}"><button class="btn small" onClick="{{answer.act}}" style="align-self: flex-start;">{{answer.actLabel}}</button></sc-if>
+</div>
+<button class="icon-btn" aria-label="Close answer" onClick="{{closeAnswer}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+</div>
+</sc-if>
+
+<div class="layout" style="display: flex; gap: 24px; align-items: flex-start;">
+
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<div class="qtabs" style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+<div class="tabs" role="tablist" aria-label="Views">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+<button class="{{t.cls}}" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}">{{t.label}} <span class="n">{{t.n}}</span></button>
+</sc-for>
+</div>
+<sc-if value="{{showBulk}}" hint-placeholder-val="{{ false }}">
+<button class="btn" onClick="{{approveRoutine}}">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+Approve {{routineCount}} routine updates
+</button>
+</sc-if>
+</div>
+
+<sc-if value="{{isQueue}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+<sc-for list="{{qchips}}" as="c" hint-placeholder-count="2">
+<button class="{{c.cls}}" aria-pressed="{{c.on}}" onClick="{{c.pick}}">{{c.label}}</button>
+</sc-for>
+<sc-if value="{{hasPatientFilter}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 14px; color: #3E4643; margin-left: 4px;">Only <strong>{{patientFilterName}}</strong></span>
+<button class="btn ghost small" onClick="{{clearQFilter}}">Show all</button>
+</sc-if>
+</div>
+
+<sc-if value="{{queueEmpty}}" hint-placeholder-val="{{ false }}">
+<div class="card" style="padding: 48px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px;">
+<p style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-size: 24px;">You’re caught up</p>
+<p style="margin: 0; color: #5B6461;">New actions appear here as feeds, faxes and call notes come in.</p>
+</div>
+</sc-if>
+
+<sc-for list="{{queue}}" as="it" hint-placeholder-count="4">
+<article class="card">
+<sc-if value="{{it.isPending}}" hint-placeholder-val="{{ true }}">
+<div class="{{it.cls}}">
+<div class="act-top">
+<sc-if value="{{it.urgent}}" hint-placeholder-val="{{ false }}"><span class="pill p-urgent">Urgent</span></sc-if>
+<span class="pill p-muted">{{it.typeLabel}}</span>
+<button class="pt" onClick="{{it.focusPatient}}">{{it.patientName}}</button>
+<span style="font-size: 13px; color: #5B6461;">{{it.context}}</span>
+</div>
+<h3>{{it.title}}</h3>
+<p style="margin: 0; font-size: 15px; line-height: 1.55; color: #2C3532;">{{it.why}}</p>
+
+<sc-if value="{{it.hasDraft}}" hint-placeholder-val="{{ false }}">
+<div class="draft">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+<span class="lbl">{{it.draftLabel}}</span>
+<sc-if value="{{it.hasLang}}" hint-placeholder-val="{{ false }}">
+<div class="seg2" role="group" aria-label="Message language">
+<sc-for list="{{it.langs}}" as="l" hint-placeholder-count="2"><button class="{{l.cls}}" aria-pressed="{{l.on}}" onClick="{{l.pick}}">{{l.label}}</button></sc-for>
+</div>
+</sc-if>
+</div>
+<sc-if value="{{it.editing}}" hint-placeholder-val="{{ false }}">
+<label for="{{it.draftId}}" class="sr">Edit draft</label>
+<textarea id="{{it.draftId}}" class="inp" rows="4" value="{{it.draft}}" onChange="{{it.setDraft}}"></textarea>
+</sc-if>
+<sc-if value="{{it.notEditing}}" hint-placeholder-val="{{ true }}"><p>{{it.draft}}</p></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{it.hasOptions}}" hint-placeholder-val="{{ false }}">
+<fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+<legend class="lbl" style="margin-bottom: 8px;">Openings that fit his discharge date</legend>
+<sc-for list="{{it.options}}" as="o" hint-placeholder-count="3">
+<label class="{{o.cls}}"><input type="radio" name="{{it.radioName}}" checked="{{o.on}}" onChange="{{o.pick}}"> {{o.label}}</label>
+</sc-for>
+</fieldset>
+</sc-if>
+
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+<span style="font-size: 12px; font-weight: 600; color: #5B6461;">Based on</span>
+<sc-for list="{{it.sources}}" as="sr" hint-placeholder-count="2">
+<button class="src" aria-expanded="{{it.showEvidence}}" onClick="{{it.toggleEvidence}}">
+<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6v18h12V7z"></path><path d="M14 3v4h4"></path></svg>
+{{sr.label}}
+</button>
+</sc-for>
+</div>
+<sc-if value="{{it.showEvidence}}" hint-placeholder-val="{{ false }}"><blockquote class="evidence">{{it.evidence}}</blockquote></sc-if>
+
+<div class="act-foot">
+<button class="{{it.approveCls}}" onClick="{{it.approve}}">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+{{it.approveLabel}}
+</button>
+<sc-if value="{{it.hasDraft}}" hint-placeholder-val="{{ false }}"><button class="btn" onClick="{{it.toggleEdit}}">{{it.editLabel}}</button></sc-if>
+<button class="btn ghost" onClick="{{it.dismiss}}">Dismiss</button>
+<span class="saves" style="margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: #5B6461;">
+<span class="{{it.modeCls}}">{{it.modeLabel}}</span>
+Saves about {{it.mins}} min
+</span>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{it.isClosed}}" hint-placeholder-val="{{ false }}">
+<div class="{{it.doneCls}}">
+<span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></span>
+<div style="display: flex; flex-direction: column; gap: 2px; flex-grow: 1; min-width: 0;">
+<span style="font-weight: 600;">{{it.patientName}} · {{it.resultText}}</span>
+<span style="font-size: 13px; color: #5B6461;">{{it.closedBy}}</span>
+</div>
+<button class="btn ghost small" onClick="{{it.undo}}">Undo</button>
+</div>
+</sc-if>
+</article>
+</sc-for>
+</sc-if>
+
+<sc-if value="{{isPatients}}" hint-placeholder-val="{{ false }}">
+<sc-if value="{{hasPFilter}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #3E4643;">
+<span>Showing <strong>{{pFilterLabel}}</strong></span>
+<button class="btn ghost small" onClick="{{clearPFilter}}">Show all</button>
+</div>
+</sc-if>
+<div class="card" style="overflow: hidden;">
+<sc-for list="{{plist}}" as="p" hint-placeholder-count="6">
+<div class="prow">
+<div style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+<span style="font-weight: 700; font-size: 15px;">{{p.name}}</span>
+<span class="{{p.riskCls}}">{{p.riskLabel}}</span>
+</div>
+<span style="font-size: 13px; color: #5B6461;">{{p.where}}</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+<span style="display: flex; align-items: flex-start; gap: 6px; font-weight: 600; color: #3F3A93;"><svg class="spark" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true" style="margin-top: 3px;"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>{{p.signal}}</span>
+<span style="font-size: 13px; color: #5B6461;">Risk drivers: {{p.drivers}}</span>
+<span style="font-size: 13px; color: #3E4643;"><strong>Next:</strong> {{p.next}}</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<div class="segs" aria-hidden="true"><sc-for list="{{p.segs}}" as="sg" hint-placeholder-count="3"><span class="{{sg.cls}}"></span></sc-for></div>
+<span style="font-size: 13px; color: #3E4643;">{{p.stdText}}</span>
+<span style="font-size: 13px; color: #5B6461;">{{p.ownerLine}}</span>
+</div>
+<div>
+<sc-if value="{{p.hasPending}}" hint-placeholder-val="{{ false }}"><button class="btn small" onClick="{{p.see}}">{{p.pendingLabel}}</button></sc-if>
+<sc-if value="{{p.noPending}}" hint-placeholder-val="{{ true }}"><span class="pill p-auto">Nothing waiting</span></sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{isLog}}" hint-placeholder-val="{{ false }}">
+<div class="card" style="overflow: hidden;">
+<sc-for list="{{log}}" as="l" hint-placeholder-count="5">
+<div class="log">
+<span style="font-size: 12px; font-weight: 600; color: #5B6461; width: 64px; flex-shrink: 0; padding-top: 3px;">{{l.t}}</span>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+<span class="{{l.whoCls}}" style="align-self: flex-start;">{{l.who}}</span>
+<span>{{l.text}}</span>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+
+<aside class="rail" aria-label="Overnight summary" style="width: 380px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; position: sticky; top: 16px;">
+<div class="card" style="padding: 20px 22px; display: flex; flex-direction: column; gap: 16px;">
+<span class="lbl">Today so far</span>
+<div class="metrics" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;">
+<div class="metric"><span class="v">{{openCount}}</span><span style="font-size: 13px; color: #5B6461;">waiting on you</span></div>
+<div class="metric"><span class="v">{{clearedCount}}</span><span style="font-size: 13px; color: #5B6461;">cleared</span></div>
+<div class="metric"><span class="v">{{savedLabel}}</span><span style="font-size: 13px; color: #5B6461;">saved</span></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<div style="display: flex; justify-content: space-between; font-size: 13px;"><span style="font-weight: 600;">Reviews on time</span><span>{{onTimeText}}</span></div>
+<div style="height: 8px; border-radius: 4px; background: #ECE9E2; overflow: hidden;"><div class="{{onTimeBar}}" style="height: 100%; background: #2F6B3A; border-radius: 4px;"></div></div>
+</div>
+</div>
+
+<div class="card" style="padding: 20px 22px 8px;">
+<div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px;">
+<h2 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 500; font-size: 22px;">Since you logged off</h2>
+<span style="font-size: 13px; color: #5B6461;">Picked up from feeds, faxes and calls. Tap one to see what it needs.</span>
+</div>
+<sc-for list="{{events}}" as="e" hint-placeholder-count="5">
+<button class="ev" onClick="{{e.pick}}">
+<span class="tm">{{e.t}}</span>
+<span class="{{e.dot}}"></span>
+<span style="display: flex; flex-direction: column; gap: 2px;">
+<span class="evt" style="font-size: 14px; font-weight: 600;">{{e.title}}</span>
+<span style="font-size: 13px; color: #5B6461;">{{e.src}}</span>
+</span>
+</button>
+</sc-for>
+</div>
+</aside>
+</div>
+</main>
+
+<sc-if value="{{autoOpen}}" hint-placeholder-val="{{ false }}">
+<div class="scrim" onClick="{{closeAuto}}"></div>
+<aside class="drawer" aria-label="Autonomy settings">
+<div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 20px 24px;">
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<h2 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 500; font-size: 26px;">How much should Copilot do?</h2>
+<span style="font-size: 14px; color: #5B6461;">Set this per kind of work. <strong>Suggest</strong>: it recommends, you act. <strong>Draft</strong>: it prepares everything, you approve in one click. <strong>Auto</strong>: it acts and tells you, and you can undo.</span>
+</div>
+<button class="icon-btn" aria-label="Close" onClick="{{closeAuto}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+</div>
+<div style="flex-grow: 1; overflow: auto;">
+<sc-for list="{{autoRows}}" as="a" hint-placeholder-count="8">
+<div class="arow">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+<span style="font-weight: 700;">{{a.label}}</span>
+<div class="seg2" role="group" aria-label="{{a.aria}}">
+<sc-for list="{{a.levels}}" as="lv" hint-placeholder-count="3"><button class="{{lv.cls}}" aria-pressed="{{lv.on}}" disabled="{{lv.disabled}}" onClick="{{lv.pick}}">{{lv.label}}</button></sc-for>
+</div>
+</div>
+<span style="font-size: 13px; color: #5B6461;">{{a.desc}}</span>
+</div>
+</sc-for>
+</div>
+<div style="padding: 16px 24px; border-top: 1px solid #E9E5DD; display: flex; justify-content: flex-end;">
+<button class="btn primary" onClick="{{closeAuto}}">Done</button>
+</div>
+</aside>
+</sc-if>
+
+<sc-if value="{{hasToast}}" hint-placeholder-val="{{ false }}">
+<div class="toast" role="status">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9FC7BF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>
+{{toast}}
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+var TODAY = '2026-09-22';
+var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function dnum(s){ var p = s.split('-'); return Date.UTC(+p[0], +p[1]-1, +p[2]) / 86400000; }
+function diff(a, b){ return dnum(a) - dnum(b); }
+function addDays(s, n){ return new Date((dnum(s) + n) * 86400000).toISOString().slice(0, 10); }
+function fmt(s){ if (!s) return '—'; var t = new Date(dnum(s) * 86400000); return MON[t.getUTCMonth()] + ' ' + t.getUTCDate(); }
+function clockLabel(m){ var h = Math.floor(m / 60), mm = m % 60; var ap = h >= 12 ? 'PM' : 'AM'; var hh = h % 12 || 12; return hh + ':' + (mm < 10 ? '0' : '') + mm + ' ' + ap; }
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+
+var STAGES = ['Emergency room', 'Observation', 'Inpatient', 'Skilled nursing', 'Home'];
+var OWNERS = { cf: 'Chris Fitzroy', ln: 'Lisa Nguyen', rg: 'Raul Gomez', jp: 'Joseph Park', ms: 'Margaret Smith, MD' };
+var RISK = { high: ['High risk', 'pill risk-high'], med: ['Medium risk', 'pill risk-med'], low: ['Low risk', 'pill risk-low'], na: ['Not evaluated', 'pill risk-na'] };
+var STD_KEYS = ['touch', 'visit', 'summary'];
+
+var PATIENTS = [
+  { id: 'p11', name: 'Grace Monroe', status: 'discharged', stage: 4, location: 'Alta Bates Summit', admit: '2026-09-10', dc: '2026-09-15', risk: 'med', review: '2026-09-29', owner: 'ln', std: { touch: 1, visit: 1, summary: 1 }, next: 'Final check-in on Sep 29.', records: 'Received', signal: 'Check-in call flagged new symptoms this morning', drivers: 'COPD · home oxygen · 7 days since discharge' },
+  { id: 'p1', name: 'Eleanor Hartwell', status: 'current', stage: 2, location: 'UCSF Parnassus', admit: '2026-09-17', antDc: '2026-09-24', risk: 'high', review: '2026-09-21', owner: 'cf', std: { touch: 1, visit: 0, summary: 0 }, next: 'Coordinate cardiology follow-up and book a PCP visit within 7 days.', records: 'Requested Sep 18', signal: 'Likely home Thursday · discharge summary arrived by fax', drivers: '2 ER visits in 6 months · 11 active medications · CHF and COPD' },
+  { id: 'p2', name: 'Walter Brandt', status: 'current', stage: 0, location: 'Alta Bates Summit', admit: '2026-09-21', risk: 'med', review: '2026-09-22', owner: 'ln', std: { touch: 0, visit: 0, summary: 0 }, next: 'Confirm whether he moves to observation. Call daughter.', records: 'Not requested', signal: 'Moved to observation overnight', drivers: 'Second fall this year · lives alone' },
+  { id: 'p6', name: 'Samuel Whitaker', status: 'current', stage: 2, location: 'Sutter CPMC Mission Bernal', admit: '2026-09-16', antDc: '2026-09-23', risk: 'med', review: '2026-09-22', owner: 'ln', std: { touch: 1, visit: 0, summary: 0 }, next: 'Schedule cardiology and PCP visits after TAVR.', records: 'Requested Sep 17', signal: 'Discharge expected tomorrow morning', drivers: 'Age 87 · post-procedure · new anticoagulant' },
+  { id: 'p3', name: 'Rosa Delgado', status: 'current', stage: 3, location: 'Bayview Skilled Nursing', admit: '2026-09-08', antDc: '2026-09-26', risk: 'high', review: '2026-09-19', owner: 'jp', std: { touch: 1, visit: 0, summary: 1 }, next: 'Confirm SNF discharge date and arrange home health PT.', records: 'Received', signal: 'SNF discharge likely Saturday', drivers: 'Deconditioned · caregiver works nights' },
+  { id: 'p4', name: 'Harold Okafor', status: 'current', stage: 2, location: 'Highland Hospital', admit: '2026-09-19', risk: 'na', review: '2026-09-25', owner: 'cf', std: { touch: 0, visit: 0, summary: 0 }, next: 'Complete readmission risk assessment.', records: 'Not requested', signal: 'No records received after 3 days', drivers: 'Insulin-dependent diabetes · limited mobility' },
+  { id: 'p8', name: 'Dennis Farrow', status: 'current', stage: 3, location: 'Mission Hills Post-Acute', admit: '2026-09-04', risk: 'high', review: '2026-09-20', owner: 'rg', std: { touch: 1, visit: 1, summary: 0 }, next: 'Family meeting on goals of care; update ACP.', records: 'PT eval Sep 12', signal: 'Owner out today · review 2 days overdue', drivers: 'Stroke · family unsure about next level of care' },
+  { id: 'p5', name: 'June Takahashi', status: 'discharged', stage: 4, location: 'John Muir Walnut Creek', admit: '2026-09-21', dc: '2026-09-21', risk: 'low', review: '2026-09-23', owner: 'rg', std: { touch: 0, visit: 0, summary: 0 }, next: 'Likely discharged today. Med rec once home.', records: 'Not requested', signal: 'Went home last night', drivers: 'New medication · anxious about changes' },
+  { id: 'p7', name: 'Beatriz Lopes', status: 'current', stage: 0, location: 'MarinHealth Medical Center', admit: '2026-09-22', risk: 'na', review: '2026-09-24', owner: 'cf', std: { touch: 0, visit: 0, summary: 0 }, next: 'Waiting on ER disposition.', records: 'Not requested', signal: 'Added automatically from the ADT feed at 7:12 AM', drivers: 'Lives alone · recently widowed' }
+];
+
+var TYPES = [
+  { k: 'escalate', label: 'Clinical escalations', locked: true, def: 'suggest', desc: 'Symptoms flagged on automated check-ins. A clinician always decides.' },
+  { k: 'medrec', label: 'Medication changes', locked: true, def: 'suggest', desc: 'Differences between discharge summaries and the chart. A clinician always decides.' },
+  { k: 'schedule', label: 'Scheduling', def: 'draft', desc: 'Finds openings that meet service standards and books them.' },
+  { k: 'outreach', label: 'Patient and family outreach', def: 'draft', desc: 'Texts and call scripts in each person’s preferred language and time.' },
+  { k: 'adt', label: 'Status updates from ADT feeds', def: 'draft', desc: 'Moves patients between ER, observation, inpatient and SNF as facilities report it.' },
+  { k: 'note', label: 'Next steps from call notes', def: 'draft', desc: 'Rewrites the next step when a teammate logs a call.' },
+  { k: 'records', label: 'Records requests', def: 'draft', desc: 'Faxes and emails facilities when records are missing.' },
+  { k: 'owner', label: 'Coverage and assignment', def: 'suggest', desc: 'Reassigns reviews when an owner is out or overloaded.' },
+  { k: 'intake', label: 'New admissions', def: 'auto', desc: 'Adds patients to the board when an ADT feed reports a visit.' }
+];
+var TYPE_LABEL = { escalate: 'Escalation', medrec: 'Medication change', schedule: 'Scheduling', outreach: 'Outreach', adt: 'Status update', note: 'Next step', records: 'Records', owner: 'Coverage', intake: 'New admission' };
+var ROUTINE = ['adt', 'note', 'records'];
+
+var ITEMS = [
+  { id: 'a1', pid: 'p11', type: 'escalate', urgent: true, mins: 5,
+    title: 'Same-day nurse call: new swelling and weight gain',
+    why: 'On this morning’s automated check-in, Grace reported ankle swelling and a 3 lb weight gain since Sunday. A week after a COPD admission, that meets your rule for a same-day nurse call.',
+    sources: ['Check-in call · 7:42 AM', 'Discharge weight · Sep 15'],
+    evidence: '“My ankles have been puffy since yesterday and the scale said 145 this morning. Breathing is about the same.” — Grace Monroe, automated check-in, 7:42 AM',
+    draftLabel: 'Task for Lisa Nguyen, RN',
+    draft: 'Call Grace today. Check swelling, breathing and whether she’s taking her diuretic. Offer a same-day visit if her weight is up 3 lb or more.',
+    approveLabel: 'Page Lisa Nguyen', result: 'Lisa Nguyen paged · call due by noon' },
+  { id: 'a5', pid: 'p1', type: 'medrec', urgent: true, mins: 15,
+    title: 'Discharge summary shows 2 medication changes',
+    why: 'UCSF faxed Eleanor’s discharge summary at 6:10 AM. Two changes don’t match her chart, and she’s expected home Thursday.',
+    sources: ['Fax · UCSF · 6:10 AM · page 2', 'Chart medication list'],
+    evidence: 'Discharge medications (page 2): START furosemide 40 mg by mouth daily. STOP lisinopril 20 mg (low blood pressure). CONTINUE metformin 500 mg twice daily.',
+    draftLabel: 'Med rec task for Raul Gomez, RN',
+    draft: 'Started: furosemide 40 mg daily\nStopped: lisinopril 20 mg (chart still lists it)\nNo change: metformin 500 mg twice daily',
+    approveLabel: 'Assign med rec to Raul', result: 'Med rec assigned to Raul Gomez · discharge summary marked obtained' },
+  { id: 'a3', pid: 'p6', type: 'schedule', mins: 12,
+    title: 'Book his post-discharge visit with Dr. Smith',
+    why: 'Sutter plans to discharge Samuel tomorrow morning. Your standard is a provider visit within 7 days, and he’s picked morning slots for his last 4 visits.',
+    sources: ['Sutter discharge planning · 7:30 AM', 'Dr. Smith’s schedule'],
+    evidence: 'Case management note: “Anticipate discharge 9/23 AM after echo. Wife to drive.”',
+    options: ['Mon Sep 28 · 9:30 AM · in office', 'Tue Sep 29 · 10:30 AM · in office', 'Wed Sep 30 · 2:00 PM · video visit'],
+    approveLabel: 'Book and text his wife', result: 'Booked {choice} · confirmation sent to his wife' },
+  { id: 'a4', pid: 'p3', type: 'outreach', mins: 8,
+    title: 'Text Rosa’s son about her discharge plan',
+    why: 'Rosa’s review is 3 days overdue, and her son Miguel, her main caregiver, hasn’t been reached since Sep 15. He works nights, answers texts after 2 PM, and prefers Spanish.',
+    sources: ['Care team note · Sep 15', 'Contact preferences'],
+    evidence: 'Sep 15 note (Joseph Park): “Son Miguel works nights, best to text in the afternoon. Prefers Spanish.”',
+    draftLabel: 'Text to Miguel Delgado (son)',
+    draft: 'Hi Miguel, this is Chris from your mom’s care team. Bayview expects Rosa to go home around Saturday. Can we set up a 10-minute call to plan her first week at home? Reply with a time that works.',
+    draftEs: 'Hola Miguel, soy Chris del equipo de atención de su mamá. Bayview espera que Rosa regrese a casa alrededor del sábado. ¿Podemos hablar 10 minutos para planear su primera semana en casa? Responda con una hora que le funcione.',
+    approveLabel: 'Schedule for 2:00 PM', result: 'Text scheduled for 2:00 PM · review moved to Sep 25' },
+  { id: 'a2', pid: 'p2', type: 'adt', mins: 3,
+    title: 'Walter moved from the ER to observation overnight',
+    why: 'Alta Bates reported the change at 2:14 AM. Updating his stage keeps his length of stay and review timing accurate.',
+    sources: ['ADT feed · Alta Bates · 2:14 AM'],
+    evidence: 'ADT update 02:14 · patient class changed from Emergency to Observation · unit 4 West',
+    draftLabel: 'Board update',
+    draft: 'Stage: Emergency room → Observation\nNext step: Ask the Alta Bates case manager about discharge timing; update his daughter.',
+    approveLabel: 'Update board', result: 'Moved to observation · next step refreshed' },
+  { id: 'a7', pid: 'p5', type: 'note', mins: 6,
+    title: 'Update June’s next step from Raul’s call note',
+    why: 'June went home last night. Raul’s 7:55 AM call covered her medications and follow-up, but the board still shows yesterday’s plan.',
+    sources: ['Call note · Raul Gomez · 7:55 AM'],
+    evidence: '“Spoke with pt. Home since 6 pm. Reviewed meds incl. new aspirin 81. Stress test ordered by cardiology. Needs PCP follow-up within 1 week. Feeling well.”',
+    draftLabel: 'New next step',
+    draft: 'Book a PCP visit within 7 days. Confirm the stress test date with cardiology. Medication review done by phone Sep 22 (new aspirin 81 mg).',
+    approveLabel: 'Update next step', result: 'Next step updated · touchpoint marked done' },
+  { id: 'a6', pid: 'p4', type: 'records', mins: 10,
+    title: 'Request Harold’s records from Highland',
+    why: 'Harold has been at Highland for 3 days and nothing has arrived. His readmission risk can’t be scored without the admission history and physical.',
+    sources: ['Records log', 'Highland records office'],
+    evidence: 'Highland Hospital records office · fax (510) 555-0199 · usually replies within 24 hours',
+    draftLabel: 'Fax cover sheet',
+    draft: 'Records request for Harold Okafor (DOB 3/30/44), admitted 9/19/26.\nPlease send: history and physical, progress notes, medication list, discharge plan.\nRequested by Margaret Smith, MD.',
+    approveLabel: 'Send fax', result: 'Fax sent to Highland · follow-up set for tomorrow' },
+  { id: 'a9', pid: 'p8', type: 'records', mins: 10,
+    title: 'Request Dennis’s therapy notes from Mission Hills',
+    why: 'The family meeting on goals of care needs his latest PT and OT progress. The newest notes on file are from Sep 12.',
+    sources: ['Records log'],
+    evidence: 'Last received: PT evaluation, Sep 12. Mission Hills sends notes by secure email.',
+    draftLabel: 'Secure email to Mission Hills',
+    draft: 'Please send PT and OT progress notes for Dennis Farrow (DOB 5/9/46) since 9/12. We’re preparing for a family goals-of-care meeting.',
+    approveLabel: 'Send request', result: 'Request sent to Mission Hills' },
+  { id: 'a8', pid: 'p8', type: 'owner', mins: 4,
+    title: 'Cover Dennis’s review while Raul is out',
+    why: 'Raul is off today on the team calendar. Dennis’s review is 2 days overdue and the family meeting still needs a date. You have the lightest load today.',
+    sources: ['Team calendar', 'Open reviews by owner'],
+    evidence: 'Open reviews today: Chris 4 · Lisa 6 · Joseph 5 · Raul (out) 3',
+    approveLabel: 'Assign to me', result: 'You now own Dennis’s review' }
+];
+
+function effect(id, p, it){
+  if (id === 'a1') p.next = 'Lisa Nguyen calling today about swelling and weight gain.';
+  if (id === 'a5') { p.std.summary = 1; p.next = 'Raul to reconcile medications (furosemide started, lisinopril stopped) before Thursday.'; }
+  if (id === 'a3') { p.std.visit = 1; p.next = 'Visit booked ' + it.options[it.choice] + '. Confirm anticoagulation plan with cardiology.'; }
+  if (id === 'a4') { p.review = addDays(TODAY, 3); p.next = 'Text to Miguel scheduled for 2 PM; set up a call to plan home PT.'; }
+  if (id === 'a2') { p.stage = 1; p.next = 'Ask the Alta Bates case manager about discharge timing; update his daughter.'; }
+  if (id === 'a7') { p.std.touch = 1; p.next = it.draft; }
+  if (id === 'a6') p.records = 'Requested Sep 22 by fax';
+  if (id === 'a9') p.records = 'Therapy notes requested Sep 22';
+  if (id === 'a8') p.owner = 'cf';
+}
+
+var EVENTS = [
+  { t: '6:45 PM', title: 'June Takahashi went home', src: 'John Muir ADT feed · yesterday', pid: 'p5', dot: 'dotc' },
+  { t: '2:14 AM', title: 'Walter Brandt moved to observation', src: 'Alta Bates ADT feed', pid: 'p2', dot: 'dotc' },
+  { t: '6:10 AM', title: 'Eleanor Hartwell’s discharge summary arrived', src: 'Fax from UCSF · read by Copilot', pid: 'p1', dot: 'dotc ai' },
+  { t: '7:12 AM', title: 'Beatriz Lopes checked into the ER', src: 'MarinHealth ADT feed · added to the board', pid: 'p7', dot: 'dotc' },
+  { t: '7:42 AM', title: 'Grace Monroe’s check-in flagged symptoms', src: 'Automated check-in call', pid: 'p11', dot: 'dotc red' }
+];
+
+var QUESTIONS = [
+  { k: 'home', label: 'Who’s likely going home in the next 48 hours?' },
+  { k: 'risk', label: 'Which service standards are at risk?' },
+  { k: 'night', label: 'What changed overnight?' },
+  { k: 'urgent', label: 'What’s urgent right now?' }
+];
+
+function seedItems(){ return ITEMS.map(function(x){ return Object.assign({ status: 'pending', choice: 0, lang: x.draftEs ? 'es' : null, editing: false, showEvidence: false, by: '', snap: null }, clone(x)); }); }
+function seedLevels(){ var o = {}; TYPES.forEach(function(t){ o[t.k] = t.def; }); return o; }
+
+var DEFAULTS = {
+  patients: clone(PATIENTS), items: seedItems(), levels: seedLevels(),
+  tab: 'queue', qf: 'all', qpid: null, pf: null, pfLabel: '',
+  askText: '', answer: null, autoOpen: false, clock: 485, toast: '',
+  log: [
+    { t: '7:43 AM', who: 'Copilot', text: 'Called Grace Monroe for her day-7 check-in and flagged 2 symptoms for review.' },
+    { t: '7:12 AM', who: 'Copilot · automatic', text: 'Added Beatriz Lopes to the board from the MarinHealth ADT feed.' },
+    { t: '6:11 AM', who: 'Copilot', text: 'Read Eleanor Hartwell’s discharge summary (4 pages) and matched it to her chart.' }
+  ]
+};
+
+class Component extends DCLogic {
+  st(){ return Object.assign({}, DEFAULTS, this.state || {}); }
+  merge(prev){ return Object.assign({}, DEFAULTS, prev || {}); }
+  say(msg){ var self = this; this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(function(){ self.setState({ toast: '' }); }, 2800); }
+  componentWillUnmount(){ clearTimeout(this._t); }
+
+  closeItems(ids, how){
+    var self = this;
+    this.setState(function(prev){
+      var m = self.merge(prev);
+      var clock = m.clock, log = m.log.slice(), patients = m.patients.slice();
+      var items = m.items.map(function(it){
+        if (ids.indexOf(it.id) < 0 || it.status !== 'pending') return it;
+        var n = Object.assign({}, it);
+        var pi = -1; patients.forEach(function(p, i){ if (p.id === it.pid) pi = i; });
+        clock += 1;
+        if (how === 'dismiss') {
+          n.status = 'dismissed'; n.by = 'Dismissed by you at ' + clockLabel(clock);
+          log.unshift({ t: clockLabel(clock), who: 'You', text: 'Dismissed: ' + it.title });
+        } else {
+          n.snap = clone(patients[pi]);
+          var p = clone(patients[pi]); effect(it.id, p, it); patients[pi] = p;
+          n.status = 'done';
+          n.by = how === 'auto' ? 'Done automatically at ' + clockLabel(clock) + ' · your autonomy setting' : 'Approved by you at ' + clockLabel(clock);
+          log.unshift({ t: clockLabel(clock), who: how === 'auto' ? 'Copilot · automatic' : 'You approved', text: it.title.replace(/:.*$/, '') + ' — ' + it.result.replace('{choice}', it.options ? it.options[it.choice] : '') });
+        }
+        return n;
+      });
+      return { items: items, patients: patients, log: log, clock: clock };
+    });
+  }
+  undo(id){
+    var self = this;
+    this.setState(function(prev){
+      var m = self.merge(prev);
+      var it = m.items.filter(function(x){ return x.id === id; })[0];
+      var patients = m.patients.map(function(p){ return it.snap && p.id === it.snap.id ? it.snap : p; });
+      var items = m.items.map(function(x){ return x.id === id ? Object.assign({}, x, { status: 'pending', snap: null, by: '' }) : x; });
+      var clock = m.clock + 1;
+      var log = [{ t: clockLabel(clock), who: 'You', text: 'Undid: ' + it.title }].concat(m.log);
+      return { items: items, patients: patients, log: log, clock: clock };
+    });
+  }
+  patchItem(id, patch){
+    var self = this;
+    this.setState(function(prev){ var m = self.merge(prev); return { items: m.items.map(function(x){ return x.id === id ? Object.assign({}, x, typeof patch === 'function' ? patch(x) : patch) : x; }) }; });
+  }
+  answerFor(k){
+    var s = this.st(), self = this;
+    var pts = s.patients;
+    var q = QUESTIONS.filter(function(x){ return x.k === k; })[0];
+    if (k === 'home') {
+      var soon = pts.filter(function(p){ return p.status === 'current' && p.antDc && diff(p.antDc, TODAY) >= 0 && diff(p.antDc, TODAY) <= 2; });
+      var booked = soon.filter(function(p){ return p.std.visit; }).length;
+      var names = soon.map(function(p){ return p.name + ' (' + p.location.split(' ')[0] + ', ' + fmt(p.antDc) + ')'; }).join(' and ');
+      return { q: q.label, text: soon.length + ' patients are likely to go home by Thursday: ' + names + '. ' + (booked === soon.length ? 'All of them have a provider visit booked.' : (soon.length - booked) + ((soon.length - booked) === 1 ? ' still needs' : ' still need') + ' a provider visit booked.'), actLabel: 'Show these patients', act: function(){ self.setState({ tab: 'patients', pf: soon.map(function(p){ return p.id; }), pfLabel: 'likely home in 48 hours', answer: null }); } };
+    }
+    if (k === 'risk') {
+      var late = pts.filter(function(p){ return p.status !== 'preadmit' && diff(p.review, TODAY) < 0; });
+      return { q: q.label, text: late.length ? late.length + ' reviews are past due: ' + late.map(function(p){ return p.name + ' (' + (-diff(p.review, TODAY)) + 'd)'; }).join(', ') + '. Clearing the actions waiting for them would put them back on track.' : 'No reviews are past due. Every patient is on track this week.', actLabel: 'Show these patients', act: function(){ self.setState({ tab: 'patients', pf: late.map(function(p){ return p.id; }), pfLabel: 'reviews past due', answer: null }); } };
+    }
+    if (k === 'night') {
+      var ids = ['a1', 'a2', 'a5'];
+      var open = s.items.filter(function(x){ return ids.indexOf(x.id) >= 0 && x.status === 'pending'; }).length;
+      return { q: q.label, text: '5 things happened since 5 PM yesterday: one patient went home, one moved to observation, a discharge summary arrived, a new ER visit was added to the board, and a check-in call flagged symptoms. ' + (open ? open + ' of them still need a decision from you.' : 'You’ve handled everything that needed you.'), actLabel: 'Show what needs me', act: function(){ self.setState({ tab: 'queue', qf: 'ids', qids: ids, qpid: null, answer: null }); } };
+    }
+    if (k === 'urgent') {
+      var u = s.items.filter(function(x){ return x.urgent && x.status === 'pending'; });
+      return { q: q.label, text: u.length ? u.length + ' clinical items: ' + u.map(function(x){ return x.title.toLowerCase().replace(/:.*$/, '') + ' for ' + pts.filter(function(p){ return p.id === x.pid; })[0].name; }).join('; ') + '.' : 'Nothing urgent is waiting.', actLabel: 'Show urgent items', act: function(){ self.setState({ tab: 'queue', qf: 'urgent', qpid: null, answer: null }); } };
+    }
+    return { q: 'You asked', text: 'This prototype answers a few questions. Try one of the suggestions below the search box.', actLabel: '', act: null };
+  }
+
+  renderVals(){
+    var self = this;
+    var s = this.st();
+    var P = {}; s.patients.forEach(function(p){ P[p.id] = p; });
+
+    var pending = s.items.filter(function(x){ return x.status === 'pending'; });
+    var closed = s.items.filter(function(x){ return x.status !== 'pending'; });
+    var ordered = pending.slice().sort(function(a, b){ return (b.urgent ? 1 : 0) - (a.urgent ? 1 : 0); }).concat(closed);
+    var shown = ordered.filter(function(x){
+      if (s.qpid) return x.pid === s.qpid;
+      if (s.qf === 'urgent') return x.urgent;
+      if (s.qf === 'ids') return (s.qids || []).indexOf(x.id) >= 0;
+      return true;
+    });
+
+    var queue = shown.map(function(it){
+      var p = P[it.pid];
+      var lvl = s.levels[it.type];
+      var tmeta = TYPES.filter(function(t){ return t.k === it.type; })[0];
+      var draft = it.lang === 'en' || !it.draftEs ? it.draft : it.draftEs;
+      var ctx = p.status === 'discharged' ? 'Home since ' + fmt(p.dc) : STAGES[p.stage] + ' · ' + p.location;
+      return {
+        isPending: it.status === 'pending', isClosed: it.status !== 'pending',
+        cls: 'act' + (it.urgent ? ' urgent' : ''), urgent: !!it.urgent,
+        typeLabel: TYPE_LABEL[it.type], patientName: p.name, context: ctx,
+        focusPatient: function(){ self.setState({ qpid: it.pid }); },
+        title: it.title, why: it.why,
+        hasDraft: !!it.draftLabel, draftLabel: it.draftLabel + (it.draftEs ? (it.lang === 'es' ? ' · Spanish' : ' · English') : ''),
+        draft: draft, draftId: 'draft-' + it.id, editing: it.editing, notEditing: !it.editing,
+        editLabel: it.editing ? 'Done editing' : 'Edit',
+        toggleEdit: function(){ self.patchItem(it.id, { editing: !it.editing }); },
+        setDraft: function(e){ var v = e.target.value; self.patchItem(it.id, function(x){ return x.lang === 'es' && x.draftEs ? { draftEs: v } : { draft: v }; }); },
+        hasLang: !!it.draftEs,
+        langs: [['es', 'Español'], ['en', 'English']].map(function(l){ var on = it.lang === l[0]; return { label: l[1], on: on, cls: on ? 'on' : '', pick: function(){ self.patchItem(it.id, { lang: l[0] }); } }; }),
+        hasOptions: !!it.options, radioName: 'opt-' + it.id,
+        options: (it.options || []).map(function(o, i){ var on = it.choice === i; return { label: o, on: on, cls: 'opt' + (on ? ' on' : ''), pick: function(){ self.patchItem(it.id, { choice: i }); } }; }),
+        sources: it.sources.map(function(x){ return { label: x }; }),
+        showEvidence: it.showEvidence, evidence: it.evidence,
+        toggleEvidence: function(){ self.patchItem(it.id, { showEvidence: !it.showEvidence }); },
+        approveCls: 'btn ' + (it.urgent ? 'urgent' : 'primary'), approveLabel: it.approveLabel,
+        approve: function(){ self.closeItems([it.id], 'you'); self.say(p.name + ' · ' + it.result.replace('{choice}', it.options ? it.options[it.choice] : '')); },
+        dismiss: function(){ self.closeItems([it.id], 'dismiss'); },
+        mins: it.mins,
+        modeLabel: tmeta.locked ? 'Needs clinical judgment' : lvl === 'suggest' ? 'Suggested' : 'Drafted, ready to send',
+        modeCls: 'pill ' + (tmeta.locked ? 'p-urgent' : 'p-ai'),
+        doneCls: 'done' + (it.status === 'dismissed' ? ' dismissed' : ''),
+        resultText: it.status === 'dismissed' ? 'Dismissed: ' + it.title : it.result.replace('{choice}', it.options ? it.options[it.choice] : ''),
+        closedBy: it.by,
+        undo: function(){ self.undo(it.id); }
+      };
+    });
+
+    var routine = pending.filter(function(x){ return ROUTINE.indexOf(x.type) >= 0; });
+    var done = s.items.filter(function(x){ return x.status === 'done'; });
+    var mins = done.reduce(function(n, x){ return n + x.mins; }, 0) + 6;
+    var active = s.patients.filter(function(p){ return p.status !== 'preadmit'; });
+    var onTime = active.filter(function(p){ return diff(p.review, TODAY) >= 0; }).length;
+    var pct = Math.round(onTime / active.length * 10) * 10;
+
+    var tabs = [['queue', 'Ready for you', pending.length], ['patients', 'Patients', s.patients.length], ['log', 'Activity', s.log.length]].map(function(t){
+      var on = s.tab === t[0];
+      return { label: t[1], n: t[2], on: on, cls: 'tab' + (on ? ' on' : ''), pick: function(){ self.setState({ tab: t[0] }); } };
+    });
+    var qchips = [['all', 'Everything'], ['urgent', 'Urgent']].map(function(c){
+      var on = !s.qpid && s.qf === c[0];
+      return { label: c[1], on: on, cls: 'chip' + (on ? ' on' : ''), pick: function(){ self.setState({ qf: c[0], qpid: null }); } };
+    });
+
+    var plist = s.patients.filter(function(p){ return !s.pf || s.pf.indexOf(p.id) >= 0; }).map(function(p){
+      var n = pending.filter(function(x){ return x.pid === p.id; }).length;
+      var sc = STD_KEYS.filter(function(k){ return p.std[k]; }).length;
+      var d = diff(p.review, TODAY);
+      return {
+        name: p.name, riskLabel: RISK[p.risk][0], riskCls: RISK[p.risk][1],
+        where: (p.status === 'discharged' ? 'Home since ' + fmt(p.dc) + ' · from ' : STAGES[p.stage] + ' · ') + p.location,
+        signal: p.signal, drivers: p.drivers, next: p.next,
+        segs: STD_KEYS.map(function(k){ return { cls: 'seg' + (p.std[k] ? ' done' : '') }; }),
+        stdText: sc + ' of 3 standards met',
+        ownerLine: OWNERS[p.owner] + ' · review ' + (d < 0 ? 'overdue ' + (-d) + 'd' : d === 0 ? 'today' : fmt(p.review)),
+        hasPending: n > 0, noPending: n === 0, pendingLabel: n + (n === 1 ? ' action waiting' : ' actions waiting'),
+        see: function(){ self.setState({ tab: 'queue', qpid: p.id }); }
+      };
+    });
+
+    var log = s.log.map(function(l){ return { t: l.t, who: l.who, text: l.text, whoCls: 'pill ' + (l.who.indexOf('automatic') >= 0 ? 'p-auto' : l.who === 'Copilot' ? 'p-ai' : 'p-muted') }; });
+
+    var events = EVENTS.map(function(e){ return { t: e.t, title: e.title, src: e.src, dot: e.dot, pick: function(){ self.setState({ tab: 'queue', qpid: e.pid }); } }; });
+
+    var autoRows = TYPES.map(function(t){
+      var cur = s.levels[t.k];
+      return {
+        label: t.label, desc: t.desc + (t.locked ? ' Auto is turned off for this kind of work.' : ''), aria: t.label + ' autonomy',
+        levels: [['suggest', 'Suggest'], ['draft', 'Draft'], ['auto', 'Auto']].map(function(l){
+          var on = cur === l[0];
+          return { label: l[1], on: on, cls: on ? 'on' : '', disabled: !!t.locked && l[0] === 'auto',
+            pick: function(){
+              if (t.locked && l[0] === 'auto') return;
+              self.setState(function(prev){ var m = self.merge(prev); var lv = Object.assign({}, m.levels); lv[t.k] = l[0]; return { levels: lv }; });
+              if (l[0] === 'auto') {
+                var ids = self.st().items.filter(function(x){ return x.type === t.k && x.status === 'pending'; }).map(function(x){ return x.id; });
+                if (ids.length) { self.closeItems(ids, 'auto'); self.say(ids.length + ' ' + t.label.toLowerCase() + ' handled automatically · see Activity'); }
+              }
+            } };
+        })
+      };
+    });
+
+    var qpName = s.qpid && P[s.qpid] ? P[s.qpid].name : '';
+
+    return {
+      clock: clockLabel(s.clock),
+      questions: QUESTIONS.map(function(q){ return { label: q.label, pick: function(){ self.setState({ answer: q.k, askText: '' }); } }; }),
+      askText: s.askText, setAsk: function(e){ self.setState({ askText: e.target.value }); },
+      askSubmit: function(e){
+        if (e && e.preventDefault) e.preventDefault();
+        var t = (self.st().askText || '').toLowerCase();
+        var k = /home|discharg|going/.test(t) ? 'home' : /standard|risk|overdue|late/.test(t) ? 'risk' : /overnight|changed|new|since/.test(t) ? 'night' : /urgent|now|priority/.test(t) ? 'urgent' : t ? 'other' : null;
+        if (k) self.setState({ answer: k });
+      },
+      hasAnswer: !!s.answer,
+      answer: s.answer ? (function(){ var a = self.answerFor(s.answer); if (s.answer === 'other') a.q = '“' + s.askText + '”'; a.hasAction = !!a.act; return a; })() : { q: '', text: '', hasAction: false, actLabel: '', act: null },
+      closeAnswer: function(){ self.setState({ answer: null }); },
+      tabs: tabs, isQueue: s.tab === 'queue', isPatients: s.tab === 'patients', isLog: s.tab === 'log',
+      qchips: qchips, hasPatientFilter: !!s.qpid, patientFilterName: qpName,
+      clearQFilter: function(){ self.setState({ qpid: null, qf: 'all' }); },
+      queue: queue, queueEmpty: queue.length === 0,
+      showBulk: s.tab === 'queue' && routine.length > 1, routineCount: routine.length,
+      approveRoutine: function(){ var ids = routine.map(function(x){ return x.id; }); self.closeItems(ids, 'you'); self.say(ids.length + ' routine updates approved'); },
+      plist: plist, hasPFilter: !!s.pf, pFilterLabel: s.pfLabel,
+      clearPFilter: function(){ self.setState({ pf: null, pfLabel: '' }); },
+      log: log, events: events,
+      openCount: pending.length, clearedCount: done.length,
+      savedLabel: mins >= 60 ? Math.floor(mins / 60) + 'h ' + (mins % 60) + 'm' : mins + 'm',
+      onTimeText: onTime + ' of ' + active.length, onTimeBar: 'bar-' + pct,
+      autoOpen: s.autoOpen, openAuto: function(){ self.setState({ autoOpen: true }); }, closeAuto: function(){ self.setState({ autoOpen: false }); },
+      autoRows: autoRows,
+      toast: s.toast, hasToast: !!s.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

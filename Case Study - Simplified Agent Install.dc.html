@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Simplified Agent Install — Case study | John Blanco-Slingerland</title>
+<meta name="description" content="Case study: Simplified Agent Install. UX architecture, brand and product design by John Blanco-Slingerland.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Chakra+Petch:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: #F1EFEE; color: #120A08;
+         font-family: 'Chakra Petch', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, h4, h5, p, figure, blockquote, dl, dd { margin: 0; }
+  ul, ol { margin: 0; padding: 0; list-style: none; }
+  img, video { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.25em; }
+  a:hover { color: #F4290C; }
+  ::selection { background: #F4290C; color: #FFFFFF; }
+  :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+</style>
+  <script src="gate.js"></script>
+  <script src="nav-autohide.js"></script>
+  <script src="parallax-fx.js"></script>
+</helmet>
+
+<div style="background:#F1EFEE;color:#120A08;font-family:'Chakra Petch',system-ui,sans-serif;overflow-x:clip">
+
+  <header id="jsl-nav" style="position:sticky;top:0;z-index:40;background:#F4290C;color:#FFFFFF;transition:transform 260ms cubic-bezier(0.4,0,0.2,1),background 220ms ease;will-change:transform">
+    <nav aria-label="Primary" style="max-width:1680px;margin:0 auto;padding:18px clamp(20px,4vw,56px) 0;display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px clamp(20px,4vw,64px)">
+      <a href="John Slingerland.dc.html" style="text-decoration:none;font-family:Anton,Impact,sans-serif;font-size:clamp(1rem,1.5vw,1.35rem);letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px;flex:0 0 auto">// John Blanco-Slingerland</a>
+      <ul style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px clamp(18px,3vw,56px);margin-left:auto;font:500 0.84rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">
+        <li style="flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px"><a href="John Slingerland.dc.html#work" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px" style-hover="color:#FFE9DB"><span aria-hidden="true" style="width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:inline-block"></span>Work</a></li>
+        <li style="flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px"><a href="John Slingerland.dc.html#skills" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px" style-hover="color:#FFE9DB"><span aria-hidden="true" style="width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:inline-block"></span>Skills</a></li>
+        <li style="flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px"><a href="John Slingerland.dc.html#background" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px" style-hover="color:#FFE9DB"><span aria-hidden="true" style="width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:inline-block"></span>Background</a></li>
+        <li style="flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px"><a href="John Slingerland.dc.html#contact" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px" style-hover="color:#FFE9DB"><span aria-hidden="true" style="width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:inline-block"></span>Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+
+  <section style="max-width:1680px;margin:0 auto;padding:clamp(48px,9vh,120px) clamp(20px,4vw,56px) clamp(40px,7vh,88px)">
+    <ul style="display:flex;flex-wrap:wrap;gap:10px">
+      <li style="border:1.5px solid #120A08;border-radius:999px;padding:9px 20px;font:600 0.72rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase">Enterprise observability</li>
+      <li style="border:1.5px solid #120A08;border-radius:999px;padding:9px 20px;font:600 0.72rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase">Discovery &amp; definition</li>
+      <li style="border:1.5px solid #120A08;border-radius:999px;padding:9px 20px;font:600 0.72rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase">Onboarding</li>
+    </ul>
+
+    <h1 style="margin-top:clamp(22px,3.5vh,40px);font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(2.2rem,6.4vw,5.6rem);line-height:0.94;letter-spacing:-0.005em;text-transform:uppercase;max-width:19ch;text-wrap:balance">We lost real money because our software was too hard to turn on</h1>
+
+    <dl style="margin-top:clamp(28px,5vh,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr));gap:clamp(18px,3vw,40px);max-width:1180px">
+      <div>
+        <dt style="font:700 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Client</dt>
+        <dd style="margin-top:10px;font:400 clamp(0.92rem,1vw,1.02rem)/1.45 'Chakra Petch',sans-serif">AppDynamics · Cisco</dd>
+      </div>
+      <div>
+        <dt style="font:700 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Delivered</dt>
+        <dd style="margin-top:10px;font:400 clamp(0.92rem,1vw,1.02rem)/1.45 'Chakra Petch',sans-serif">Competitive analysis, workshops, prototyping, narrative</dd>
+      </div>
+    </dl>
+
+    <a href="John Slingerland.dc.html#contact" style="margin-top:clamp(28px,4.5vh,52px);text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#120A08;border:1.5px solid #120A08;border-radius:999px;padding:0 32px;min-height:58px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#120A08;color:#FFFFFF"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>Ask me about it</a>
+  </section>
+
+  <section style="background:#120A08;padding:clamp(28px,5vw,72px) clamp(20px,4vw,56px);display:flex;justify-content:center">
+    <figure style="width:min(100%,1040px);margin:0">
+      <img src="uploads/Agent-install-ZFI.gif" alt="Screen recording of the shipped Agent Installer: choosing a platform to instrument, running the install, and seeing detected processes come back." style="width:100%;height:auto;border-radius:clamp(10px,1.2vw,18px)">
+      <figcaption style="margin-top:18px;font:600 0.74rem/1.5 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.65)">The shipped installer, end to end</figcaption>
+    </figure>
+  </section>
+
+  <section style="max-width:1680px;margin:0 auto;padding:clamp(56px,10vh,140px) clamp(20px,4vw,56px) clamp(40px,7vh,88px);display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+    <h2 style="flex:0 1 min(100%,20rem);min-width:0;font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">The brief</h2>
+    <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:64ch">
+      <p style="font:400 clamp(1.05rem,1.5vw,1.5rem)/1.45 'Chakra Petch',sans-serif;letter-spacing:-0.005em;text-wrap:pretty">AppDynamics is like an alarm system — it watches your code and tells you when something breaks. The watching is done by “agents,” little programs you install on the servers where your code lives. One agent per programming language.</p>
+      <p style="margin-top:clamp(20px,3vh,36px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">Installing them was miserable. Hundreds of steps. Each agent downloaded one at a time, and every agent mapped by hand to an app and a tier before it could be deployed — which meant inventing a naming scheme for your entire company before you could monitor anything. One customer spent six months on the naming alone.</p>
+      <p style="margin-top:clamp(16px,2.4vh,28px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">Most people don’t have one copy of their app, either. They have a few, running in different environments on different servers, for testing and for security. So multiply all of that by however many servers you’ve got. Some companies have thousands of apps across hundreds of them.</p>
+      <p style="margin-top:clamp(16px,2.4vh,28px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">In 2018 we lost significant contracts over it. It was one of the loudest complaints we heard, and people were leaving for Dynatrace, who had already figured out how to do it with a single agent. So I knew it was possible. The question was what it would take for us to do better.</p>
+    </div>
+  </section>
+
+  <section style="max-width:1680px;margin:0 auto;padding:0 clamp(20px,4vw,56px) clamp(56px,9vh,120px);display:flex;flex-wrap:wrap;gap:clamp(28px,5vw,88px);align-items:start">
+    <div style="flex:1 1 min(100%,20rem);min-width:0;max-width:52ch">
+      <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">Meet Aparna</h2>
+      <p style="margin-top:clamp(16px,2.5vh,28px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">Aparna works on a DevOps team. She started as an IT admin and brought that with her, writing Python scripts to automate the tedious parts of standing up a system nobody planned in advance. She likes that every day is different. She likes being in control of a complicated landscape, and she likes sharpening her own tools.</p>
+      <p style="margin-top:clamp(14px,2vh,24px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">What she doesn’t like is routine work. Agent install was routine work she couldn’t automate, and it usually ended with her calling our support team to get through it.</p>
+      <h2 style="margin-top:clamp(36px,6vh,72px);font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">My role</h2>
+      <p style="margin-top:clamp(16px,2.5vh,28px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">I ran discovery and definition. That meant the competitive analysis, the engineering interviews, the strategy workshop with the PM and lead engineer, the first flows and wireframes, the narrative, and the presentations to executives and to our annual product kickoff. Two product designers from my team came in once the concept held up, and one of them carried it into development alongside the PM.</p>
+    </div>
+    <div style="flex:1 1 min(100%,20rem);min-width:0">
+      <figure style="margin:0">
+        <img src="assets/image-4-1.webp" alt="Whiteboard from the strategy workshop mapping app, tier and node onto service groups, service instances, hosts and tags." style="width:100%;height:auto;border-radius:clamp(14px,1.8vw,26px);border:1.5px solid rgba(18,10,8,0.18)">
+        <figcaption style="margin-top:16px;font:600 0.74rem/1.5 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:rgba(18,10,8,0.55)">Workshop whiteboard — grouping and sorting, not installing</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section style="max-width:1680px;margin:0 auto;padding:0 clamp(20px,4vw,56px) clamp(56px,9vh,120px);display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+    <h2 style="flex:0 1 min(100%,20rem);min-width:0;font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">Working backwards from the best version</h2>
+    <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:64ch">
+      <p style="font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">I partnered with the lead Product Manager and we started at the end. What’s the best possible version of this, and what would it take to make it real? Starting from the current experience would only get us a slightly less painful version of the same thing.</p>
+      <ul style="margin-top:clamp(24px,4vh,44px);display:grid;gap:clamp(16px,2.4vh,28px)">
+        <li style="border-top:1.5px solid rgba(18,10,8,0.25);padding-top:14px"><p style="font:700 0.78rem/1.3 'Chakra Petch',sans-serif;letter-spacing:0.13em;text-transform:uppercase">Someone else already did it</p><p style="margin-top:10px;font:400 clamp(0.9rem,1vw,1rem)/1.6 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">I wanted to know where the industry actually was, so we looked at Dynatrace and New Relic. I poured over the technical documentation, reading it the way a customer would, hunting for the seams. Dynatrace had single-agent installation. That settled the question of whether it was possible and turned it into a question of what we’d have to change.</p></li>
+        <li style="border-top:1.5px solid rgba(18,10,8,0.25);padding-top:14px"><p style="font:700 0.78rem/1.3 'Chakra Petch',sans-serif;letter-spacing:0.13em;text-transform:uppercase">The engineer had my ear</p><p style="margin-top:10px;font:400 clamp(0.9rem,1vw,1rem)/1.6 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">One of our engineers reframed the whole thing for me: underneath, this is a grouping and sorting exercise. People have objects — processes — running inside a virtual host environment, sitting on a physical server. Those processes need to be grouped into apps and tiers so they can be monitored. That’s it. Everything painful about install came from making a human do that grouping by hand, up front, in a naming convention, before the software had seen a single thing.</p></li>
+        <li style="border-top:1.5px solid rgba(18,10,8,0.25);padding-top:14px"><p style="font:700 0.78rem/1.3 'Chakra Petch',sans-serif;letter-spacing:0.13em;text-transform:uppercase">Goals</p><p style="margin-top:10px;font:400 clamp(0.9rem,1vw,1rem)/1.6 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">Reduce manual effort — the installer detects which processes are running and proposes whether they should be monitored. Make the interface say what it means: clear instructions, human-readable names, no decoder ring. Cut time to setup — install multiple agents in fewer steps, without leaving the screen you’re on.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section style="max-width:1680px;margin:0 auto;padding:clamp(48px,8vh,110px) clamp(20px,4vw,56px);text-align:center">
+    <p style="font-family:Anton,Impact,sans-serif;font-size:clamp(1.9rem,5.6vw,4.8rem);line-height:0.94;letter-spacing:0.005em;text-transform:uppercase;color:rgba(18,10,8,0.3);max-width:22ch;margin:0 auto;text-wrap:balance">We were asking the customer to describe something the agent could just look at</p>
+  </section>
+
+  <section style="max-width:1680px;margin:0 auto;padding:0 clamp(20px,4vw,56px) clamp(56px,9vh,120px);display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+    <h2 style="flex:0 1 min(100%,20rem);min-width:0;font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">Categorizing the dream</h2>
+    <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:64ch">
+      <p style="font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">Once I had a working knowledge of the problem, the PM and I sat down with a lead engineer and workshopped it. I wanted the vision grounded in something real, not a pretty picture we’d have to walk back. The question we kept circling: could we bundle the agents into a single package that lands on the host, detects everything running, and proposes how it should be grouped? Could it suggest names a human would recognize, instead of asking for a naming scheme?</p>
+      <p style="margin-top:clamp(18px,2.8vh,32px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty"><strong style="font-weight:700">Tagging.</strong> From observational inquiries we knew people needed to tell their host environments apart — by service, by application, by business unit, by geography, by environment, by whatever they cared about that week. A naming convention was how they’d been doing it, badly. So we landed on tags. The agent detects the processes, suggests the apps and tiers they belong to, suggests the tags, and hands you a list you can actually read. You pick what you want to monitor. Next server, it already knows more than it did.</p>
+      <p style="margin-top:clamp(16px,2.4vh,28px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty"><strong style="font-weight:700">Mapping the possibilities.</strong> Once agents start reporting, they draw themselves onto a topology we call the flow map. I wondered whether we could pull that into the install itself — you finish, and instead of a success message you see your environment appear, connected, proof that it worked.</p>
+      <p style="margin-top:clamp(16px,2.4vh,28px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty"><strong style="font-weight:700">The grounded version.</strong> Underneath the dream was something small enough to defend: one package, called the agent installer, and two commands you copy and paste onto the target host. From there you go to the UI, see everything that can be instrumented in plain language, and toggle it on. I pulled in the product designers on my team and we started wireframing while engineering built a proof of concept. We revised the wireframes, fleshed out the concepts, and built a prototype. I wrote the narrative around it and presented it to executive leadership, then presented it again with the lead PM to the room at our annual product kickoff.</p>
+    </div>
+  </section>
+
+  <section style="background:#120A08;color:#FFFFFF;padding:clamp(48px,9vh,120px) clamp(20px,4vw,56px)">
+    <div style="max-width:1680px;margin:0 auto;display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+      <h2 style="flex:0 1 min(100%,20rem);min-width:0;font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">Then reality showed up</h2>
+      <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:64ch">
+        <p style="font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">Coming out of the conference we had two problems. Nobody was confident the flow map would perform at the scale our customers run at. And tagging — the thing the whole dream hung on — wasn’t something the current tech stack could support. When engineering’s proof of concept came back, we had a real picture of what was possible now versus what was possible eventually.</p>
+        <p style="margin-top:clamp(16px,2.4vh,28px);font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">So I asked the team to show me the experience without the flow map and without tagging. Not as a fallback to keep in a drawer, as the thing we would actually build. The PM started scoping requirements against it.</p>
+        <p style="margin-top:clamp(20px,3vh,36px);border-left:2px solid #DFFF4F;padding-left:clamp(16px,2vw,28px);font:400 clamp(1rem,1.25vw,1.22rem)/1.55 'Chakra Petch',sans-serif;text-wrap:pretty">This is the part I’d point to if you asked me what I’m useful for. I’d spent months selling a vision, and the most valuable thing I did was cut two of its best ideas out and ship the part that was true today. The vision didn’t disappear — it became the reason the roadmap pointed where it did. It just stopped holding the release hostage.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="max-width:1680px;margin:0 auto;padding:clamp(56px,9vh,120px) clamp(20px,4vw,56px) clamp(56px,9vh,120px);display:flex;flex-wrap:wrap;gap:clamp(28px,5vw,88px)">
+    <div style="flex:1 1 min(100%,20rem);min-width:0;max-width:52ch">
+      <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">Three steps instead of hundreds</h2>
+      <p style="margin-top:clamp(16px,2.5vh,28px);font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">What we built is a guided setup that opens with a line about being a few steps away, and then means it.</p>
+      <ol style="margin-top:clamp(22px,3.5vh,40px);display:grid;gap:clamp(16px,2.4vh,28px)">
+        <li style="border-top:1.5px solid rgba(18,10,8,0.25);padding-top:14px"><p style="font:700 0.78rem/1.3 'Chakra Petch',sans-serif;letter-spacing:0.13em;text-transform:uppercase">01 — Specify the application to deploy</p><p style="margin-top:10px;font:400 clamp(0.9rem,1vw,1rem)/1.6 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">Pick your platform — AWS, Azure, Google Cloud, Kubernetes, containers, Linux, Red Hat, serverless — and name the application.</p></li>
+        <li style="border-top:1.5px solid rgba(18,10,8,0.25);padding-top:14px"><p style="font:700 0.78rem/1.3 'Chakra Petch',sans-serif;letter-spacing:0.13em;text-transform:uppercase">02 — Download the installer</p><p style="margin-top:10px;font:400 clamp(0.9rem,1vw,1rem)/1.6 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">One package, not one agent at a time.</p></li>
+        <li style="border-top:1.5px solid rgba(18,10,8,0.25);padding-top:14px"><p style="font:700 0.78rem/1.3 'Chakra Petch',sans-serif;letter-spacing:0.13em;text-transform:uppercase">03 — Restart processes</p><p style="margin-top:10px;font:400 clamp(0.9rem,1vw,1rem)/1.6 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">Done.</p></li>
+      </ol>
+      <p style="margin-top:clamp(18px,2.8vh,32px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">Each step carries its own progress, so you always know how much is left. The platform picker is a search field with a short list behind it, because people know what they’re running and shouldn’t have to hunt for it in a menu.</p>
+    </div>
+    <dl style="flex:1 1 min(100%,22rem);min-width:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,12rem),1fr));gap:clamp(22px,3.5vw,56px);align-content:start">
+      <div style="border-top:1.5px solid rgba(18,10,8,0.25);padding-top:14px">
+        <dt style="font-family:Anton,Impact,sans-serif;font-size:clamp(1.4rem,2.4vw,2rem);letter-spacing:0.01em">2 commands</dt>
+        <dd style="margin-top:12px;font:400 0.9rem/1.45 'Chakra Petch',sans-serif;opacity:0.78">Copied and pasted onto the target host — the whole install</dd>
+      </div>
+      <div style="border-top:1.5px solid rgba(18,10,8,0.25);padding-top:14px">
+        <dt style="font-family:Anton,Impact,sans-serif;font-size:clamp(1.4rem,2.4vw,2rem);letter-spacing:0.01em">3 steps</dt>
+        <dd style="margin-top:12px;font:400 0.9rem/1.45 'Chakra Petch',sans-serif;opacity:0.78">Down from hundreds, with progress shown per step</dd>
+      </div>
+      <div style="border-top:1.5px solid rgba(18,10,8,0.25);padding-top:14px">
+        <dt style="font-family:Anton,Impact,sans-serif;font-size:clamp(1.4rem,2.4vw,2rem);letter-spacing:0.01em">2 agents</dt>
+        <dd style="margin-top:12px;font:400 0.9rem/1.45 'Chakra Petch',sans-serif;opacity:0.78">Machine Agent and Java bundled, with four more behind them</dd>
+      </div>
+      <div style="border-top:1.5px solid rgba(18,10,8,0.25);padding-top:14px">
+        <dt style="font-family:Anton,Impact,sans-serif;font-size:clamp(1.4rem,2.4vw,2rem);letter-spacing:0.01em">10%</dt>
+        <dd style="margin-top:12px;font:400 0.9rem/1.45 'Chakra Petch',sans-serif;opacity:0.78">Adoption lift the team went into beta watching, alongside hours to deployment</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section style="max-width:1680px;margin:0 auto;padding:0 clamp(20px,4vw,56px) clamp(56px,9vh,120px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:clamp(18px,3vw,48px);align-items:start">
+    <figure style="margin:0">
+      <img loading="lazy" decoding="async" src="assets/image-7-3.png" alt="The Agent Installer screen: specify the application to deploy to, then copy and paste two commands for express installation." style="width:100%;height:auto;border-radius:clamp(14px,1.8vw,26px);border:1.5px solid rgba(18,10,8,0.18)">
+      <figcaption style="margin-top:16px;font:600 0.74rem/1.5 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:rgba(18,10,8,0.55)">Two commands, copied onto the host</figcaption>
+    </figure>
+    <figure style="margin:clamp(0px,4vw,64px) 0 0">
+      <img loading="lazy" decoding="async" src="assets/image-8-1.png" alt="Monitoring Settings listing managed processes by tier name, application and monitoring status, each toggleable." style="width:100%;height:auto;border-radius:clamp(14px,1.8vw,26px);border:1.5px solid rgba(18,10,8,0.18)">
+      <figcaption style="margin-top:16px;font:600 0.74rem/1.5 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:rgba(18,10,8,0.55)">Detected processes in plain language — toggle what you monitor</figcaption>
+    </figure>
+  </section>
+
+  <section style="max-width:1680px;margin:0 auto;padding:0 clamp(20px,4vw,56px) clamp(56px,9vh,120px);display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+    <h2 style="flex:0 1 min(100%,20rem);min-width:0;font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">Research told us we’d solved the wrong half</h2>
+    <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:64ch">
+      <p style="font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">With a prototype in hand we partnered with the UX Research team and ran a usability study with four participants. It tested high on ease of use and relatively low on expected functionality. Which is a polite way of saying: yes, this is easier, and no, it will not survive contact with my environment.</p>
+      <p style="margin-top:clamp(16px,2.4vh,28px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">The concern was scale. People wanted to search, filter, and save filter sets. Pagination confused them. And they wanted visibility into agent upgrades — specifically, they wanted upgrades to happen without them.</p>
+      <p style="margin-top:clamp(16px,2.4vh,28px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">My team revised the mockups against what we heard. They improved search and filtering, and built a real pagination solution instead of the one we’d waved at. Filtering went on the left, pagination in the bottom right, where people went looking for them. And through the partnership with engineering we learned automatic upgrades were actually on the table. The thing users asked for loudest turned out to be the thing we could give them.</p>
+    </div>
+  </section>
+
+  <section style="background:#FFE9DB;padding:clamp(48px,9vh,120px) clamp(20px,4vw,56px)">
+    <div style="max-width:1680px;margin:0 auto;display:flex;flex-wrap:wrap;gap:clamp(28px,5vw,88px);align-items:start">
+      <div style="flex:1 1 min(100%,20rem);min-width:0;max-width:56ch">
+        <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">What shipped</h2>
+        <p style="margin-top:clamp(16px,2.5vh,28px);font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">The team built and launched a limited beta in iterative cycles. It bundled two agents — Machine Agent and Java, our two most popular — with .Net, Node.js, Windows, and Linux behind them. It included the first version of automatic tier naming, automatic upgrades, and the ability to instrument all or a subset of the processes on a host.</p>
+        <p style="margin-top:clamp(16px,2.4vh,28px);font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">Two agents instead of six. No tagging. No flow map. But you could turn the thing on by pasting two commands and clicking through three steps, and it upgraded itself afterward.</p>
+        <p style="margin-top:clamp(16px,2.4vh,28px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.8;text-wrap:pretty">The team went into beta watching two numbers: a 10% lift in adoption, and a drop in hours to deployment, which at that point was still over two hours. I’d be doing you a favor and myself a disservice if I told you I know where those numbers landed — I moved on before general release, and tagging was still waiting on the stack when I did.</p>
+        <a href="John Slingerland.dc.html#work" style="margin-top:clamp(26px,4vh,48px);text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#120A08;border:1.5px solid #120A08;border-radius:999px;padding:0 32px;min-height:58px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#120A08;color:#FFE9DB"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>Back to work</a>
+      </div>
+      <div style="flex:1 1 min(100%,20rem);min-width:0;max-width:52ch">
+        <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">What I’d do differently</h2>
+        <p style="margin-top:clamp(16px,2.5vh,28px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.8;text-wrap:pretty">I fell in love with the flow map. It was the most beautiful part of the vision and the least necessary, and I spent time on it that would have been better spent on scale — the exact thing research came back and hit us with. Four participants told me in an afternoon what I could have anticipated by taking “thousands of apps across hundreds of servers” seriously the first time I heard it.</p>
+        <p style="margin-top:clamp(16px,2.4vh,28px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.8;text-wrap:pretty">I’d also have pushed harder on the two commands earlier. That was the real idea. Everything else was decoration on top of it, and the sooner we said so out loud, the sooner the scope argument would have resolved itself.</p>
+        <p style="margin-top:clamp(20px,3vh,36px);border-top:1.5px solid rgba(18,10,8,0.28);padding-top:18px;font:400 clamp(0.95rem,1.1vw,1.1rem)/1.6 'Chakra Petch',sans-serif;text-wrap:pretty">Agent install doesn’t have to be a painstaking manual process. It turned out not to be an instructions problem or a documentation problem — it was us asking a person to describe something the software was already standing on top of and could see for itself. Once we stopped doing that, it took two commands.</p>
+      </div>
+    </div>
+  </section>
+
+  </main>
+</div>
+
+</x-dc>
+</body>
+</html>

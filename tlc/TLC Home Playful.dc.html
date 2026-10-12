@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>TLC Home Playful | John Blanco-Slingerland</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kavoon&family=Livvic:wght@500;600;700&family=Londrina+Solid:wght@400;900&family=Mali:wght@500&display=swap">
+<style>
+html,body{height:100%}
+body{margin:0;background:#2a1a6e;color:#fff;font-family:'Livvic','Avenir Next',system-ui,sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+*{box-sizing:border-box}
+a{color:#fff;text-decoration:none}a:hover{color:#eaf5a6}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+@keyframes bob{50%{transform:rotate(-4deg) translateY(-6px)}}
+@keyframes float{50%{translate:0 -12px}}
+@keyframes nudge{50%{transform:rotate(-45deg) translate(-3px,3px)}}
+</style>
+<script>
+if(/[?&]back=1/.test(location.search)){document.addEventListener('DOMContentLoaded',function(){var a=document.createElement('a');a.href='../Case Study - The Learning Choice Academy.dc.html#prototype';a.textContent='← Back to case study';a.style.cssText="position:fixed;left:16px;bottom:16px;z-index:9999;padding:12px 18px;border-radius:999px;background:#120A08;color:#fff;font:600 13px/1 'Livvic',sans-serif;letter-spacing:.06em;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.35)";document.body.appendChild(a)})}
+</script>
+</helmet>
+
+<div style="position:fixed;inset:0;overflow:hidden;background:#2a1a6e">
+
+  <!-- backgrounds -->
+  <div aria-hidden="true" style="position:absolute;inset:0;z-index:0;isolation:isolate;overflow:hidden;background:#5b3cc4;transition:opacity 1.1s ease;opacity:{{ vidOp }};pointer-events:none">
+    <div style="position:absolute;inset:0;background:url(assets/v/hero-poster.jpg) center/cover;mix-blend-mode:luminosity;opacity:.9"></div>
+    <video ref="{{ vidRef }}" onPlaying="{{ on_vid }}" muted="muted" loop="loop" playsinline="playsinline" preload="none" poster="assets/v/hero-poster.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:luminosity;transition:opacity .8s ease;opacity:{{ vo_vid }}">
+    </video>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(42,26,110,.45),rgba(91,60,196,.15) 40%,rgba(42,26,110,.8))"></div>
+  </div>
+  <div style="position:absolute;inset:-2%;background-color:#5b3cc4;background-image:linear-gradient(180deg,rgba(42,26,110,.35),rgba(42,26,110,.1) 40%,rgba(42,26,110,.75)),url(assets/v/day-poster.jpg);background-size:cover;background-position:center;background-blend-mode:normal,luminosity;transition:opacity 1.1s ease,transform 1.6s cubic-bezier(.7,0,.2,1);opacity:{{ bg0.op }};transform:{{ bg0.tf }}"></div>
+  <div style="position:absolute;inset:-2%;background-color:#4a2eb0;background-image:linear-gradient(90deg,#1c1150 10%,rgba(28,17,80,.3) 65%),url(assets/v/books-poster.jpg);background-size:cover;background-position:center;background-blend-mode:normal,luminosity;transition:opacity 1.1s ease,transform 1.6s cubic-bezier(.7,0,.2,1);opacity:{{ bg1.op }};transform:{{ bg1.tf }}"></div>
+  <div aria-hidden="true" style="position:absolute;inset:0;isolation:isolate;overflow:hidden;background:#4a2eb0;transition:opacity 1.1s ease;opacity:{{ vid2Op }};pointer-events:none">
+    <div style="position:absolute;inset:0;background:url(assets/v/books-poster.jpg) center/cover;mix-blend-mode:luminosity;opacity:.9"></div>
+    <video ref="{{ vid2Ref }}" onPlaying="{{ on_vid2 }}" muted="muted" loop="loop" playsinline="playsinline" preload="none" poster="assets/v/books-poster.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:luminosity;transition:opacity .8s ease;opacity:{{ vo_vid2 }}">
+    </video>
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,#1c1150 10%,rgba(28,17,80,.35) 65%,rgba(28,17,80,.2))"></div>
+  </div>
+  <div style="position:absolute;inset:0;overflow:hidden;background:#5b3cc4;transition:opacity 1.1s ease;opacity:{{ bg2.op }}">
+    <sc-for list="{{ progBgs }}" as="b" hint-placeholder-count="4">
+      <div style="position:absolute;inset:-6%;background-color:#5b3cc4;background-image:linear-gradient(180deg,rgba(42,26,110,.55),rgba(91,60,196,.2) 45%,rgba(42,26,110,.7)),url('{{ b.img }}');background-size:cover;background-position:center;background-blend-mode:normal,luminosity;transition:opacity 1.4s ease,transform 9s cubic-bezier(.25,.1,.25,1);opacity:{{ b.op }};transform:{{ b.tf }}"></div>
+    </sc-for>
+  </div>
+  <div style="position:absolute;inset:-2%;background-color:#ee5b36;background-image:linear-gradient(90deg,rgba(150,40,18,.7),rgba(150,40,18,.2) 70%),url(assets/v/parents-poster.jpg);background-size:cover;background-position:center;background-blend-mode:normal,luminosity;transition:opacity 1.1s ease;opacity:{{ bg3.op }}"></div>
+  <div aria-hidden="true" style="position:absolute;inset:0;isolation:isolate;overflow:hidden;background:#ee5b36;transition:opacity 1.1s ease;opacity:{{ vid5Op }};pointer-events:none">
+    <div style="position:absolute;inset:0;background:url(assets/v/parents-poster.jpg) center/cover;mix-blend-mode:luminosity;opacity:.9"></div>
+    <video ref="{{ vid5Ref }}" onPlaying="{{ on_vid5 }}" muted="muted" loop="loop" playsinline="playsinline" preload="none" poster="assets/v/parents-poster.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:luminosity;transition:opacity .8s ease;opacity:{{ vo_vid4 }}">
+    </video>
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(150,40,18,.72),rgba(150,40,18,.2) 70%)"></div>
+  </div>
+
+  <div aria-hidden="true" style="position:absolute;inset:0;isolation:isolate;overflow:hidden;background:#5b3cc4;transition:opacity 1.1s ease;opacity:{{ vid4Op }};pointer-events:none">
+    <div style="position:absolute;inset:0;background:url(assets/v/day-poster.jpg) center/cover;mix-blend-mode:luminosity;opacity:.9;filter:blur(2px);transform:scale(1.08)"></div>
+    <video ref="{{ vid4Ref }}" onPlaying="{{ on_vid4 }}" muted="muted" loop="loop" playsinline="playsinline" preload="none" poster="assets/v/day-poster.jpg" style="position:absolute;inset:-4%;width:108%;height:108%;object-fit:cover;mix-blend-mode:luminosity;transition:opacity .8s ease;opacity:{{ vo_vid5 }};filter:blur(2px)">
+    </video>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(42,26,110,.45),rgba(91,60,196,.2) 40%,rgba(42,26,110,.8))"></div>
+  </div>
+
+  <!-- ===== scene 0 : hero ===== -->
+  <section aria-label="Education made personal" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:{{ heroPad }};transition:opacity .8s ease,transform 1.1s cubic-bezier(.7,0,.2,1);opacity:{{ sc0.op }};transform:{{ sc0.tf }};pointer-events:{{ sc0.pe }}">
+    <div style="position:relative;width:min(28.5vw,50.6vh,400px);min-width:260px;aspect-ratio:410/255;margin-bottom:max(-8.8vw,-15.7vh,-127px);transition:opacity 1.1s cubic-bezier(.7,0,.2,1),transform 1.1s cubic-bezier(.7,0,.2,1);opacity:{{ rv0.op }};transform:{{ rv0.tf }}">
+      <svg viewBox="0 0 410 255" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible" aria-hidden="true">
+        <path id="tlcarc" d="M39.7 49.5 A292 292 0 0 1 366.3 49.5" fill="none"></path>
+        <text style="font:400 26px 'Londrina Solid',sans-serif;fill:#fff"><textPath href="#tlcarc" textLength="346" lengthAdjust="spacing">WELCOME TO TLC</textPath></text>
+      </svg>
+      <div style="position:absolute;left:34.4%;top:6%;width:31.2%;aspect-ratio:1;display:grid;place-items:center">{{ bearBob }}</div>
+    </div>
+    <p style="margin:0;font-family:'Londrina Solid',sans-serif;font-weight:400;line-height:.84;text-transform:uppercase;color:#fff;font-size:{{ extroSize }};letter-spacing:-.01em;transition:opacity 1.1s cubic-bezier(.7,0,.2,1) .12s,transform 1.1s cubic-bezier(.7,0,.2,1) .12s;opacity:{{ rv0.op }};transform:{{ rv0.tf }}">Education made</p>
+    <h1 style="margin:0;font-family:'Londrina Solid',sans-serif;font-weight:400;line-height:.84;text-transform:uppercase;color:#fff;font-size:{{ journeySize }};letter-spacing:-.01em;transition:opacity 1.1s cubic-bezier(.7,0,.2,1) .22s,transform 1.1s cubic-bezier(.7,0,.2,1) .22s;opacity:{{ rv0.op }};transform:{{ rv0.tf }}">Personal</h1>
+    <p style="margin:min(1.6vw,2.8vh) 0 0;max-width:600px;font-size:clamp(16px,min(1.39vw,2.47vh),20px);line-height:1.25;font-weight:500;letter-spacing:-.02em;text-wrap:pretty;transition:opacity 1.1s cubic-bezier(.7,0,.2,1) .34s,transform 1.1s cubic-bezier(.7,0,.2,1) .34s;opacity:{{ rv0.op }};transform:{{ rv0.tf }}">The Learning Choice Academy is a free public charter home–school serving students and parents in the San Diego area.</p>
+    <div style="margin-top:min(2vw,3.5vh);display:flex;flex-wrap:wrap;justify-content:center;gap:{{ ctaGap }};transition:opacity 1.1s cubic-bezier(.7,0,.2,1) .46s,transform 1.1s cubic-bezier(.7,0,.2,1) .46s;opacity:{{ rv0.op }};transform:{{ rv0.tf }}">
+      <button onClick="{{ goEnroll }}" style="width:245px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:8px 8px 8px 24px;border-radius:30px;background:linear-gradient(90deg,#ee5b36,#fbbd3a);font-size:18px;font-weight:600;letter-spacing:-.03em;text-transform:uppercase;white-space:nowrap;transition:transform .35s cubic-bezier(.34,1.45,.5,1)" style-hover="transform:translateY(-3px)">Enroll today<span style="width:60px;height:60px;border-radius:24px;background:#fff;display:grid;place-items:center;flex:none"><img src="assets/k/arrow-right-dark.svg" alt="" style="width:18px;height:18px"></span></button>
+      <button onClick="{{ goStory }}" style="width:245px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:8px 8px 8px 24px;border-radius:30px;background:rgba(255,255,255,.12);backdrop-filter:blur(10px);font-size:18px;font-weight:600;letter-spacing:-.03em;text-transform:uppercase;white-space:nowrap;transition:transform .35s cubic-bezier(.34,1.45,.5,1)" style-hover="transform:translateY(-3px)">Learn more<span style="width:60px;height:60px;border-radius:24px;background:rgba(244,244,244,.12);border:1px solid rgba(255,255,255,.1);display:grid;place-items:center;flex:none"><img src="assets/k/arrow-right-light.svg" alt="" style="width:18px;height:18px"></span></button>
+    </div>
+    <sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{ goStory }}" aria-label="Next section" style="position:absolute;left:30px;bottom:32px;width:84px;height:84px;border-radius:30px;border:2px solid rgba(255,255,255,.25);display:grid;place-items:center" style-hover="border-color:rgba(255,255,255,.6)">{{ scrollDots }}</button>
+    </sc-if>
+  </section>
+
+  <!-- shared frame (scene 0 -> 1 -> 2) -->
+  <div onClick="{{ onFrame }}" role="button" tabindex="0" aria-label="A day at TLC" style="position:absolute;left:50%;top:53%;z-index:4;width:{{ frameW }};aspect-ratio:703/484;border:{{ frameBorder }} solid #fff;border-radius:{{ frameRadius }};overflow:hidden;box-shadow:9px 9px 0 rgba(0,0,0,.12);background:#b9a9f5;cursor:pointer;transform-origin:50% 50%;transition:transform 1.1s cubic-bezier(.7,0,.2,1),opacity .6s ease;transform:{{ frameTf }};opacity:{{ frameOp }};pointer-events:{{ framePe }}">
+    <div style="position:absolute;inset:0;background-color:#8f74ec;background-image:url(assets/v/day-poster.jpg);background-size:cover;background-position:center;transition:transform 9s ease-in-out;transform:{{ frameImgTf }}"></div>
+    <video ref="{{ vid3Ref }}" onPlaying="{{ on_vid3 }}" muted="muted" loop="loop" playsinline="playsinline" preload="none" poster="assets/v/day-poster.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .6s ease;opacity:{{ vo_vid3 }}">
+    </video>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(42,26,110,0) 50%,rgba(42,26,110,.55))"></div>
+    <img src="assets/k/play-big.svg" alt="" style="position:absolute;left:52%;top:52%;width:{{ playSize }};height:{{ playSize }};translate:-50% -50%;transition:transform 1.1s cubic-bezier(.7,0,.2,1),opacity .4s ease;transform:{{ playTf }};opacity:{{ playOp }}">
+    <div style="position:absolute;left:6%;bottom:8%;font-family:'Londrina Solid',sans-serif;font-size:{{ frameCap }};line-height:.9;text-transform:uppercase;color:#fff;text-align:left">A day at TLC</div>
+  </div>
+
+  <!-- ===== scene 2 : locations ===== -->
+  <section aria-label="Four resource centers" style="position:absolute;inset:0;display:flex;flex-direction:{{ rowDir }};align-items:{{ s2Align }};justify-content:flex-end;gap:{{ s2Gap }};padding:{{ scenePad }};transition:opacity .8s ease,transform 1.1s cubic-bezier(.7,0,.2,1);opacity:{{ sc2.op }};transform:{{ sc2.tf }};pointer-events:{{ sc2.pe }}">
+    <div style="flex:none;max-width:{{ s2LeftW }};display:flex;flex-direction:column;gap:min(1.8vw,3.2vh)">
+      <div style="position:relative;font-family:'Londrina Solid',sans-serif;line-height:.84;text-transform:uppercase;font-size:{{ danceSize }};letter-spacing:-.04em">
+        <h2 style="margin:0;font:inherit;white-space:nowrap">One School,</h2>
+        <div style="display:flex;align-items:center;gap:.18em;padding-left:.12em">
+          <span style="width:.8em;height:.8em;border-radius:50%;background:#d3ec1a;flex:none;box-shadow:inset -6px -6px 0 rgba(0,0,0,.08)"></span>
+          <span style="white-space:nowrap">Four</span>
+        </div>
+        <div style="white-space:nowrap">Centers</div>
+      </div>
+      <p style="margin:0;max-width:560px;font-size:clamp(15px,min(1.39vw,2.47vh),20px);line-height:1.25;font-weight:500;letter-spacing:-.02em;text-wrap:pretty">Chula Vista, La Mesa, Scripps Ranch and Temecula share one team of teachers, one curriculum library and one calendar. Each center adds its own on-site classes and enrichment.</p>
+    </div>
+    <div ref="{{ railRef }}" style="position:relative;flex:{{ railFlex }};min-width:0;height:280px;margin:{{ railMargin }};overflow-x:{{ railOverflow }};overflow-y:hidden;clip-path:{{ railClip }};scrollbar-width:none;scroll-snap-type:x mandatory">
+      <div style="position:absolute;top:0;left:0;height:100%;display:flex;gap:0;padding-left:95px;transition:transform .9s cubic-bezier(.7,0,.2,1);transform:{{ trackTf }}">
+        <sc-for list="{{ cards }}" as="c" hint-placeholder-count="4">
+          <article style="position:relative;flex:none;width:272px;height:280px;scroll-snap-align:start;transition:opacity .6s ease,transform .9s cubic-bezier(.7,0,.2,1);opacity:{{ c.op }};transform:{{ c.tf }}">
+            <div style="position:absolute;left:0;top:70px;width:287px;height:188px">
+              <img src="{{ c.blob }}" alt="" style="position:absolute;top:0;left:6%;width:91.6%;height:100%;transform:scaleX(-1)">
+              <img src="{{ c.icon }}" alt="" style="position:absolute;left:-34px;top:-44px;width:132px;transition:transform .5s cubic-bezier(.34,1.45,.5,1)" style-hover="transform:translateY(-6px) rotate(-6deg)">
+              <div style="position:absolute;left:92px;top:38px;font:500 12px 'Mali',sans-serif;letter-spacing:.02em;color:#35323c">Resource center {{ c.num }}</div>
+              <h3 style="position:absolute;left:92px;top:54px;margin:0;font-family:'Londrina Solid',sans-serif;font-weight:400;font-size:32px;line-height:.9;text-transform:uppercase;white-space:nowrap;color:{{ c.ink }}">{{ c.name }}</h3>
+              <p style="position:absolute;left:92px;top:96px;width:150px;margin:0;font:500 14px/1.2 'Mali',sans-serif;color:#000">{{ c.blurb }}</p>
+              <button onClick="{{ c.go }}" aria-label="See events" style="position:absolute;left:171px;top:-17px;width:44px;height:44px;border-radius:18px;background:#fff;display:grid;place-items:center;transition:transform .35s cubic-bezier(.34,1.45,.5,1)" style-hover="transform:scale(1.1) rotate(8deg)"><img src="assets/k/arrow-up-right.svg" alt="" style="width:18px;height:18px"></button>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== scene 3 : students ===== -->
+  <section aria-label="Meet our students" style="position:absolute;inset:0;display:flex;flex-direction:{{ s3Dir }};align-items:{{ s3Align }};justify-content:{{ s3Justify }};gap:{{ s3Gap }};padding:{{ scenePad3 }};transition:opacity .8s ease;opacity:{{ sc3.op }};pointer-events:{{ sc3.pe }}">
+    <div style="position:relative;flex:1 1 0;min-width:0;max-width:min(560px,44vw);display:flex;flex-direction:column;gap:min(1.6vw,2.8vh);transition:opacity .8s ease .25s,translate 1s cubic-bezier(.7,0,.2,1) .25s;opacity:{{ rv3.op }};translate:{{ rv3.l }}">
+      <div style="font-family:'Londrina Solid',sans-serif;line-height:.84;text-transform:uppercase;letter-spacing:-.04em">
+        <div style="font-size:{{ whoSize }};transition:color .5s;color:{{ spot.tint }};padding-left:{{ whoPad }}">{{ spot.name }}</div>
+        <h2 style="margin:0;font:inherit;font-size:{{ danceSize }};padding-left:{{ whoPad }}">Meet</h2>
+        <div style="font-size:{{ danceSize }};white-space:nowrap">our</div>
+        <div style="font-size:{{ danceSize }};white-space:nowrap">Students</div>
+      </div>
+      <p aria-live="polite" style="margin:0;max-width:460px;min-height:{{ bioMinH }};font-size:clamp(14px,min(1.39vw,2.47vh),20px);line-height:1.25;font-weight:500;letter-spacing:-.02em;text-wrap:pretty">{{ spot.bio }}</p>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <button onClick="{{ goPrograms }}" style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:8px 8px 8px 22px;border-radius:30px;background:linear-gradient(90deg,#ee5b36,#fbbd3a);font-size:{{ ctaSize }};font-weight:600;letter-spacing:-.03em;text-transform:uppercase;white-space:nowrap;transition:transform .35s cubic-bezier(.34,1.45,.5,1)" style-hover="transform:translateY(-3px)">Explore programs<span style="width:{{ dotSize }};height:{{ dotSize }};border-radius:22px;background:#fff;display:grid;place-items:center;flex:none"><img src="assets/k/arrow-right-dark.svg" alt="" style="width:18px;height:18px"></span></button>
+        <sc-if value="{{ notDesk }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;gap:7px">
+            <button onClick="{{ spotPrev }}" aria-label="Previous student" style="width:48px;height:48px;border-radius:20px;border:2px solid #fff;display:grid;place-items:center"><img src="assets/k/caret-light.svg" alt="" style="width:18px;height:18px;transform:scaleX(-1)"></button>
+            <button onClick="{{ spotNext }}" aria-label="Next student" style="width:48px;height:48px;border-radius:20px;background:#fff;display:grid;place-items:center"><img src="assets/k/caret-dark.svg" alt="" style="width:18px;height:18px"></button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+    <div style="position:relative;flex:none;width:{{ blobW }};aspect-ratio:473/339;margin:{{ blobMargin }};transition:opacity .8s ease .4s,translate 1s cubic-bezier(.7,0,.2,1) .4s,scale 1s cubic-bezier(.7,0,.2,1) .4s;opacity:{{ rv3.op }};translate:{{ rv3.r }};scale:{{ rv3.s }}">
+      <img src="{{ spot.blob }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;transform:rotate(180deg) translate(-5%,-7%)">
+      <div style="position:absolute;inset:0;-webkit-mask:url(assets/k/mask-big.svg) center/100% 100% no-repeat;mask:url(assets/k/mask-big.svg) center/100% 100% no-repeat;background-image:url({{ spot.img }});background-size:cover;background-position:{{ spot.pos }};transition:opacity .5s ease,transform .7s cubic-bezier(.34,1.45,.5,1);opacity:{{ spotOp }};transform:{{ spotTf }}"></div>
+      {{ shapeA }}
+      {{ shapeB }}
+    </div>
+    <sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}">
+      <div style="position:absolute;right:105px;bottom:33px;display:flex;gap:7px">
+        <button onClick="{{ spotPrev }}" aria-label="Previous student" style="width:60px;height:60px;border-radius:24px;border:2px solid #fff;display:grid;place-items:center;transition:transform .3s cubic-bezier(.34,1.45,.5,1),background .3s" style-hover="transform:scale(1.06);background:rgba(255,255,255,.12)"><img src="assets/k/caret-light.svg" alt="" style="width:18px;height:18px;transform:scaleX(-1)"></button>
+        <button onClick="{{ spotNext }}" aria-label="Next student" style="width:60px;height:60px;border-radius:24px;background:#fff;display:grid;place-items:center;transition:transform .3s cubic-bezier(.34,1.45,.5,1)" style-hover="transform:scale(1.06)"><img src="assets/k/caret-dark.svg" alt="" style="width:18px;height:18px"></button>
+      </div>
+    </sc-if>
+  </section>
+
+  <!-- ===== scene 4 : programs ===== -->
+  <section aria-label="Find your path" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:{{ s4Justify }};padding:{{ scenePad4 }};text-align:center;transition:opacity .8s ease;opacity:{{ sc4.op }};pointer-events:{{ sc4.pe }}">
+    <h2 style="margin:0;font-family:'Londrina Solid',sans-serif;font-weight:400;line-height:.84;text-transform:uppercase;letter-spacing:-.04em;font-size:{{ horizonSize }};white-space:nowrap;transition:opacity .9s ease,transform 1.1s cubic-bezier(.7,0,.2,1);opacity:{{ rv4.op }};transform:{{ rv4.tf }}">Find your</h2>
+    <p style="margin:0;font-family:'Londrina Solid',sans-serif;font-weight:400;line-height:.84;text-transform:uppercase;letter-spacing:-.04em;font-size:{{ horizonSize }};white-space:nowrap;transition:opacity .9s ease .12s,transform 1.1s cubic-bezier(.7,0,.2,1) .12s;opacity:{{ rv4.op }};transform:{{ rv4.tf }}">Path</p>
+    <div style="position:relative;flex:none;width:{{ deckW }};height:{{ deckH }};margin-top:{{ deckMt }};transition:transform 1.1s cubic-bezier(.34,1.45,.5,1) .25s,opacity .7s ease .25s;opacity:{{ rv4.op }};transform:{{ rv4.deck }}">
+      <div style="position:absolute;left:0;top:0;width:474px;height:480px;transform-origin:0 0;transform:scale({{ deckS }})">
+        <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="4">
+          <article aria-label="{{ t.name }}" style="position:absolute;inset:0;background:#fff;border:15px solid #fff;border-radius:83px;filter:drop-shadow(9px 9px 0 rgba(43,43,43,.17));text-align:left;color:#1d1b22;transition:transform .7s cubic-bezier(.34,1.45,.5,1),opacity .45s ease;transform:{{ t.tf }};opacity:{{ t.op }};z-index:{{ t.z }}">
+            <img src="{{ t.union }}" alt="" style="position:absolute;left:6px;top:0;width:430px;height:291px;transform:rotate(180deg)">
+            <div style="position:absolute;left:6px;top:0;width:430px;height:291px;display:flex;align-items:center;justify-content:center;font-family:'Londrina Solid',sans-serif;font-weight:900;font-size:150px;line-height:1;letter-spacing:-.03em;color:{{ t.ink }}">{{ t.grades }}</div>
+            <p style="position:absolute;left:30px;top:316px;margin:0;font-family:'Londrina Solid',sans-serif;font-size:52px;line-height:.9;text-transform:uppercase;color:{{ t.ink }}">{{ t.name }}</p>
+            <p style="position:absolute;left:32px;right:32px;top:370px;margin:0;font:500 15px/1.35 'Mali',sans-serif;color:#46434e">{{ t.tag }}</p>
+            <button onClick="{{ nextTile }}" aria-label="Next program" style="position:absolute;right:-1px;top:224px;width:108px;height:80px;border-radius:31px;background:#fff;border:1px solid #d1d1d1;display:grid;place-items:center;transition:transform .35s cubic-bezier(.34,1.45,.5,1)" style-hover="transform:scale(1.06)"><img src="assets/k/arrow-right-dark.svg" alt="" style="width:18px;height:18px"></button>
+          </article>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== scene 5 : community + enroll ===== -->
+  <section aria-label="Parents love us" style="position:absolute;inset:0;display:flex;flex-direction:{{ rowDir }};align-items:{{ s5Align }};justify-content:{{ s5Justify }};gap:{{ s5Gap }};padding:{{ scenePad5 }};transition:opacity .8s ease;opacity:{{ sc5.op }};pointer-events:{{ sc5.pe }}">
+    <div style="flex:1 1 0;min-width:{{ s5MinW }};max-width:600px;display:flex;flex-direction:column;gap:min(1.6vw,2.8vh);transition:opacity .8s ease .2s,translate 1s cubic-bezier(.7,0,.2,1) .2s;opacity:{{ rv5.op }};translate:{{ rv5.l }}">
+      <h2 style="margin:0;font-family:'Londrina Solid',sans-serif;font-weight:400;line-height:.84;text-transform:uppercase;letter-spacing:-.04em;font-size:{{ danceSize }}">Parents<br>love us</h2>
+      <div style="display:flex;gap:12px">
+        <span style="flex:none;font-family:'Londrina Solid',sans-serif;font-size:min(6vw,10.7vh);line-height:.8;color:#eaf5a6">“</span>
+        <div>
+          <p style="margin:0;font-size:clamp(14px,min(1.39vw,2.47vh),20px);line-height:1.3;font-weight:500;letter-spacing:-.02em;text-wrap:pretty;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;-webkit-line-clamp:{{ quoteLines }}">TLC is committed to providing homeschooled children with opportunities to love learning. TLC provides innovative ways to keep kids interested in learning and has resources for the children to have opportunities for social interactions.</p>
+          <div style="margin-top:10px;font:500 14px 'Mali',sans-serif;color:#ffe2a1">— Magnolia Silverfish, TLC parent</div>
+        </div>
+      </div>
+      <button onClick="{{ goEnroll }}" style="align-self:flex-start;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:8px 8px 8px 22px;border-radius:30px;background:#fff;color:#1d1b22;font-size:{{ ctaSize }};font-weight:700;letter-spacing:-.03em;text-transform:uppercase;white-space:nowrap;transition:transform .35s cubic-bezier(.34,1.45,.5,1)" style-hover="transform:translateY(-3px)">Start enrollment<span style="width:{{ dotSize }};height:{{ dotSize }};border-radius:22px;background:linear-gradient(90deg,#ee5b36,#fbbd3a);display:grid;place-items:center;flex:none"><img src="assets/k/arrow-right-light.svg" alt="" style="width:18px;height:18px"></span></button>
+    </div>
+    <sc-if value="{{ showFamily }}" hint-placeholder-val="{{ true }}">
+      <div style="position:relative;flex:none;width:min(24vw,42vh);aspect-ratio:1;align-self:flex-end;transition:opacity .8s ease .35s,translate 1s cubic-bezier(.7,0,.2,1) .35s;opacity:{{ rv5.op }};translate:{{ rv5.r }}">
+        <img src="assets/k/big-lime.svg" alt="" style="position:absolute;left:-10%;bottom:4%;width:120%;transform:rotate(180deg)">
+        <img src="assets/family-cut.png" alt="A TLC family" style="position:absolute;left:4%;bottom:0;width:92%">
+      </div>
+    </sc-if>
+    <div style="flex:none;width:{{ evW }};border-radius:36px;background:rgba(255,255,255,.14);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.2);padding:{{ evPad }};transition:opacity .8s ease .45s,translate 1s cubic-bezier(.7,0,.2,1) .45s;opacity:{{ rv5.op }};translate:{{ rv5.r }}">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:0 6px 10px">
+        <span style="font-family:'Londrina Solid',sans-serif;font-size:{{ evTitle }};text-transform:uppercase;line-height:.9">Upcoming</span>
+        <button onClick="{{ clearFilter }}" style="font:500 13px 'Mali',sans-serif;color:#ffe2a1">{{ evFilterLabel }}</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <sc-for list="{{ events }}" as="e" hint-placeholder-count="4">
+          <div style="display:flex;gap:12px;align-items:center;background:#fff;color:#1d1b22;border-radius:22px;padding:{{ evRowPad }};transition:transform .3s cubic-bezier(.34,1.45,.5,1)" style-hover="transform:translateX(-4px)">
+            <span style="flex:none;width:{{ evDate }};height:{{ evDate }};border-radius:16px;background:{{ e.bg }};color:{{ e.fg }};display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:.9;font-family:'Londrina Solid',sans-serif"><span style="font-size:12px;letter-spacing:.06em">{{ e.mon }}</span><span style="font-size:22px">{{ e.day }}</span></span>
+            <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ e.title }}</span><span style="font:500 12.5px 'Mali',sans-serif;color:#5d5a66">{{ e.time }} · {{ e.loc }}</span></span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== chrome ===== -->
+  <div style="position:absolute;left:0;right:0;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:{{ navPad }};pointer-events:none">
+    <span aria-hidden="true" style="flex:none;width:{{ spacerW }}"></span>
+    <nav aria-label="Main" style="pointer-events:auto;display:flex;align-items:center;gap:8px">
+      <sc-if value="{{ showPills }}" hint-placeholder-val="{{ true }}">
+        <sc-for list="{{ navL }}" as="n" hint-placeholder-count="3">
+          <button onClick="{{ n.go }}" style="padding:14px 16px;border-radius:16px;font-size:13px;font-weight:600;letter-spacing:-.04em;text-transform:uppercase;white-space:nowrap;transition:background .3s,color .3s;background:{{ n.bg }};color:{{ n.fg }}" style-hover="background:rgba(255,255,255,.22)">{{ n.label }}</button>
+        </sc-for>
+      </sc-if>
+      <button onClick="{{ goHome }}" aria-label="The Learning Choice Academy home" style="display:block;margin:0 {{ brandGap }};flex:none"><img src="assets/k/logo-full-white.png" alt="The Learning Choice Academy" style="display:block;height:{{ logoH }};filter:drop-shadow(0 4px 14px rgba(28,17,80,.35))"></button>
+      <sc-if value="{{ showPills }}" hint-placeholder-val="{{ true }}">
+        <sc-for list="{{ navR }}" as="n" hint-placeholder-count="3">
+          <button onClick="{{ n.go }}" style="padding:14px 16px;border-radius:16px;font-size:13px;font-weight:600;letter-spacing:-.04em;text-transform:uppercase;white-space:nowrap;transition:background .3s,color .3s;background:{{ n.bg }};color:{{ n.fg }}" style-hover="background:rgba(255,255,255,.22)">{{ n.label }}</button>
+        </sc-for>
+      </sc-if>
+    </nav>
+    <button onClick="{{ goEnroll }}" style="pointer-events:auto;flex:none;padding:0 16px;height:{{ avSize }};border-radius:16px;background:linear-gradient(90deg,#ee5b36,#fbbd3a);font-size:13px;font-weight:700;letter-spacing:-.02em;text-transform:uppercase">Enroll</button>
+  </div>
+  <div aria-label="Sections" style="position:absolute;z-index:10;right:{{ bulletsR }};top:{{ bulletsTop }};translate:0 -50%;display:flex;flex-direction:column;align-items:flex-end;gap:{{ bulletGap }}">
+    <sc-for list="{{ bullets }}" as="b" hint-placeholder-count="6">
+      <button onClick="{{ b.go }}" aria-label="{{ b.label }}" style="height:{{ bulletH }};border-radius:99px;background:#fff;transition:width .45s cubic-bezier(.7,0,.2,1),opacity .3s;width:{{ b.w }};opacity:{{ b.op }}"></button>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const EASE='cubic-bezier(.7,0,.2,1)';
+const SCENES=['Welcome','A day at TLC','Resource centers','Students','Programs','Community'];
+const LOCS=[
+ {name:'Chula Vista',icon:'assets/k/ic-chula.png',blob:'assets/k/card-lime.svg',ink:'#4a5c0a',blurb:'Bilingual learning, visual arts and our biggest graduation.'},
+ {name:'La Mesa',icon:'assets/k/ic-lamesa.png',blob:'assets/k/card-sun.svg',ink:'#7a4a00',blurb:'STEM labs, robotics club and on-site testing.'},
+ {name:'Scripps Ranch',icon:'assets/k/ic-scripps.png',blob:'assets/k/card-peach.svg',ink:'#9a3316',blurb:'Middle and high school with A–G college prep.'},
+ {name:'Temecula',icon:'assets/k/ic-temecula.png',blob:'assets/k/card-lav.svg',ink:'#4a2eb0',blurb:'Garden science, field studies and nature journaling.'}
+];
+const SPOTS=[
+ {name:'Gloria, 13',img:'assets/gloria.png',pos:'center 20%',tint:'#eaf5a6',blob:'assets/k/big-lime.svg',bio:'A La Mesa student who has been doing gymnastics for 5 years. She continues to grow with every competition, in strength and in heart, and TLC\'s schedule lets her balance school with 24 hours of training a week.'},
+ {name:'Jared, 13',img:'assets/p-jared.png',pos:'center 30%',tint:'#ffd3c2',blob:'assets/k/big-peach.svg',bio:'Jared left a classroom that felt boring and too easy. At TLC he explores curriculum he\'s interested in at his own pace, and spends on-site days with friends at enrichment classes and field trips.'},
+ {name:'Best friends',img:'assets/friends.png',pos:'center',tint:'#ffe2a1',blob:'assets/k/big-sun.svg',bio:'On-site classes two days a week give homeschooled students a real community of peers. Many families tell us it\'s where their kids met their best friends.'}
+];
+const PROGS=[
+ {name:'Elementary',grades:'K–5',union:'assets/k/union-peach.svg',ink:'#9a3316',tag:'Foundations in reading, math and discovery with a credentialed partner.'},
+ {name:'Middle School',grades:'6–8',union:'assets/k/union-lav.svg',ink:'#4a2eb0',tag:'More independence, with on-site classes in core subjects.'},
+ {name:'High School',grades:'9–12',union:'assets/k/union-lime.svg',ink:'#4a5c0a',tag:'A–G courses, test prep and college and career counseling.'},
+ {name:'Enrichment',grades:'K–12',union:'assets/k/union-sun.svg',ink:'#7a4a00',tag:'Field trips, art, music and PE that build friendships.'}
+];
+const EVENTS=[
+ {mon:'JUN',day:'12',title:'Chula Vista Graduation',time:'3:00–5:00 PM',loc:'Chula Vista'},
+ {mon:'JUN',day:'16',title:'CAHSEE Testing',time:'10:00 AM–3:00 PM',loc:'La Mesa'},
+ {mon:'JUN',day:'19',title:'Robotics Showcase',time:'9:00 AM',loc:'La Mesa'},
+ {mon:'JUN',day:'20',title:'Garden Science Day',time:'All day',loc:'Temecula'},
+ {mon:'JUN',day:'24',title:'New Family Orientation',time:'10:00 AM',loc:'Chula Vista'},
+ {mon:'JUN',day:'26',title:'Scripps Ranch Graduation',time:'4:00 PM',loc:'Scripps Ranch'},
+ {mon:'JUL',day:'02',title:'Birch Aquarium Field Trip',time:'10:00 AM',loc:'La Mesa'},
+ {mon:'JUL',day:'09',title:'Summer Reading Kickoff',time:'All day',loc:'Temecula'}
+];
+const MAXC=3;
+const VIDS=[['vidRef','uploads/school%20videos.mp4',0],['vid3Ref','uploads/a%20day%20at%20tlc.mp4',1],['vid4Ref','uploads/a%20day%20at%20tlc.mp4',1],['vid2Ref','uploads/school%20books.mp4',3],['vid5Ref','uploads/parents%20love%20us.mp4',5]];
+const DATE_C=[['#5b3cc4','#fff'],['#ee5b36','#fff'],['#d3ec1a','#1d1b22'],['#fbbd3a','#1d1b22']];
+
+class Component extends DCLogic {
+  railRef=React.createRef();
+  vidRef=React.createRef();
+  vid2Ref=React.createRef();
+  vid3Ref=React.createRef();
+  vid4Ref=React.createRef();
+  vid5Ref=React.createRef();
+  state={step:0,w:typeof window!=='undefined'?window.innerWidth:1440,h:typeof window!=='undefined'?window.innerHeight:810,ready:false,ci:0,si:0,sOut:false,ti:0,playing:false,evFilter:null};
+  componentDidMount(){
+    this.onR=()=>this.setState({w:innerWidth,h:innerHeight}); addEventListener('resize',this.onR);
+    setTimeout(()=>this.setState({ready:true}),60);
+    let acc=0,accT=0;
+    this.onW=e=>{ if(e.ctrlKey) return; e.preventDefault(); const now=Date.now(); if(now-accT>200)acc=0; accT=now; acc+=e.deltaY; if(!this.lock&&Math.abs(acc)>40){this.advance(Math.sign(acc));acc=0;} };
+    addEventListener('wheel',this.onW,{passive:false});
+    this.onK=e=>{ const k=e.key; if(['ArrowDown','PageDown'].includes(k)){e.preventDefault();if(!this.lock)this.advance(1);} else if(['ArrowUp','PageUp'].includes(k)){e.preventDefault();if(!this.lock)this.advance(-1);} else if(k==='ArrowRight'&&this.state.step===3)this.spot(1); else if(k==='ArrowLeft'&&this.state.step===3)this.spot(-1); };
+    addEventListener('keydown',this.onK);
+    let ty=null,tx=null;
+    this.onTS=e=>{ty=e.touches[0].clientY;tx=e.touches[0].clientX;};
+    this.onTE=e=>{ if(ty===null)return; const dy=ty-e.changedTouches[0].clientY,dx=tx-e.changedTouches[0].clientX; ty=null; if(Math.abs(dy)>50&&Math.abs(dy)>Math.abs(dx)&&!this.lock) this.advance(Math.sign(dy)); };
+    addEventListener('touchstart',this.onTS,{passive:true}); addEventListener('touchend',this.onTE,{passive:true});
+    this.restartAuto();
+    window.tlcGo=(n,ci)=>{ this.lock=false; if(n===this.state.step){ if(n===2&&ci!=null) this.setCard(ci); return; } this.go(n); if(n===2&&ci!=null) setTimeout(()=>this.setCard(ci),50); };
+    { const m=(location.hash||'').match(/^#s([0-5])$/); if(m) this.setState({step:+m[1],playing:+m[1]===1}); }
+    this.reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const start=()=>{ const idle=window.requestIdleCallback||(cb=>setTimeout(cb,300)); idle(()=>this.primeVideos(this.state.step)); };
+    if(document.readyState==='complete') start(); else window.addEventListener('load',start,{once:true});
+  }
+  componentWillUnmount(){ removeEventListener('resize',this.onR); removeEventListener('wheel',this.onW); removeEventListener('keydown',this.onK); removeEventListener('touchstart',this.onTS); removeEventListener('touchend',this.onTE); clearInterval(this.auto); }
+  advance(d){
+    const s=this.state;
+    if(s.step===2){ const ci=s.ci+d;
+      if(ci>=0&&ci<=MAXC){ this.setCard(ci); this.lock=true; setTimeout(()=>this.lock=false,850); return; } }
+    this.go(s.step+d);
+  }
+  primeVideos(n){
+    if(this.reduce) return;
+    VIDS.forEach(([r,url,k])=>{ const v=this[r].current; if(!v) return;
+      if(Math.abs(n-k)<=1&&!v.dataset.src){ if(r==='vid4Ref'&&!this.state.vr_vid3) return; v.dataset.src=url; v.muted=true; v.preload='auto'; v.src=url; }
+      if(v.dataset.src&&n===k&&(r!=='vid4Ref'||this.state.vr_vid3)){ const p=v.play(); if(p&&p.catch)p.catch(()=>{}); } });
+  }
+  setCard(ci){ this.setState({ci}); const r=this.railRef.current; if(r&&r.scrollWidth>r.clientWidth) r.scrollTo({left:ci*245,behavior:'smooth'}); }
+  go(n){ n=Math.max(0,Math.min(SCENES.length-1,n)); if(n===this.state.step)return; const from=this.state.step; this.setState({step:n,playing:n===1,...(n===2?{ci:from>2?MAXC:0}:{})}); this.primeVideos(n); VIDS.forEach(([r,,k])=>{ const v=this[r].current; if(v&&n!==k) setTimeout(()=>{ if(this.state.step!==k) v.pause(); },1200); });
+    if(n===2){const r=this.railRef.current;if(r)r.scrollLeft=from>2?9999:0;} this.lock=true; setTimeout(()=>this.lock=false,1000); setTimeout(()=>this.restartAuto(),0); }
+  restartAuto(){ clearInterval(this.auto); const s=this.state.step;
+    
+    if(s===4) this.auto=setInterval(()=>this.setState(st=>({ti:(st.ti+1)%PROGS.length})),6000); }
+  spot(d){ this.setState({sOut:true}); setTimeout(()=>this.setState(s=>({si:(s.si+d+SPOTS.length)%SPOTS.length,sOut:false})),260); }
+  renderVals(){
+    const s=this.state, {w,h,step}=s, desk=w>=900&&w/h>1.15;
+    const sc=i=>{ const a=i===step,p=i<step; let tf='none';
+      if(i===0&&p) tf='translateX(-110%)';
+      if(i===2&&!a&&!p) tf='translateX(110%)'; if(i===2&&p) tf='translateY(-6%)';
+      return {op:a?1:0,tf,pe:a?'auto':'none'}; };
+    const on=i=>i===step;
+    const el=React.createElement;
+    // frame
+    let frameTf,frameOp=1;
+    if(desk){ if(step===0) frameTf='translate(-50%,-50%) translate(36vw,-24vh) scale(.3)'; else if(step===1) frameTf='translate(-50%,-50%)'; else { frameTf='translate(-50%,-50%) translate(-24vw,95vh) scale(1.08)'; if(step>2) frameOp=0; } }
+    else { if(step===0){frameTf='translate(-50%,-50%) scale(.4) translateY(40%)';frameOp=0;} else if(step===1) frameTf='translate(-50%,-50%)'; else {frameTf='translate(-50%,-50%) translateY(110vh)';} }
+    const nav=[['Home',0],['Our story',1],['Centers',2]], navR=[['Students',3],['Programs',4],['Community',5]];
+    const pillV=([label,i])=>({label,go:()=>this.go(i),bg:on(i)?'#fff':'rgba(255,255,255,.1)',fg:on(i)?'#1d1b22':'#fff'});
+    const sp=SPOTS[s.si];
+    const evs=EVENTS.filter(e=>!s.evFilter||e.loc===s.evFilter).slice(0,desk?(h<700?4:5):3);
+    let hF=desk?Math.min(.133*w,.237*h):Math.min(Math.max(60,.18*w),110);
+    const padT=desk?Math.round(Math.min(76,h*.1)+44):96;
+    const fitS=F=>Math.min(1,(w*.86)/474,(h-padT-24-1.68*F+.2*F)/480);
+    while(desk&&fitS(hF)<.6&&hF>60) hF-=4;
+    const deckS=Math.max(.4,fitS(hF));
+    const shape=(st)=>el('span',{style:st});
+    return {
+      isDesk:desk,notDesk:!desk,
+      pre0:'auto',pre_vid:'auto',pre_vid2:Math.abs(step-3)<=1?'auto':'none',pre_vid3:step>=1&&step<=2?'auto':(s.vr_vid?'metadata':'none'),pre_vid4:'none',pre_vid5:step>=4?'auto':'none',
+      on_vid:()=>this.setState({vr_vid:true}),on_vid2:()=>this.setState({vr_vid2:true}),on_vid3:()=>{ this.setState({vr_vid3:true},()=>this.primeVideos(this.state.step)); },on_vid4:()=>this.setState({vr_vid4:true}),on_vid5:()=>this.setState({vr_vid5:true}),
+      vo_vid:s.vr_vid?.95:0,vo_vid2:s.vr_vid2?.9:0,vo_vid3:s.vr_vid3&&step>=1?1:0,vo_vid4:s.vr_vid4?.9:0,vo_vid5:s.vr_vid5?.9:0,vid5Ref:this.vid5Ref,vid5Op:step===5?1:0,vid4Ref:this.vid4Ref,vid4Op:step===1?1:0,vid3Ref:this.vid3Ref,vid3Op:step>=1?1:0,playOp:step===1&&s.playing?0:1,vid2Op:step===3?1:0,vid2Ref:this.vid2Ref,vidOp:step===0?1:0,vidRef:this.vidRef,heroPad:(desk?Math.round(Math.min(76,h*.1)+48):84)+'px 20px 32px',showPills:w>=1180,
+      bg0:{op:step===1?1:0,tf:step===1?'scale(1.05)':step===2?'scale(1.1) translateY(-1%)':'none'},
+      bg1:{op:step===3?1:0,tf:step===3?'scale(1.1) rotate(-1.5deg)':'scale(1.2)'},
+      bg2:{op:step===4||step===2?1:0},progBgs:['2','4','3','1'].map((n,i)=>{const cur=step===2?s.ci:s.ti;const a=i===cur&&(step===4||step===2);return {img:'assets/v/prog-'+n+'.jpg',op:i===cur?1:0,tf:a?(i%2?'scale(1.08) translate(-3%,1%)':'scale(1.08) translate(3%,-1%)'):(i%2?'scale(1.16) translate(2%,-1%)':'scale(1.16) translate(-2%,1%)')};}),bg3:{op:step===5?1:0},
+      sc0:sc(0),sc2:sc(2),sc3:sc(3),sc4:sc(4),sc5:sc(5),
+      rv0:{op:s.ready&&on(0)?1:0,tf:s.ready&&on(0)?'none':'translateY(40px)'},
+      rv3:{op:on(3)?1:0,l:on(3)?'0 0':'-60px 0',r:on(3)?'0 0':'80px 0',s:on(3)?'1':'.96'},
+      rv4:{op:on(4)?1:0,tf:on(4)?'none':'translateY(70px)',deck:on(4)?'none':'translateY(120px) scale(.7)'},
+      rv5:{op:on(5)?1:0,l:on(5)?'0 0':'-60px 0',r:on(5)?'0 0':'80px 0'},
+      bearBob:el('img',{src:'assets/k/bear-mark.png',alt:'',style:{width:'100%',transform:'rotate(-10deg)',animation:'bob 5s ease-in-out infinite'}}),
+      scrollDots:el('img',{src:'assets/k/scroll-dots.svg',alt:'',style:{width:16.5,height:16.5,transform:'rotate(-45deg)',animation:'nudge 1.8s ease-in-out infinite'}}),
+      shapeA:shape({position:'absolute',right:'-4%',top:'-10%',width:'14%',aspectRatio:'1',background:'#d3ec1a',transform:'rotate(45deg)',borderRadius:'10px',animation:'float 6s ease-in-out infinite'}),
+      shapeB:shape({position:'absolute',left:'2%',bottom:'-8%',width:'11%',aspectRatio:'1',borderRadius:'50%',background:'#ee5b36',animation:'float 8s ease-in-out -2s infinite'}),
+      extroSize:desk?'min(6.5vw,11.6vh)':'clamp(34px,11vw,56px)',journeySize:desk?'min(13.4vw,23.8vh)':'clamp(74px,24vw,130px)',
+      ctaGap:desk?'27px':'12px',
+      danceSize:desk?'min(6.9vw,12.3vh)':'clamp(46px,14vw,72px)',whoSize:desk?'min(3.4vw,6.1vh)':'30px',whoPad:desk?'min(11vw,19.5vh)':'0',
+      horizonSize:Math.round(hF)+'px',
+      goEnroll:()=>this.go(5),goStory:()=>this.go(1),goHome:()=>this.go(0),goPrograms:()=>this.go(4),
+      onFrame:()=>{ if(step===0) return this.go(1); const v=this.vid3Ref.current; if(v&&!v.dataset.src){ v.dataset.src=VIDS[1][1]; v.src=VIDS[1][1]; } const np=!s.playing; this.setState({playing:np}); if(v){ if(np){const p=v.play();if(p&&p.catch)p.catch(()=>{});} else v.pause(); } },
+      frameW:desk?'min(48.8vw,86.8vh)':'min(88vw,560px)',frameBorder:desk?'14px':'8px',frameRadius:desk?'80px':'44px',
+      frameTf,frameOp,framePe:step<=1?'auto':'none',frameImgTf:s.playing&&step===1?'scale(1.12) translate(-3%,2%)':'none',
+      playSize:desk?'121px':'84px',playTf:step===0?'rotate(-45deg)':'none',frameCap:desk?'44px':'28px',
+      // scene 2
+      rowDir:desk?'row':'column',s2Align:desk?'flex-end':'stretch',s2Gap:desk?'0':'18px',s2LeftW:desk?'44%':'100%',
+      scenePad:desk?(desk?Math.round(Math.min(76,h*.1)+40):96)+'px 0 56px 38px':'78px 28px 20px 20px',
+      railFlex:desk?'1 1 0':'none',railMargin:desk?'0 0 -20px 0':'0 -28px 0 -20px',railOverflow:desk?'visible':'auto',railClip:desk?'inset(-60px -2000px -60px 0)':'none',
+      trackTf:desk?`translateX(${-Math.min(s.ci,Math.max(0,MAXC-1))*272}px)`:'none',
+      railRef:this.railRef,
+      cards:LOCS.map((l,i)=>{const past=desk&&i<Math.min(s.ci,MAXC-1);return {...l,num:'0'+(i+1),op:past?0:1,tf:past?'translateX(-40px) scale(.94)':(i===s.ci?'translateY(-14px)':'none'),go:()=>{this.setState({evFilter:l.name});this.go(5);}};}),
+      // scene 3
+      s3Dir:desk?'row':'column-reverse',s3Align:desk?'center':'stretch',s3Justify:desk?'space-between':'flex-start',s3Gap:desk?'40px':'14px',
+      scenePad3:desk?(w<1200?(desk?Math.round(Math.min(76,h*.1)+40):96)+'px 90px 60px 60px':(desk?Math.round(Math.min(76,h*.1)+40):96)+'px 150px 60px 108px'):'78px 28px 24px 20px',
+      blobW:desk?'min(36vw,64vh,'+Math.max(240,w-60-90-40-Math.min(560,w*.44))+'px)':'min(78vw,340px)',blobMargin:desk?'0':'0 -10px 0 auto',
+      bioMinH:desk?'150px':'0',ctaSize:desk?'18px':'15px',dotSize:desk?'60px':'48px',
+      spot:sp,spotOp:s.sOut?0:1,spotTf:s.sOut?'translateY(30px) scale(.94)':'none',
+      spotPrev:()=>this.spot(-1),spotNext:()=>this.spot(1),
+      // scene 4
+      s4Justify:desk?'flex-start':'flex-start',scenePad4:desk?padT+'px 20px 20px':(desk?Math.round(Math.min(76,h*.1)+40):96)+'px 20px 20px',
+      deckS:deckS.toFixed(3),deckW:Math.round(474*deckS)+'px',deckH:Math.round(480*deckS)+'px',deckMt:desk?Math.round(-.2*hF)+'px':'24px',
+      tiles:PROGS.map((p,i)=>{const a=i===s.ti;return {...p,tf:a?'none':'scale(.25)',op:a?1:0,z:a?2:1};}),
+      nextTile:()=>{ this.setState({ti:(s.ti+1)%PROGS.length}); this.restartAuto(); },
+      // scene 5
+      s5Align:desk?'center':'stretch',s5MinW:desk?'300px':'0',showFamily:desk&&w>=1200&&h>=700,s5Justify:desk?'space-between':'flex-end',s5Gap:desk?'32px':'16px',
+      scenePad5:desk?(w<1200?(desk?Math.round(Math.min(76,h*.1)+40):96)+'px 96px 40px 48px':(desk?Math.round(Math.min(76,h*.1)+40):96)+'px 120px 56px 60px'):'78px 28px 22px 20px',quoteLines:desk?8:3,
+      evW:desk?'min(360px,36vw)':'100%',evPad:desk?'18px 14px 14px':'12px 10px 10px',evTitle:desk?'34px':'26px',evRowPad:desk?'10px 14px 10px 10px':'7px 12px 7px 7px',evDate:desk?'52px':'42px',
+      events:evs.map((e,i)=>({...e,bg:DATE_C[i%4][0],fg:DATE_C[i%4][1]})),
+      evFilterLabel:s.evFilter?`${s.evFilter} ×`:'All centers',clearFilter:()=>this.setState({evFilter:null}),
+      // chrome
+      navPad:desk?'16px 38px':'10px 16px',logoH:desk?Math.round(Math.min(76,h*.1))+'px':'48px',spacerW:desk?'70px':'64px',avSize:desk?'44px':'40px',brandGap:w>=1320?'40px':w>=1180?'16px':'0',
+      navL:nav.map(pillV),navR:navR.map(pillV),
+      bulletsR:desk?'36px':'8px',bulletsTop:desk?'62%':'50%',bulletGap:desk?'16px':'10px',bulletH:desk?'8px':'6px',
+      bullets:SCENES.map((label,i)=>({label,go:()=>this.go(i),w:on(i)?(desk?'20px':'14px'):(desk?'8px':'6px'),op:on(i)?1:.6}))
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<!-- stage: wip -->
+<!-- Interactive lo-fi block IA for Molly's v3xp fork.
+     Starts from the Ready state (matching molly-v2), uses abstracted
+     placeholder blocks instead of clinical content, and lets a reader
+     click through the state flow (single-surface opens, compound states,
+     and the sign takeover). No pixel-perfecting — this is architecture.
+
+     Companion to: v3xp-unified-ga-v2_molly_architecture-guide.html
+     Author: John Blanco-Slingerland
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Molly's v3xp fork · Interactive lo-fi IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --fg:#12131a; --fg-2:#3c3a44; --fg-3:#66646f; --fg-4:#98959f;
+  --border:#e4e4e7; --page:#f7f7fa; --surface:#fff;
+  --accent:#2563eb; --accent-soft:rgba(37,99,235,.08); --accent-mid:rgba(37,99,235,.16);
+  --brief:#7c3aed; --visit:#059669; --note:#d97706; --sign:#dc2626;
+  --brief-soft:rgba(124,58,237,.10); --visit-soft:rgba(5,150,105,.10);
+  --note-soft:rgba(217,119,6,.12); --sign-soft:rgba(220,38,38,.10);
+  --danger:#dc2626;
+  --nav-bg:#416783;
+  --record-bg:#fef7f0;
+  --ask-bg:#f2f2ff;
+  --scribe-bg:#fff5f6;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,monospace;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html,body { font-family:'Inter',system-ui,sans-serif; font-size:14px; line-height:1.55; color:var(--fg); background:var(--page); -webkit-font-smoothing:antialiased; height:100%; }
+body { display:flex; flex-direction:column; min-height:100vh; }
+
+/* App header */
+.gnav {
+  flex-shrink:0; height:56px; background:var(--nav-bg);
+  display:flex; align-items:center; gap:16px; padding:0 20px;
+  color:#fff;
+}
+.gnav-menu {
+  width:32px; height:32px; border:0; background:transparent;
+  color:#fff; border-radius:6px;
+  display:flex; align-items:center; justify-content:center;
+}
+.gnav-menu:hover { background:rgba(255,255,255,.15); }
+.gnav-word { font-weight:700; font-size:15px; letter-spacing:-.005em; }
+.gnav-search {
+  flex:1; max-width:560px; height:34px;
+  background:rgba(255,255,255,.14);
+  border-radius:8px;
+  display:flex; align-items:center; gap:10px; padding:0 14px;
+  color:rgba(255,255,255,.7); font-size:13px;
+}
+
+/* Patient header */
+.ph {
+  flex-shrink:0; padding:14px 22px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:14px;
+}
+.ph-back {
+  width:34px; height:34px; border-radius:50%;
+  border:0; background:transparent; color:var(--fg-2);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+}
+.ph-back:hover { background:var(--page); }
+.ph-name { font-size:16px; font-weight:700; }
+.ph-meta { font-size:12.5px; color:var(--fg-3); margin-top:1px; display:flex; gap:12px; align-items:baseline; }
+.ph-meta .placeholder-line { flex:1; max-width:520px; }
+.ph-ask {
+  margin-left:auto;
+  display:inline-flex; align-items:center; gap:8px;
+  padding:7px 14px 7px 12px;
+  border:1px solid rgba(68,74,211,.25);
+  border-radius:20px;
+  background:var(--surface);
+  color:#444AD3; font-size:13px; font-weight:600;
+  cursor:pointer;
+  transition:background .15s ease, border-color .15s ease;
+}
+.ph-ask::before { content:"◆"; color:#444AD3; }
+.ph-ask:hover { background:#f2f2ff; border-color:rgba(68,74,211,.55); }
+.ph-ask.active { background:var(--ask-bg); border-color:#444AD3; }
+
+/* Main working area */
+.workspace {
+  flex:1; min-height:0;
+  display:flex;
+  padding:20px;
+  gap:16px;
+  background:var(--page);
+  position:relative;
+  overflow:hidden;
+  justify-content:center;
+}
+
+/* Unified visit shell: rail + nav-slice + canvas share ONE card.
+   Internal dividers separate the columns. Max-width tuned for readability
+   so the shell doesn't stretch edge-to-edge on very wide screens. */
+.visit-shell {
+  flex:1 1 auto;
+  min-height:0;
+  max-width:1240px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  display:flex;
+  box-shadow:0 1px 2px rgba(15,23,42,.04);
+}
+
+/* Slim phase rail — now nested inside the shell, divider-only */
+.slim {
+  flex:0 0 44px;
+  background:transparent;
+  border:0;
+  border-right:1px solid var(--border);
+  border-radius:0;
+  padding:8px 0;
+  display:flex; flex-direction:column;
+  gap:4px;
+}
+.slim-item {
+  flex:1;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--fg-4); font-size:10.5px; font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase;
+  writing-mode:vertical-rl; transform:rotate(180deg);
+  position:relative; cursor:pointer;
+  border:0; background:transparent; font-family:inherit;
+}
+.slim-item::before {
+  content:""; position:absolute;
+  left:-1px; top:50%; width:3px; height:22px;
+  background:transparent; border-radius:0 3px 3px 0;
+  transform:translateY(-50%);
+  transition:background .15s ease;
+}
+.slim-item:hover { color:var(--fg-2); }
+.slim-item.active { color:#5659ed; }
+.slim-item.active::before { background:#5659ed; }
+.slim-item.complete { color:var(--fg-4); }
+
+/* Nav slice — nested inside the shell, divider-only */
+.nav-slice {
+  flex:0 0 320px;
+  background:transparent;
+  border:0;
+  border-right:1px solid var(--border);
+  border-radius:0;
+  padding:14px;
+  display:flex; flex-direction:column;
+  gap:12px;
+  min-height:0;
+  transition:flex .2s ease;
+}
+.workspace.canvas-open .nav-slice { flex:0 0 260px; }
+
+.visit-context {
+  padding:10px 12px; border:1px solid var(--border); border-radius:8px;
+  background:#fafbfc;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.vc-l { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.vc-title { font-size:13px; font-weight:700; }
+.vc-sub { font-size:11.5px; color:var(--fg-3); }
+.vc-chevron {
+  width:24px; height:24px; border-radius:5px;
+  border:1px solid var(--border); background:var(--surface);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--fg-3); font-size:11px;
+  cursor:pointer;
+}
+.vc-chevron:hover { background:var(--page); color:var(--fg); }
+
+.nav-body {
+  flex:1; min-height:0; overflow:auto;
+  display:flex; flex-direction:column; gap:6px;
+}
+
+/* Content on canvas — always placeholder shapes */
+.brief-shell { display:flex; flex-direction:column; gap:8px; }
+.brief-eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--fg-3); }
+.brief-since { display:inline-flex; align-items:center; padding:4px 10px; background:var(--page); border-radius:6px; font-size:11.5px; color:var(--fg-2); align-self:flex-start; margin-bottom:2px; }
+.brief-since::before { content:"●"; color:var(--danger); font-size:8px; margin-right:6px; }
+
+/* Task rows */
+.task-row {
+  position:relative;
+  display:flex; align-items:center; gap:10px;
+  padding:8px 12px; border-radius:6px;
+  border:0; background:transparent;
+  cursor:pointer; font-family:inherit; text-align:left;
+  width:100%;
+  transition:background .12s ease;
+}
+.task-row:hover { background:var(--page); }
+.task-row.active { background:var(--accent-soft); }
+.task-row.active .task-title { color:var(--accent); font-weight:700; }
+.task-dot {
+  width:8px; height:8px; border-radius:50%;
+  background:#c7c7cf; flex-shrink:0;
+}
+.task-dot.done { background:#059669; }
+.task-dot.active { background:var(--accent); }
+.task-dot.warn { background:var(--note); }
+.task-dot.live { background:var(--danger); animation:pulse 1.4s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity:.35; } }
+.task-body { flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+.task-title {
+  height:12px; border-radius:3px; background:#dcdfe6;
+  width:70%;
+}
+.task-sub {
+  height:9px; border-radius:2px; background:#eaeaef;
+  width:55%;
+}
+.task-live-marker {
+  font-size:9px; font-weight:700; color:var(--danger);
+  text-transform:uppercase; letter-spacing:.08em;
+  padding:2px 6px; background:rgba(220,38,38,.1); border-radius:3px;
+}
+
+/* Bottom action stack: Sign visit (secondary) + Start Scribe (primary).
+   Both actions live in the same slot at the bottom of the nav-slice. */
+.scribe-island {
+  padding-top:8px;
+  border-top:1px solid var(--border);
+  display:flex; flex-direction:column; gap:8px;
+}
+.sign-nav-btn {
+  width:100%; height:36px; border-radius:18px;
+  border:1px solid var(--border);
+  background:var(--surface); color:var(--fg-2);
+  font-family:inherit; font-size:12.5px; font-weight:600;
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 14px 0 16px;
+  transition:background .12s ease, border-color .12s ease, color .12s ease;
+}
+.sign-nav-btn:hover:not(:disabled) {
+  background:var(--page); border-color:#c7c7cf; color:var(--fg);
+}
+.sign-nav-btn:disabled {
+  opacity:.55; cursor:not-allowed;
+}
+.sign-nav-btn.ready {
+  border-color:var(--accent); color:var(--accent);
+  background:var(--accent-soft);
+  animation:signReadyPulse 2s ease-in-out infinite;
+}
+@keyframes signReadyPulse {
+  50% { box-shadow:0 0 0 3px rgba(37,99,235,.15); }
+}
+.sign-nav-count {
+  font-family:var(--mono); font-size:11px; opacity:.8;
+}
+.start-scribe {
+  width:100%; height:44px;
+  border:0; border-radius:22px;
+  background:#6366f1;
+  color:#fff; font-size:14px; font-weight:600;
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  box-shadow:0 2px 12px rgba(99,102,241,.35);
+  transition:transform .1s ease, box-shadow .15s ease;
+  font-family:inherit;
+}
+.start-scribe::before { content:"🎤"; }
+.start-scribe:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(99,102,241,.5); }
+.start-scribe:active { transform:translateY(0); }
+
+/* Active scribe pill — replaces Start Scribe in the same slot,
+   same width/height/shape/anchor. */
+.scribe-active-pill {
+  width:100%; height:44px;
+  border-radius:22px;
+  background:var(--surface);
+  border:1px solid rgba(220,38,38,.35);
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  padding:0 14px;
+  font-size:13px;
+  box-shadow:0 2px 10px rgba(220,38,38,.15);
+}
+.scribe-active-pill.paused {
+  border-color:var(--border);
+  box-shadow:0 2px 10px rgba(0,0,0,.06);
+}
+.scribe-active-pill .rec-dot {
+  width:8px; height:8px; border-radius:50%; background:var(--danger);
+  animation:pulse 1.4s ease-in-out infinite;
+}
+.scribe-active-pill .pause-glyph {
+  color:var(--fg-3); font-size:12px;
+}
+.scribe-active-pill .scribe-state-label {
+  font-weight:700; color:var(--fg);
+  font-size:12.5px;
+}
+.scribe-active-pill.paused .scribe-state-label { color:var(--fg-3); }
+.scribe-active-pill .scribe-timer {
+  font-family:var(--mono); font-weight:700;
+  font-variant-numeric:tabular-nums;
+  color:var(--fg);
+  min-width:38px; text-align:center;
+}
+.scribe-active-pill .scribe-divider {
+  width:1px; height:16px; background:var(--border); margin:0 2px;
+}
+.scribe-active-pill .scribe-action {
+  border:0; background:transparent;
+  color:var(--fg-2); font-family:inherit;
+  font-size:12px; font-weight:600;
+  padding:4px 10px; border-radius:5px;
+  cursor:pointer;
+}
+.scribe-active-pill .scribe-action:hover {
+  background:var(--page); color:var(--fg);
+}
+.scribe-compact {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:0 14px; height:34px;
+  border-radius:17px;
+  background:var(--surface); border:1px solid var(--border);
+  font-size:13px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+.scribe-compact .rec-dot { width:8px; height:8px; border-radius:50%; background:var(--danger); animation:pulse 1.4s ease-in-out infinite; }
+.scribe-compact .timer { font-family:var(--mono); font-weight:700; color:var(--fg); }
+.scribe-compact .btn {
+  padding:2px 8px; border-radius:5px; border:0; background:transparent;
+  color:var(--fg-3); font-family:inherit; font-size:12px; font-weight:600;
+  cursor:pointer;
+}
+.scribe-compact .btn:hover { background:var(--page); color:var(--fg); }
+.scribe-compact .btn + .btn { border-left:1px solid var(--border); border-radius:0 5px 5px 0; }
+
+/* Canvas column */
+.canvas-col {
+  flex:1; min-height:0;
+  background:transparent;
+  border:0; border-radius:0;
+  padding:16px;
+  display:none;
+  flex-direction:column; gap:12px;
+  animation:slideIn .2s ease;
+}
+.workspace.canvas-open .canvas-col { display:flex; }
+@keyframes slideIn {
+  from { opacity:0; transform:translateX(6px); }
+  to { opacity:1; transform:translateX(0); }
+}
+.canvas-back {
+  align-self:flex-start;
+  color:var(--accent); font-size:12.5px; font-weight:600;
+  padding:2px 6px; border:0; background:transparent; cursor:pointer;
+  font-family:inherit;
+}
+.canvas-back:hover { text-decoration:underline; }
+.canvas-eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--fg-3); }
+.canvas-title { font-size:16px; font-weight:700; }
+.canvas-cards { display:flex; flex-direction:column; gap:8px; }
+
+/* Brief mock — matches the target format (H/V/M/L row list) */
+.brief-mock {
+  padding:20px 22px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  display:flex; flex-direction:column; gap:14px;
+  max-width:640px;
+}
+/* When the Brief mock is inline in the nav-slice (ready state),
+   drop its outer card frame — the nav-slice already provides it. */
+.nav-body > .brief-mock {
+  padding:0;
+  border:0;
+  border-radius:0;
+  max-width:100%;
+  background:transparent;
+}
+.bm-hdr {
+  display:flex; align-items:flex-start; justify-content:space-between; gap:14px;
+}
+.bm-hdr-l { display:flex; flex-direction:column; gap:3px; min-width:0; }
+.bm-title { font-size:22px; font-weight:800; color:var(--fg); letter-spacing:-.01em; line-height:1.1; }
+.bm-patient { font-size:13.5px; color:var(--fg-2); font-weight:500; }
+.bm-hdr-r {
+  font-size:13px; color:var(--fg-3);
+  white-space:nowrap; padding-top:6px;
+  display:inline-flex; align-items:center; gap:6px;
+}
+.bm-hdr-link {
+  color:var(--visit); font-weight:600;
+  border-bottom:1px solid var(--visit);
+  letter-spacing:0;
+}
+
+.bm-since {
+  background:#f4f5f8; border-radius:8px;
+  padding:12px 14px;
+  font-size:13.5px; color:var(--fg); line-height:1.5;
+  display:flex; align-items:center; flex-wrap:wrap; gap:4px;
+}
+.bm-since strong { font-weight:700; margin-right:2px; }
+.bm-since-dx {
+  color:var(--danger); font-weight:600; letter-spacing:.02em;
+  background:rgba(220,38,38,.08); padding:0 4px; border-radius:3px;
+}
+.bm-since-sep { color:var(--fg-4); margin:0 4px; }
+.bm-since-arrows { color:var(--danger); font-weight:700; margin-left:2px; }
+
+.bm-rows { display:flex; flex-direction:column; }
+.bm-row {
+  display:flex; align-items:center; gap:12px;
+  padding:14px 4px 12px;
+  border:0; background:transparent;
+  border-top:1px solid var(--border);
+  cursor:pointer; font-family:inherit; text-align:left;
+  transition:background .12s ease;
+}
+.bm-row:hover { background:var(--page); }
+.bm-row:first-child { border-top:0; padding-top:6px; }
+.bm-row-dim { cursor:default; }
+.bm-row-dim:hover { background:transparent; }
+
+.bm-badge {
+  width:22px; height:22px; border-radius:5px;
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700; flex-shrink:0;
+}
+.bm-badge-h { background:#fbeed2; color:#a16207; }
+.bm-badge-v { background:#dde7f7; color:#2563eb; }
+.bm-badge-m { background:#d7f0e6; color:#047857; }
+.bm-badge-l { background:#fadadd; color:#d81c33; }
+.bm-row-title { font-size:16px; font-weight:700; color:var(--fg); flex:1; }
+.bm-row-count {
+  font-size:13.5px; color:var(--fg-3); white-space:nowrap;
+  font-weight:400;
+}
+.bm-row-count-warn { color:var(--danger); }
+.bm-row-count-dim { color:var(--fg-4); }
+
+/* Task canvas — content on left, persistent action rail on right */
+.task-canvas {
+  display:grid;
+  grid-template-columns:1fr 140px;
+  gap:14px;
+  align-items:stretch;
+}
+.task-canvas-content {
+  display:flex; flex-direction:column; gap:10px;
+  min-width:0;
+}
+.task-actions {
+  display:flex; flex-direction:column; gap:8px;
+  align-self:stretch;
+  padding:14px 12px;
+  background:#fafbfc;
+  border:1px solid var(--border);
+  border-radius:8px;
+}
+.task-action-btn {
+  height:38px; padding:0 14px;
+  border-radius:7px;
+  font-family:inherit; font-size:12.5px; font-weight:600;
+  cursor:pointer;
+  border:1px solid var(--border);
+  background:var(--surface); color:var(--fg-2);
+  transition:background .12s ease, border-color .12s ease, color .12s ease;
+  white-space:nowrap;
+}
+.task-action-btn:hover {
+  background:var(--page); border-color:#c7c7cf; color:var(--fg);
+}
+.task-action-btn.primary {
+  background:var(--accent); border-color:var(--accent); color:#fff;
+}
+.task-action-btn.primary:hover {
+  background:#1d4ed8; border-color:#1d4ed8;
+}
+.task-action-btn.ghost {
+  background:transparent; border-color:transparent;
+  color:var(--fg-3); margin-top:auto;
+}
+.task-action-btn.ghost:hover {
+  background:var(--page); color:var(--fg-2); border-color:transparent;
+}
+@media (max-width:1100px) {
+  .task-canvas { grid-template-columns:1fr 120px; }
+}
+@media (max-width:820px) {
+  .task-canvas { grid-template-columns:1fr; }
+  .task-actions { flex-direction:row; padding:10px 12px; }
+  .task-action-btn.ghost { margin-top:0; margin-left:auto; }
+}
+
+/* Placeholder cards */
+.card {
+  padding:14px 16px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:#fafbfc;
+  display:flex; flex-direction:column; gap:8px;
+}
+.card-hdr { display:flex; align-items:center; gap:10px; }
+.card-badge {
+  width:24px; height:24px; border-radius:5px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700;
+  flex-shrink:0;
+}
+.card-badge.h { background:#fbeed2; color:#a16207; }
+.card-badge.v { background:#dde7f7; color:#2563eb; }
+.card-badge.m { background:#d7f0e6; color:#047857; }
+.card-badge.l { background:#fadadd; color:#d81c33; }
+.card-title { height:12px; width:40%; border-radius:3px; background:#dcdfe6; }
+.card-count { margin-left:auto; height:10px; width:80px; border-radius:3px; background:#eaeaef; }
+.card-lines { display:flex; flex-direction:column; gap:5px; }
+.card-line { height:8px; border-radius:2px; background:#eaeaef; }
+.card-line.w60 { width:60%; }
+.card-line.w80 { width:80%; }
+.card-line.w40 { width:40%; }
+
+/* Scribe focus canvas */
+.focus-canvas {
+  padding:20px;
+  border:2px dashed rgba(220,38,38,.35);
+  border-radius:10px;
+  background:var(--scribe-bg);
+  display:flex; flex-direction:column; gap:14px;
+}
+.focus-eye {
+  display:flex; align-items:center; gap:8px;
+  font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em;
+  color:var(--danger);
+}
+.focus-eye::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--danger); animation:pulse 1.4s ease-in-out infinite; }
+.focus-title { height:16px; width:55%; border-radius:3px; background:#e6b0b6; }
+.focus-block {
+  padding:14px 16px; border-radius:8px; background:var(--surface); border:1px solid var(--border);
+  display:flex; flex-direction:column; gap:8px;
+}
+.focus-metrics { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.focus-metric { padding:10px; background:var(--page); border-radius:6px; display:flex; flex-direction:column; gap:5px; }
+.focus-metric .m-label { height:8px; width:60%; border-radius:2px; background:#dcdfe6; }
+.focus-metric .m-value { height:14px; width:40%; border-radius:3px; background:#c7c7cf; }
+/* Scrolling transcript in recording focus canvas */
+.transcript-block {
+  flex:1; min-height:180px;
+  display:flex; flex-direction:column;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:8px; overflow:hidden;
+}
+.transcript-hdr {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 14px; border-bottom:1px solid var(--border);
+  background:#fafbfc;
+}
+.transcript-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--fg-3); }
+.transcript-live {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:11px; font-weight:700; color:var(--danger);
+  text-transform:uppercase; letter-spacing:.06em;
+}
+.tl-dot { width:7px; height:7px; border-radius:50%; background:var(--danger); animation:pulse 1.4s ease-in-out infinite; }
+.transcript-scroll {
+  flex:1; overflow:hidden; padding:12px 14px;
+  display:flex; flex-direction:column; gap:10px;
+  mask-image:linear-gradient(to bottom, transparent 0, #000 22px, #000 calc(100% - 8px), transparent 100%);
+  -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 22px, #000 calc(100% - 8px), transparent 100%);
+  animation:tsScroll 14s linear infinite;
+}
+@keyframes tsScroll {
+  from { transform:translateY(0); }
+  to   { transform:translateY(-120px); }
+}
+.ts-row { display:flex; gap:10px; align-items:flex-start; }
+.ts-time { font-family:var(--mono); font-size:10.5px; color:var(--fg-4); min-width:38px; padding-top:2px; }
+.ts-lines { flex:1; display:flex; flex-direction:column; gap:4px; }
+.ts-line { height:8px; border-radius:2px; background:#eaeaef; }
+.now-discussing-compact {
+  padding:8px 12px; background:#fdf3f4;
+  border:1px solid rgba(220,38,38,.2); border-radius:6px;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  font-size:12.5px; color:var(--fg-2);
+}
+.now-discussing-compact strong { color:var(--fg); }
+.now-discussing-compact .view-live {
+  color:var(--accent); font-weight:600; cursor:pointer;
+  border:0; background:transparent; font-family:inherit; font-size:12px;
+}
+.now-discussing-compact .view-live:hover { text-decoration:underline; }
+
+/* Right drawer (Ask / Record) */
+.drawer {
+  /* Wider default when canvas is closed (rule below shrinks it back
+     when canvas opens so both fit). Widen affordance in the header. */
+  flex:0 0 460px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:16px;
+  display:none;
+  flex-direction:column; gap:12px;
+  animation:slideInRight .22s ease;
+  transition:flex .18s ease;
+}
+.drawer.wide { flex:0 0 620px; }
+.workspace.drawer-open .drawer { display:flex; }
+.workspace.drawer-open.canvas-open .drawer { flex:0 0 380px; }
+.workspace.drawer-open.canvas-open .drawer.wide { flex:0 0 500px; }
+.workspace.drawer-open.canvas-open .nav-slice { flex:0 0 220px; }
+.workspace.drawer-open .canvas-col { flex:1 1 auto; }
+@keyframes slideInRight {
+  from { opacity:0; transform:translateX(20px); }
+  to { opacity:1; transform:translateX(0); }
+}
+.drawer[data-kind="record"] { background:var(--record-bg); }
+.drawer[data-kind="ask"] { background:var(--ask-bg); }
+.drawer-hdr {
+  display:flex; align-items:center; justify-content:space-between;
+  padding-bottom:8px; border-bottom:1px solid rgba(0,0,0,.06);
+}
+.drawer-title { font-size:14px; font-weight:700; }
+.drawer-close {
+  width:28px; height:28px; border-radius:5px;
+  border:0; background:transparent; color:var(--fg-3);
+  font-size:16px; cursor:pointer;
+}
+.drawer-close:hover { background:rgba(0,0,0,.05); color:var(--fg); }
+.drawer-widen {
+  width:28px; height:28px; border-radius:5px;
+  border:0; background:transparent; color:var(--fg-3);
+  font-size:14px; cursor:pointer;
+}
+.drawer-widen:hover { background:rgba(0,0,0,.05); color:var(--fg); }
+.drawer-actions { display:flex; gap:2px; align-items:center; }
+.drawer-filter {
+  display:flex; align-items:center; gap:8px;
+  padding:6px 10px;
+  background:rgba(37,99,235,.08); border:1px solid rgba(37,99,235,.2);
+  border-radius:6px;
+  font-size:11.5px;
+}
+.drawer-filter-eyebrow {
+  font-size:9.5px; font-weight:700; color:var(--accent);
+  text-transform:uppercase; letter-spacing:.06em;
+}
+.drawer-filter-name { font-weight:600; color:var(--fg); }
+.drawer-filter-clear {
+  margin-left:auto; width:20px; height:20px;
+  border:0; background:transparent; color:var(--fg-3);
+  font-size:14px; border-radius:3px; cursor:pointer;
+}
+.drawer-filter-clear:hover { background:rgba(37,99,235,.12); color:var(--accent); }
+.drawer-body { flex:1; overflow:auto; display:flex; flex-direction:column; gap:8px; }
+.drawer-row {
+  padding:10px 12px; background:var(--surface);
+  border-radius:6px;
+  border:1px solid rgba(0,0,0,.06);
+  display:flex; flex-direction:column; gap:6px;
+}
+.drawer-row .r-hdr { display:flex; align-items:center; gap:8px; }
+.drawer-row .r-badge {
+  padding:2px 6px; border-radius:3px;
+  font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+  background:#fadadd; color:#d81c33;
+}
+.drawer-row .r-title { height:10px; width:50%; border-radius:2px; background:#dcdfe6; }
+.drawer-row .r-time { margin-left:auto; font-size:10.5px; color:var(--fg-3); font-family:var(--mono); }
+.drawer-row .r-line { height:8px; border-radius:2px; background:#eaeaef; }
+.drawer-row.hi {
+  box-shadow:0 0 0 3px rgba(37,99,235,.15);
+  border-color:var(--accent);
+  animation:glowFade 3s ease-out;
+}
+@keyframes glowFade {
+  0%,40% { box-shadow:0 0 0 4px rgba(37,99,235,.25); }
+  100% { box-shadow:0 0 0 0 rgba(37,99,235,0); }
+}
+
+/* Ask drawer specific */
+.ask-msg {
+  padding:10px 12px; border-radius:8px;
+  background:rgba(68,74,211,.1); color:var(--fg-2);
+  font-size:12.5px;
+  align-self:flex-end; max-width:80%;
+}
+.ask-msg.assistant {
+  background:var(--surface);
+  align-self:flex-start;
+  border:1px solid rgba(0,0,0,.06);
+}
+.ask-composer {
+  padding:10px 12px; border-radius:20px;
+  background:var(--surface);
+  border:1px solid rgba(68,74,211,.2);
+  font-size:12.5px; color:var(--fg-4);
+  display:flex; align-items:center; gap:8px;
+}
+.ask-composer::before { content:"◆"; color:#444AD3; }
+
+/* Persistent Sign & submit dock */
+.sign-dock {
+  position:absolute; right:32px; bottom:32px;
+  padding:10px 16px 8px;
+  background:#111;
+  color:#fff; border-radius:10px;
+  font-size:12px; font-weight:600;
+  display:flex; flex-direction:column; align-items:flex-end; gap:1px;
+  box-shadow:0 4px 18px rgba(0,0,0,.25);
+  cursor:pointer;
+  z-index:10;
+  border:0;
+  font-family:inherit;
+  transition:background .15s ease, transform .1s ease;
+}
+.sign-dock:hover { background:#000; transform:translateY(-1px); }
+.sign-dock.ready { background:var(--accent); }
+.sign-dock.ready:hover { background:#1d4ed8; }
+.sign-dock .count { font-size:10.5px; opacity:.75; font-weight:500; }
+
+/* Sign takeover overlay */
+.sign-takeover {
+  position:absolute; inset:20px;
+  background:var(--surface);
+  border:2px solid var(--danger);
+  border-radius:12px;
+  padding:40px;
+  display:none;
+  flex-direction:column; align-items:center; justify-content:center;
+  gap:14px; text-align:center;
+  z-index:20;
+  animation:sinkIn .25s ease;
+}
+/* sign-takeover overlay removed — Sign is a phase, rendered in canvas */
+
+/* Sign phase · reconfirmation list */
+.reconfirm-list {
+  display:flex; flex-direction:column; gap:1px;
+  border:1px solid var(--border); border-radius:8px;
+  overflow:hidden;
+  background:var(--surface);
+}
+.reconfirm-row {
+  display:grid; grid-template-columns:24px 1fr auto; gap:12px;
+  align-items:center;
+  padding:12px 14px;
+  border:0; background:var(--surface);
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+  font-family:inherit; text-align:left;
+  transition:background .12s ease;
+}
+.reconfirm-row:last-child { border-bottom:0; }
+.reconfirm-row:hover { background:var(--page); }
+.reconfirm-row.done { background:#fafbfc; }
+.reconfirm-row.done .reconfirm-cta { color:var(--fg-4); }
+.reconfirm-check {
+  width:20px; height:20px; border-radius:50%;
+  border:1.5px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--ok); font-weight:700;
+}
+.reconfirm-row.done .reconfirm-check {
+  border-color:var(--ok); background:var(--ok); color:#fff;
+}
+.reconfirm-body { display:flex; flex-direction:column; gap:4px; min-width:0; }
+.reconfirm-title { height:12px; display:flex; align-items:center; }
+.reconfirm-sub { height:9px; display:flex; align-items:center; }
+.reconfirm-cta {
+  font-size:12px; font-weight:600; color:var(--accent);
+  white-space:nowrap;
+}
+.reconfirm-footer {
+  display:flex; align-items:center; justify-content:space-between;
+  padding-top:14px; margin-top:6px;
+  border-top:1px solid var(--border);
+  gap:12px;
+}
+.reconfirm-help { font-size:11.5px; color:var(--fg-3); }
+.sign-final-btn {
+  padding:10px 20px;
+  border-radius:8px; border:0;
+  background:var(--fg-4); color:#fff;
+  font-family:inherit; font-size:13px; font-weight:700;
+  cursor:not-allowed;
+}
+.sign-final-btn.ready {
+  background:var(--accent); cursor:pointer;
+  animation:signReadyPulse 2s ease-in-out infinite;
+}
+.sign-final-btn.ready:hover { background:#1d4ed8; }
+
+/* Reconfirmation overlay — sits ON TOP of the list in the canvas area */
+.reconfirm-overlay {
+  position:absolute;
+  inset:0;
+  background:rgba(15,23,42,.28);
+  z-index:5;
+  display:flex; align-items:stretch; justify-content:stretch;
+  animation:overlayFade .15s ease;
+  padding:20px;
+}
+@keyframes overlayFade { from { opacity:0 } to { opacity:1 } }
+.reconfirm-overlay-inner {
+  flex:1;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px 18px;
+  display:flex; flex-direction:column; gap:10px;
+  box-shadow:0 10px 40px rgba(15,23,42,.14);
+  overflow:auto;
+  animation:overlaySlideIn .18s ease;
+}
+@keyframes overlaySlideIn {
+  from { transform:translateY(6px); opacity:0; }
+  to { transform:translateY(0); opacity:1; }
+}
+/* Canvas needs to be relative so the overlay can anchor to it */
+.canvas-col { position:relative; }
+@keyframes sinkIn {
+  from { opacity:0; transform:scale(.98); }
+  to { opacity:1; transform:scale(1); }
+}
+.sign-takeover-eye { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--danger); }
+.sign-takeover-title { font-size:20px; font-weight:800; letter-spacing:-.01em; }
+.sign-takeover-body { font-size:13.5px; color:var(--fg-2); max-width:440px; }
+.sign-takeover-btn {
+  padding:12px 28px;
+  background:var(--danger); color:#fff;
+  border:0; border-radius:8px;
+  font-size:14px; font-weight:700;
+  cursor:pointer; font-family:inherit;
+  margin-top:8px;
+}
+.sign-takeover-btn:hover { background:#b91c1c; }
+.sign-takeover-cancel {
+  border:0; background:transparent;
+  color:var(--fg-3); font-size:12.5px; font-family:inherit;
+  cursor:pointer; padding:6px 10px;
+}
+.sign-takeover-cancel:hover { color:var(--fg); }
+
+/* State chip strip (persistent controls · draggable + collapsible) */
+.state-strip {
+  position:fixed; right:20px; top:80px;
+  padding:0;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  box-shadow:0 4px 18px rgba(0,0,0,.08);
+  display:flex; flex-direction:column;
+  z-index:100;
+  min-width:260px;
+  max-width:280px;
+  user-select:none;
+  transition:width .18s ease, min-width .18s ease;
+}
+.state-strip.collapsed {
+  min-width:0; max-width:none; width:auto;
+}
+.state-strip.collapsed .state-strip-body { display:none; }
+.state-strip.collapsed .state-strip-title { border-bottom:0; }
+.state-strip.dragging { transition:none; opacity:.94; cursor:grabbing; }
+
+.state-strip-title {
+  font-size:10px; text-transform:uppercase; letter-spacing:.08em;
+  font-weight:700; color:var(--fg-3);
+  padding:10px 12px;
+  cursor:grab;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:8px;
+  border-radius:10px 10px 0 0;
+}
+.state-strip-title:active { cursor:grabbing; }
+.state-strip-drag-handle {
+  display:inline-flex; flex-direction:column; gap:2px;
+  color:var(--fg-4);
+}
+.state-strip-drag-handle::before,
+.state-strip-drag-handle::after {
+  content:""; display:block;
+  width:12px; height:2px; border-radius:1px;
+  background:currentColor;
+}
+.state-strip-label { flex:1; }
+.state-strip-toggle {
+  border:0; background:transparent;
+  color:var(--fg-3); font-size:14px;
+  padding:2px 6px; border-radius:4px;
+  cursor:pointer; font-family:inherit;
+  line-height:1;
+  display:flex; align-items:center; justify-content:center;
+  min-width:22px; height:22px;
+}
+.state-strip-toggle:hover { background:var(--page); color:var(--fg); }
+.state-strip-body {
+  padding:12px 14px;
+  display:flex; flex-direction:column; gap:8px;
+}
+.state-strip-current {
+  padding:8px 10px; background:var(--accent-soft); border-radius:6px;
+  font-size:12px; color:var(--accent); font-weight:600;
+}
+.state-strip-btns { display:flex; flex-direction:column; gap:4px; }
+.state-btn {
+  padding:6px 10px;
+  border:1px solid var(--border);
+  border-radius:6px;
+  background:var(--surface);
+  font-size:11.5px; font-weight:500; color:var(--fg-2);
+  cursor:pointer;
+  text-align:left;
+  font-family:inherit;
+  transition:background .12s ease, border-color .12s ease;
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+}
+.state-btn:hover { background:var(--page); border-color:#c7c7cf; }
+.state-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+.state-btn kbd {
+  font-family:var(--mono); font-size:10px;
+  background:#eaeaef; color:var(--fg-3);
+  padding:1px 5px; border-radius:3px;
+}
+.state-btn.active kbd { background:rgba(255,255,255,.2); color:#fff; }
+.state-btn-copy { display:flex; flex-direction:column; gap:1px; min-width:0; text-align:left; flex:1; }
+.state-btn-label { font-weight:600; line-height:1.25; }
+.state-btn-desc {
+  font-size:10.5px; color:var(--fg-3); font-weight:400; line-height:1.35;
+  overflow:hidden; text-overflow:ellipsis;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+}
+.state-btn.active .state-btn-desc { color:rgba(255,255,255,.75); }
+.state-strip-legend { font-size:10.5px; color:var(--fg-3); padding-top:6px; border-top:1px solid var(--border); }
+
+/* Small helpers */
+.placeholder-line {
+  display:inline-block; height:8px; border-radius:2px;
+  background:#dcdfe6;
+  vertical-align:middle;
+}
+.placeholder-line.w80 { width:80px; }
+.placeholder-line.w120 { width:120px; }
+.placeholder-line.w180 { width:180px; }
+.placeholder-line.w240 { width:240px; }
+.placeholder-line.w320 { width:320px; }
+.placeholder-line.wfill { width:100%; }
+
+/* Header meta uses stubs */
+.ph-meta .placeholder-line { background:#eaeaef; }
+
+/* Responsive */
+@media (max-width:1100px) {
+  .workspace { padding:14px; gap:12px; }
+  .nav-slice { flex:0 0 260px; }
+  .drawer { flex:0 0 340px; }
+}
+
+/* Narrow / tablet: collapse gnav + patient header into one strip.
+   Rail stays visible. Agenda sits in the background (L0). When canvas
+   or drawer opens, it layers on top as a single sheet (z-index). */
+@media (max-width:820px) {
+  .gnav { height:44px; padding:0 12px; }
+  .gnav-search { display:none; }
+  .ph {
+    padding:10px 12px; gap:8px;
+    /* merge with gnav visually — thin divider only */
+  }
+  .ph-name { font-size:14px; }
+  .ph-meta { display:none; }
+  .workspace { padding:10px; gap:8px; position:relative; }
+  .slim { flex:0 0 40px; }
+  .nav-slice { flex:1; min-width:0; }
+
+  /* Canvas layers on top of the nav-slice (agenda in background) */
+  .canvas-col, .drawer {
+    position:absolute;
+    top:10px; bottom:10px; right:10px;
+    left:60px; /* leaves the slim rail visible */
+    z-index:12;
+    box-shadow:-10px 0 32px rgba(15,23,42,.12);
+    animation:sheetSlideIn .18s ease;
+  }
+  .canvas-col { flex:none; }
+  .drawer { flex:none; }
+  /* Drawer wins over canvas when both are open */
+  .drawer { z-index:14; }
+  @keyframes sheetSlideIn {
+    from { transform:translateX(6px); opacity:0; }
+    to { transform:translateX(0); opacity:1; }
+  }
+  /* Add an obvious back button in the nav-slice pointing to the visible sheet */
+  .workspace.canvas-open .nav-slice::before,
+  .workspace.drawer-open .nav-slice::before {
+    content:"‹ agenda in background";
+    display:block;
+    padding:6px 10px;
+    background:var(--page); border-radius:5px;
+    font-size:10px; color:var(--fg-3); text-align:center;
+    margin-bottom:8px;
+  }
+}
+</style>
+</head>
+<body>
+<!-- CA-STAGE-BANNER:START -->
+<div id="ca-stage-banner" style="position:relative;display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 16px;background:#fff3e6;color:#b35a00;font-family:'DM Sans',system-ui,sans-serif;font-size:13px;font-weight:600;border-bottom:1px solid rgba(0,0,0,0.08);">
+  <span>🚧 WIP &mdash; Messy exploration — open discussion, not yet ready for a formal review.</span>
+  <button onclick="document.getElementById('ca-stage-banner').style.display='none'" style="background:rgba(0,0,0,0.06);border:none;color:inherit;font-weight:600;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:12px;line-height:1.4;">&times;</button>
+</div>
+<!-- CA-STAGE-BANNER:END -->
+<nav class="gnav" aria-label="Global">
+  <button class="gnav-menu" aria-label="Menu">☰</button>
+  <div class="gnav-word">Counterpart Assistant</div>
+  <div class="gnav-search">Search for a patient</div>
+</nav>
+
+<header class="ph">
+  <button class="ph-back" aria-label="Back">←</button>
+  <div>
+    <div class="ph-name">Patient <span style="color:var(--fg-3);font-weight:500;">·</span></div>
+    <div class="ph-meta">
+      <span class="placeholder-line w80"></span>
+      <span class="placeholder-line w120"></span>
+      <span class="placeholder-line w180"></span>
+      <span class="placeholder-line w120"></span>
+    </div>
+  </div>
+  <button class="ph-ask" id="askBtn" onclick="toggleDrawer('ask')">Ask</button>
+</header>
+
+<div class="workspace" id="workspace">
+ <!-- Rail + agenda + canvas share ONE visit-shell card (dividers between). -->
+ <div class="visit-shell" id="visitShell">
+  <nav class="slim" aria-label="Phase rail">
+    <button class="slim-item active" data-phase="brief" onclick="setPhase('brief')">Brief</button>
+    <button class="slim-item" data-phase="visit" onclick="setPhase('visit')">Visit</button>
+    <button class="slim-item" data-phase="sign" onclick="setPhase('sign')">Sign</button>
+  </nav>
+
+  <div class="nav-slice">
+    <div class="visit-context">
+      <div class="vc-l">
+        <span class="vc-title">Visit</span>
+        <span class="vc-sub"><span class="placeholder-line w120" style="background:#e0e2e6"></span></span>
+      </div>
+      <button class="vc-chevron" aria-label="Change visit">▾</button>
+    </div>
+
+    <div class="nav-body" id="navBody">
+      <!-- Content injected based on state -->
+    </div>
+
+    <!-- Bottom action stack: Sign (top, secondary) + Start Scribe (primary).
+         Sits at the bottom of the nav-slice so the two visit-level actions
+         are cursor- and tab-adjacent. Sign gets a subtle Ready pulse when
+         all required assessments are resolved. -->
+    <div class="scribe-island" id="scribeIsland">
+      <button class="sign-nav-btn" id="signNavBtn" onclick="enterSignPhase()">
+        <span>Sign visit</span>
+        <span class="sign-nav-count" id="signNavCount">0 / 3</span>
+      </button>
+      <button class="start-scribe" onclick="startScribe()">Start Scribe</button>
+    </div>
+  </div>
+
+  <div class="canvas-col" id="canvasCol">
+    <!-- Content injected based on state -->
+  </div>
+ </div><!-- /visit-shell -->
+
+  <aside class="drawer" id="drawer" data-kind="record">
+    <div class="drawer-hdr">
+      <div class="drawer-title" id="drawerTitle">Longitudinal</div>
+      <div class="drawer-actions">
+        <button class="drawer-widen" id="drawerWiden" onclick="toggleDrawerWide()" aria-label="Toggle width" title="Widen / narrow">⇔</button>
+        <button class="drawer-close" onclick="closeDrawer()" aria-label="Close">×</button>
+      </div>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+  </aside>
+
+  <!-- Sign is a third phase — its content renders in the canvas area
+       (see renderSignPhase()), not as a full-workspace takeover. -->
+
+</div>
+
+<aside class="state-strip" id="stateStrip" aria-label="State navigator">
+  <div class="state-strip-title" id="stateStripHandle">
+    <span class="state-strip-drag-handle" aria-hidden="true"></span>
+    <span class="state-strip-label">Try each state</span>
+    <button class="state-strip-toggle" id="stateStripToggle" aria-label="Collapse" aria-expanded="true">−</button>
+  </div>
+  <div class="state-strip-body">
+    <div class="state-strip-current" id="stateCurrent">0 · Ready</div>
+    <div class="state-strip-btns" id="stateBtns"></div>
+    <div class="state-strip-legend">Interactive lo-fi · abstracted content · click through the flow</div>
+  </div>
+</aside>
+
+<script>
+// ────────────────────────────────────────────────────────────
+// State model — mirrors molly's actual state variables in spirit
+// ────────────────────────────────────────────────────────────
+const STATE = {
+  phase: 'brief',               // 'brief' | 'visit' | 'sign'
+  scribe: 'idle',               // 'idle' | 'recording' | 'paused'
+  liveTopic: null,              // 'hfref' | 'ckd' | null
+  selectedTask: null,           // task id or null
+  canvasMode: 'live',           // 'live' | 'task'
+  drawerOpen: false,            // false | 'ask' | 'record'
+  drawerWide: false,            // user-toggleable wider view
+  recordFilter: null,           // null | 'h' | 'v' | 'm' | 'l' (Brief drill-in filter)
+  recordHighlight: false,       // provenance glow on drawer rows
+  dismissedTasks: new Set(),
+  // signTakeover: removed — Sign is a phase, not a takeover
+
+};
+
+// Task list — abstracted (names carry meaning but content is placeholder shapes)
+const TASKS = [
+  { id:'hfref', name:'Assessment A', status:'idle' },
+  { id:'htn',   name:'Assessment B', status:'idle' },
+  { id:'dm',    name:'Assessment C', status:'idle' },
+  { id:'mamm',  name:'Care gap',     status:'warn' },
+];
+
+// Brief rollup categories — order + count text mirrors molly's mock
+const BRIEF_ROLLUPS = [
+  { kind:'h', label:'H', title:'Hospitalizations',  count:'none',                 dim:true },
+  { kind:'v', label:'V', title:'Recent visits',      count:'7 specialist · 2 other' },
+  { kind:'m', label:'M', title:'Medications',        count:'2 new · 1 dose change' },
+  { kind:'l', label:'L', title:'Labs',               count:'3 abnormal',           warn:true },
+];
+
+// Named states with clearer labels + short descriptions
+const NAMED_STATES = [
+  { id:'ready',        label:'0 · Ready',                        desc:'Fresh visit · Brief open · nothing recording',            enter:()=>reset() },
+  { id:'recording',    label:'1 · Recording · listening',        desc:'Scribe live · no assessment focused',                     enter:()=>{ reset(); startScribe(); } },
+  { id:'task-in-rec',  label:'2 · Recording · assessment open',  desc:'Scribe still live · user opened an assessment card',      enter:()=>{ reset(); startScribe(); selectTask('ckd' in ITEMS() ? 'ckd' : 'htn'); } },
+  { id:'draft-task',   label:'3 · Post-scribe · assessment open',desc:'Scribe stopped · drafts populated · one card focused',    enter:()=>{ reset(); startScribe(); selectTask('htn'); stopScribe(); } },
+  { id:'draft-ready',  label:'4 · Post-scribe · nothing open',   desc:'Scribe stopped · returning to full agenda',               enter:()=>{ reset(); startScribe(); stopScribe(); STATE.selectedTask = null; render(); } },
+  { id:'reviewing',    label:'5 · Reconfirmation list',          desc:'Sign phase · scan drafts · click one to open overlay',    enter:()=>{ reset(); startScribe(); stopScribe(); enterSignPhase(); } },
+  { id:'reviewing-overlay', label:'5b · Reconfirmation overlay', desc:'One item open ON TOP of the list (list stays behind)',    enter:()=>{ reset(); startScribe(); stopScribe(); enterSignPhase(); selectTask('htn'); } },
+  { id:'sign',         label:'6 · Sign · final step',            desc:'All assessments resolved · attestation panel',             enter:()=>{ reset(); resolveAllTasks(); enterSignPhase(); } },
+  { id:'record',       label:'O1 · Longitudinal (Ask) open',     desc:'Right-side longitudinal / Ask sheet on top of everything', enter:()=>{ reset(); toggleDrawer('record'); } },
+  { id:'ask',          label:'O2 · Ask chat open',               desc:'Ask chat drawer from right',                              enter:()=>{ reset(); toggleDrawer('ask'); } },
+  { id:'record+task',  label:'O3 · Longitudinal + assessment',   desc:'Longitudinal open · user drills into an assessment',      enter:()=>{ reset(); toggleDrawer('record'); selectTask('hfref'); } },
+  { id:'provenance',   label:'O4 · Brief drill-in → filtered',   desc:'Click a Brief rollup · longitudinal opens filtered',      enter:()=>{ reset(); openBriefRollup('l'); } },
+];
+
+let currentStateId = 'ready';
+
+function ITEMS() { return Object.fromEntries(TASKS.map(t=>[t.id,t])); }
+
+// ────────────────────────────────────────────────────────────
+// Actions
+// ────────────────────────────────────────────────────────────
+function reset() {
+  STATE.phase = 'brief';
+  STATE.scribe = 'idle';
+  STATE.liveTopic = null;
+  STATE.selectedTask = null;
+  STATE.canvasMode = 'live';
+  STATE.drawerOpen = false;
+  STATE.drawerWide = false;
+  STATE.recordFilter = null;
+  STATE.recordHighlight = false;
+  STATE.dismissedTasks = new Set();
+  // signTakeover removed
+
+  TASKS.forEach(t => t.status = t.id === 'mamm' ? 'warn' : 'idle');
+  render();
+}
+
+function setPhase(p) {
+  STATE.phase = p;
+  if (p === 'visit' && STATE.scribe === 'idle') {
+    // Visit phase without scribe live — canvas closes unless a task is focused
+  }
+  render();
+}
+
+function startScribe() {
+  STATE.scribe = 'recording';
+  STATE.liveTopic = 'hfref';
+  STATE.phase = 'visit';
+  STATE.canvasMode = 'live';
+  const t = ITEMS().hfref; if (t) t.status = 'live';
+  render();
+}
+
+function stopScribe() {
+  STATE.scribe = 'idle';
+  STATE.liveTopic = null;
+  // Mark scribed tasks as done (auto-fill on stop, per Scenario B behavior)
+  const t = ITEMS().hfref; if (t && t.status === 'live') t.status = 'done';
+  render();
+}
+
+function pauseScribe() { STATE.scribe = 'paused'; render(); }
+function resumeScribe() { STATE.scribe = 'recording'; render(); }
+
+function selectTask(id) {
+  if (STATE.dismissedTasks.has(id)) return;
+  STATE.selectedTask = id;
+  STATE.canvasMode = 'task';
+  const t = ITEMS()[id];
+  if (t && t.status === 'idle') t.status = 'active';
+  render();
+}
+function clearTask() {
+  STATE.selectedTask = null;
+  STATE.canvasMode = 'live';
+  render();
+}
+
+function dismissTask(id, e) {
+  e && e.stopPropagation();
+  STATE.dismissedTasks.add(id);
+  if (STATE.selectedTask === id) clearTask();
+  render();
+}
+
+function toggleDrawer(kind) {
+  if (STATE.drawerOpen === kind) {
+    STATE.drawerOpen = false;
+  } else {
+    STATE.drawerOpen = kind;
+    STATE.recordHighlight = false;
+  }
+  render();
+}
+function closeDrawer() { STATE.drawerOpen = false; STATE.recordHighlight = false; render(); }
+
+function openBriefRollup(kind) {
+  STATE.drawerOpen = 'record';
+  STATE.recordFilter = kind;      // persistent filter chip in drawer header
+  STATE.recordHighlight = true;
+  render();
+  setTimeout(() => { STATE.recordHighlight = false; render(); }, 3200);
+}
+function clearRecordFilter() {
+  STATE.recordFilter = null;
+  render();
+}
+function toggleDrawerWide() {
+  STATE.drawerWide = !STATE.drawerWide;
+  render();
+}
+
+// Sign is a third phase (not a takeover). Enters the Sign phase and
+// leaves any focused task; canvas shows the sign panel with reduced
+// chrome. User can leave via the slim rail (Brief / Visit).
+function enterSignPhase() {
+  STATE.phase = 'sign';
+  STATE.selectedTask = null;
+  render();
+}
+function finalizeSign() {
+  // Lo-fi placeholder — real would submit. Return to a signed success state.
+  STATE.phase = 'sign';
+  render();
+}
+
+function resolveAllTasks() {
+  TASKS.forEach(t => { if (t.status !== 'warn') t.status = 'done'; });
+}
+
+// ────────────────────────────────────────────────────────────
+// Render
+// ────────────────────────────────────────────────────────────
+function render() {
+  const ws = document.getElementById('workspace');
+  // Canvas opens only for: scribe live, task selected, or sign phase.
+  // Brief rollup drill-in NEVER opens the canvas — it always opens the
+  // longitudinal (Patient Record) drawer filtered to that kind.
+  const canvasOpen =
+    STATE.scribe === 'recording' || STATE.scribe === 'paused' ||
+    (STATE.selectedTask && !STATE.dismissedTasks.has(STATE.selectedTask)) ||
+    (STATE.phase === 'sign');
+
+  ws.classList.toggle('canvas-open', canvasOpen);
+  ws.classList.toggle('drawer-open', !!STATE.drawerOpen);
+  ws.classList.toggle('phase-sign', STATE.phase === 'sign');
+
+  // Slim rail
+  document.querySelectorAll('.slim-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.phase === STATE.phase);
+  });
+
+  // Ask button
+  document.getElementById('askBtn').classList.toggle('active', STATE.drawerOpen === 'ask');
+
+  // Nav body (task list / brief rollups)
+  document.getElementById('navBody').innerHTML = renderNavBody();
+
+  // Scribe island
+  document.getElementById('scribeIsland').innerHTML = renderScribeIsland();
+
+  // Canvas col
+  document.getElementById('canvasCol').innerHTML = renderCanvas();
+
+  // Drawer
+  const drawer = document.getElementById('drawer');
+  drawer.dataset.kind = STATE.drawerOpen || 'record';
+  drawer.classList.toggle('wide', !!STATE.drawerWide);
+  document.getElementById('drawerTitle').textContent = STATE.drawerOpen === 'ask' ? 'Ask (chat)' : 'Longitudinal';
+  document.getElementById('drawerBody').innerHTML = STATE.drawerOpen === 'ask' ? renderAskDrawer() : renderRecordDrawer();
+
+  // Sign button in the bottom action stack (replaces old bottom-right dock)
+  const resolved = TASKS.filter(t => t.status === 'done').length;
+  const required = TASKS.filter(t => t.status !== 'warn').length;
+  const signBtn = document.getElementById('signNavBtn');
+  if (signBtn) {
+    signBtn.classList.toggle('ready', resolved >= required);
+    signBtn.disabled = resolved < required;
+    document.getElementById('signNavCount').textContent = `${resolved} / ${required}`;
+  }
+
+  // Current-state chip
+  updateCurrentStateChip();
+}
+
+function renderNavBody() {
+  if (STATE.phase === 'brief' && STATE.scribe === 'idle' && !STATE.selectedTask) {
+    // Brief phase, ready state — canvas is hidden, so the Brief mock
+    // (H/V/M/L rollup rows) renders here in the nav-slice body.
+    return renderBriefRollups();
+  }
+  // Visit / Sign / task modes → show task rows
+  const visible = TASKS.filter(t => !STATE.dismissedTasks.has(t.id));
+  const rows = visible.map(t => {
+    const isActive = STATE.selectedTask === t.id;
+    const dotClass = t.status === 'live' ? 'live'
+                   : t.status === 'done' ? 'done'
+                   : t.status === 'warn' ? 'warn'
+                   : isActive ? 'active' : '';
+    return `<button class="task-row${isActive?' active':''}" onclick="selectTask('${t.id}')">
+      <span class="task-dot ${dotClass}"></span>
+      <span class="task-body">
+        <span class="task-title" style="width:${t.status==='live'?60:70}%"></span>
+        <span class="task-sub"></span>
+      </span>
+      ${t.status === 'live' ? '<span class="task-live-marker">Live</span>' : ''}
+      <span onclick="dismissTask('${t.id}',event)" title="Dismiss" style="width:20px;height:20px;border-radius:4px;color:var(--fg-4);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;opacity:.4;">×</span>
+    </button>`;
+  }).join('');
+  const dismissed = STATE.dismissedTasks.size;
+  const undo = dismissed
+    ? `<div style="padding:6px 12px;border-top:1px dashed var(--border);font-size:11px;color:var(--fg-3);display:flex;justify-content:space-between;">
+        <span>${dismissed} dismissed</span>
+        <button onclick="STATE.dismissedTasks.clear();render();" style="border:0;background:transparent;color:var(--accent);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;padding:0;">Undo</button>
+      </div>`
+    : '';
+  return rows + undo;
+}
+
+function renderScribeIsland() {
+  if (STATE.scribe === 'idle') {
+    return `<button class="start-scribe" onclick="startScribe()">Start Scribe</button>`;
+  }
+  // Recording or paused → occupy the same slot the button did, at the
+  // same size/shape. This is the persistent expected behavior — active
+  // scribe controls replace the Start Scribe button in place.
+  const paused = STATE.scribe === 'paused';
+  return `<div class="scribe-active-pill${paused ? ' paused' : ''}">
+    ${paused
+      ? `<span class="pause-glyph" aria-hidden="true">⏸</span>`
+      : `<span class="rec-dot"></span>`}
+    <span class="scribe-state-label">${paused ? 'Paused' : 'Recording'}</span>
+    <span class="scribe-timer" id="liveTimer">${paused ? '1:12' : '0:47'}</span>
+    <span class="scribe-divider"></span>
+    ${paused
+      ? `<button class="scribe-action" onclick="resumeScribe()">Resume</button>`
+      : `<button class="scribe-action" onclick="pauseScribe()">Pause</button>`}
+    <button class="scribe-action" onclick="stopScribe()">End</button>
+  </div>`;
+}
+
+function renderCanvas() {
+  // Brief phase, no scribe, no task → Brief mock lives in nav-slice.
+  // Canvas stays hidden (canvasOpen === false in render()).
+  if (STATE.phase === 'brief' && STATE.scribe === 'idle' && !STATE.selectedTask) {
+    return '';
+  }
+  // Scribe live, no task focused → focus canvas
+  if ((STATE.scribe === 'recording' || STATE.scribe === 'paused') && STATE.canvasMode === 'live') {
+    return renderFocusCanvas();
+  }
+  // Sign phase: reconfirmation LIST is always the base layer.
+  // If a task is focused within Sign, it overlays the list.
+  if (STATE.phase === 'sign') {
+    const listHTML = renderReconfirmationList();
+    if (STATE.selectedTask) {
+      // Reconfirmation overlay ON TOP of list (list stays behind)
+      return `${listHTML}${renderReconfirmationOverlay()}`;
+    }
+    return listHTML;
+  }
+  // Task focused (Visit phase)
+  if (STATE.selectedTask) {
+    return renderAssessmentTask();
+  }
+  return '';
+}
+
+function renderAssessmentTask() {
+  const nowDiscussing = (STATE.scribe === 'recording' || STATE.scribe === 'paused')
+    ? `<div class="now-discussing-compact">
+        <span><strong>Now discussing</strong> <span class="placeholder-line w80" style="background:#e0b9be;"></span></span>
+        <button class="view-live" onclick="clearTask()">View live ›</button>
+      </div>`
+    : '';
+  return `
+    ${nowDiscussing}
+    <div class="canvas-eyebrow">Assessment</div>
+    <div class="canvas-title"><span class="placeholder-line w180" style="background:#c7c7cf; height:14px;"></span></div>
+    <div class="task-canvas">
+      <div class="task-canvas-content">
+        <div class="card">
+          <div class="card-lines">
+            <div class="card-line w80"></div>
+            <div class="card-line w60"></div>
+            <div class="card-line w80"></div>
+            <div class="card-line w40"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="font-size:11px;color:var(--fg-3);font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Determination</div>
+          <div class="card-lines">
+            <div class="card-line w80"></div>
+            <div class="card-line w60"></div>
+          </div>
+        </div>
+      </div>
+      <aside class="task-actions" aria-label="Task actions">
+        <button class="task-action-btn primary" onclick="confirmTask()">Save &amp; next</button>
+        <button class="task-action-btn" onclick="event.preventDefault()">Edit</button>
+        <button class="task-action-btn ghost" onclick="event.preventDefault()">Skip</button>
+      </aside>
+    </div>
+  `;
+}
+
+// Reconfirmation list — canvas view when phase='sign', no task focused.
+// Each row is an assessment awaiting reconfirmation. Fast click-down flow.
+function renderReconfirmationList() {
+  const remaining = TASKS.filter(t => !STATE.dismissedTasks.has(t.id) && t.status !== 'done');
+  const done = TASKS.filter(t => t.status === 'done').length;
+  const total = TASKS.filter(t => !STATE.dismissedTasks.has(t.id)).length;
+  const canSign = remaining.length === 0;
+  return `
+    <div class="canvas-eyebrow">Reconfirmation</div>
+    <div class="canvas-title" style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;">
+      <span>Reconfirm each assessment</span>
+      <span style="font-size:12px;font-weight:500;color:var(--fg-3);font-family:var(--mono);">${done} / ${total}</span>
+    </div>
+    <div class="reconfirm-list">
+      ${TASKS.filter(t => !STATE.dismissedTasks.has(t.id)).map(t => {
+        const isDone = t.status === 'done';
+        return `
+          <button class="reconfirm-row${isDone ? ' done' : ''}" onclick="selectTask('${t.id}')">
+            <span class="reconfirm-check">${isDone ? '✓' : ''}</span>
+            <span class="reconfirm-body">
+              <span class="reconfirm-title"><span class="placeholder-line" style="width:${isDone?60:80}%;background:${isDone?'#dcdfe6':'#c7c7cf'};"></span></span>
+              <span class="reconfirm-sub"><span class="placeholder-line" style="width:${isDone?40:55}%;background:#eaeaef;"></span></span>
+            </span>
+            <span class="reconfirm-cta">${isDone ? 'Edit' : 'Reconfirm →'}</span>
+          </button>
+        `;
+      }).join('')}
+    </div>
+    <div class="reconfirm-footer">
+      <button class="sign-final-btn ${canSign ? 'ready' : ''}" onclick="finalizeSign()" ${canSign ? '' : 'disabled'}>
+        Sign &amp; submit
+      </button>
+      ${canSign ? '' : `<span class="reconfirm-help">${remaining.length} left to reconfirm before signing</span>`}
+    </div>
+  `;
+}
+
+// Overlay on top of the reconfirmation list — single-item confirmation
+// pane. Closing returns to the list without unmounting it.
+function renderReconfirmationOverlay() {
+  return `
+    <div class="reconfirm-overlay" role="dialog" aria-modal="true">
+      <div class="reconfirm-overlay-inner">
+        <button class="canvas-back" onclick="clearTask()">← Back to reconfirmation list</button>
+        <div class="canvas-eyebrow">Note · confirm</div>
+        <div class="canvas-title"><span class="placeholder-line w180" style="background:#c7c7cf; height:14px;"></span></div>
+        <div class="task-canvas">
+          <div class="task-canvas-content">
+            <div class="card">
+              <div class="card-lines">
+                <div class="card-line w80"></div>
+                <div class="card-line w60"></div>
+                <div class="card-line w80"></div>
+              </div>
+            </div>
+            <div class="card">
+              <div style="font-size:11px;color:var(--fg-3);font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Determination</div>
+              <div class="card-lines">
+                <div class="card-line w80"></div>
+                <div class="card-line w60"></div>
+              </div>
+            </div>
+          </div>
+          <aside class="task-actions" aria-label="Reconfirmation actions">
+            <button class="task-action-btn primary" onclick="confirmTask()">Save &amp; next</button>
+            <button class="task-action-btn" onclick="event.preventDefault()">Edit</button>
+            <button class="task-action-btn ghost" onclick="clearTask()">Close</button>
+          </aside>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function confirmTask() {
+  const id = STATE.selectedTask;
+  if (!id) return;
+  const t = ITEMS()[id]; if (t) t.status = 'done';
+  clearTask();
+}
+
+function renderBriefRollups() {
+  return `<div class="brief-mock">
+    <!-- Brief header: bold title + patient one-liner · Since date on right -->
+    <div class="bm-hdr">
+      <div class="bm-hdr-l">
+        <div class="bm-title">Brief</div>
+        <div class="bm-patient"><span class="placeholder-line w180" style="background:#e0e2e6"></span></div>
+      </div>
+      <div class="bm-hdr-r">
+        Since <a class="bm-hdr-link">▬▬▬</a>
+        <span style="color:var(--fg-4)">·</span>
+        <span class="placeholder-line" style="background:#eaeaef;width:38px;height:8px"></span>
+      </div>
+    </div>
+
+    <!-- Highlighted "Since last visit" strip -->
+    <div class="bm-since">
+      <strong>Since last visit:</strong>
+      <span class="bm-since-dx">▬▬▬▬</span>
+      <span class="bm-since-sep">·</span>
+      <span class="placeholder-line w80" style="background:rgba(0,0,0,.14)"></span>
+      <span class="bm-since-sep">·</span>
+      <span class="placeholder-line w80" style="background:rgba(0,0,0,.14)"></span>
+      <span class="bm-since-arrows">↑↑</span>
+    </div>
+
+    <!-- Category rows: badge · title · count text · divider between -->
+    <div class="bm-rows">
+      ${BRIEF_ROLLUPS.map((r, i) => `
+        <button class="bm-row${r.dim ? ' bm-row-dim' : ''}" onclick="openBriefRollup('${r.kind}')">
+          <span class="bm-badge bm-badge-${r.kind}">${r.label}</span>
+          <span class="bm-row-title">${r.title}</span>
+          <span class="bm-row-count${r.warn ? ' bm-row-count-warn' : ''}${r.dim ? ' bm-row-count-dim' : ''}">${r.count}</span>
+        </button>
+      `).join('')}
+    </div>
+  </div>`;
+}
+
+function renderFocusCanvas() {
+  // Transcript rows — auto-scrolls (see CSS) to simulate live capture
+  const rows = [
+    { t:'00:04', w:80 },{ t:'00:11', w:65 },{ t:'00:18', w:78 },
+    { t:'00:24', w:52 },{ t:'00:33', w:80 },{ t:'00:41', w:60 },
+    { t:'00:47', w:72 },{ t:'00:55', w:48 },{ t:'01:04', w:76 },
+    { t:'01:12', w:66 },
+  ];
+  const transcript = rows.map(r => `
+    <div class="ts-row">
+      <span class="ts-time">${r.t}</span>
+      <div class="ts-lines">
+        <div class="ts-line" style="width:${r.w}%"></div>
+        <div class="ts-line" style="width:${Math.max(30, r.w - 20)}%"></div>
+      </div>
+    </div>
+  `).join('');
+  return `<div class="focus-canvas">
+    <div class="focus-eye">Now discussing</div>
+    <div class="focus-title"></div>
+    <div class="focus-metrics">
+      <div class="focus-metric"><span class="m-label"></span><span class="m-value"></span></div>
+      <div class="focus-metric"><span class="m-label"></span><span class="m-value"></span></div>
+    </div>
+    <div class="transcript-block">
+      <div class="transcript-hdr">
+        <span class="transcript-label">Transcript</span>
+        <span class="transcript-live"><span class="tl-dot"></span>Live</span>
+      </div>
+      <div class="transcript-scroll">
+        ${transcript}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderRecordDrawer() {
+  const kindLabels = { h:'Hospitalizations', v:'Recent visits', m:'Medications', l:'Labs' };
+  const filterLabel = STATE.recordFilter ? kindLabels[STATE.recordFilter] : null;
+  const filterChip = filterLabel
+    ? `<div class="drawer-filter">
+         <span class="drawer-filter-eyebrow">Filtered from Brief</span>
+         <span class="drawer-filter-name">${filterLabel}</span>
+         <button class="drawer-filter-clear" onclick="clearRecordFilter()" aria-label="Clear filter">×</button>
+       </div>`
+    : `<div style="font-size:11px;color:var(--fg-3);padding:2px 0;">All records · recent first</div>`;
+  return `
+    ${filterChip}
+    <div class="drawer-row ${STATE.recordHighlight ? 'hi' : ''}">
+      <div class="r-hdr"><span class="r-badge">H</span><span class="r-title"></span><span class="r-time">Aug 4</span></div>
+      <div class="r-line" style="width:60%"></div>
+    </div>
+    <div class="drawer-row ${STATE.recordHighlight ? 'hi' : ''}">
+      <div class="r-hdr"><span class="r-badge">H</span><span class="r-title"></span><span class="r-time">Jun 16</span></div>
+      <div class="r-line" style="width:70%"></div>
+    </div>
+    <div class="drawer-row">
+      <div class="r-hdr"><span class="r-title"></span><span class="r-time">Aug 4</span></div>
+      <div class="r-line" style="width:50%"></div>
+    </div>
+    <div class="drawer-row">
+      <div class="r-hdr"><span class="r-title"></span><span class="r-time">Jun 8-12</span></div>
+      <div class="r-line" style="width:70%"></div>
+      <div class="r-line" style="width:40%"></div>
+    </div>
+  `;
+}
+
+function renderAskDrawer() {
+  return `
+    <div class="ask-msg">
+      <span class="placeholder-line wfill" style="background:rgba(68,74,211,.25);width:100%;display:block;height:8px;margin-bottom:4px;"></span>
+      <span class="placeholder-line" style="background:rgba(68,74,211,.25);width:60%;display:block;height:8px;"></span>
+    </div>
+    <div class="ask-msg assistant">
+      <span class="placeholder-line wfill" style="width:100%;display:block;height:8px;margin-bottom:4px;"></span>
+      <span class="placeholder-line" style="width:80%;display:block;height:8px;margin-bottom:4px;"></span>
+      <span class="placeholder-line" style="width:65%;display:block;height:8px;"></span>
+    </div>
+    <div class="ask-msg">
+      <span class="placeholder-line" style="background:rgba(68,74,211,.25);width:70%;display:block;height:8px;"></span>
+    </div>
+    <div style="flex:1;"></div>
+    <div class="ask-composer">Ask about this patient…</div>
+  `;
+}
+
+// State navigator
+function updateCurrentStateChip() {
+  const cur = document.getElementById('stateCurrent');
+  const active = NAMED_STATES.find(s => s.id === currentStateId);
+  cur.textContent = active ? active.label : '—';
+}
+function renderStateButtons() {
+  const el = document.getElementById('stateBtns');
+  el.innerHTML = NAMED_STATES.map((s, i) => `
+    <button class="state-btn ${s.id === currentStateId ? 'active' : ''}" data-id="${s.id}" onclick="jumpToState('${s.id}')" title="${s.desc || ''}">
+      <div class="state-btn-copy">
+        <span class="state-btn-label">${s.label}</span>
+        ${s.desc ? `<span class="state-btn-desc">${s.desc}</span>` : ''}
+      </div>
+      <kbd>${i+1 <= 9 ? i+1 : ''}</kbd>
+    </button>
+  `).join('');
+}
+function jumpToState(id) {
+  const s = NAMED_STATES.find(x => x.id === id);
+  if (!s) return;
+  currentStateId = id;
+  s.enter();
+  renderStateButtons();
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  const n = parseInt(e.key, 10);
+  if (n >= 1 && n <= 9 && NAMED_STATES[n-1]) jumpToState(NAMED_STATES[n-1].id);
+  if (e.key === 'Escape') {
+    if (STATE.phase === 'sign') setPhase('brief');
+    else if (STATE.drawerOpen) closeDrawer();
+    else if (STATE.selectedTask) clearTask();
+  }
+});
+
+// State-strip: draggable + collapsible
+(function initStateStrip() {
+  const strip = document.getElementById('stateStrip');
+  const handle = document.getElementById('stateStripHandle');
+  const toggle = document.getElementById('stateStripToggle');
+  if (!strip || !handle || !toggle) return;
+
+  // Collapse / expand
+  toggle.addEventListener('click', e => {
+    e.stopPropagation();
+    const collapsed = strip.classList.toggle('collapsed');
+    toggle.textContent = collapsed ? '+' : '−';
+    toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    toggle.setAttribute('aria-label', collapsed ? 'Expand' : 'Collapse');
+  });
+
+  // Drag
+  let dragging = false;
+  let dx = 0, dy = 0;
+  function onPointerDown(e) {
+    // Ignore drag when the click starts on the toggle button
+    if (e.target.closest('.state-strip-toggle')) return;
+    dragging = true;
+    strip.classList.add('dragging');
+    // Convert to left/top so we can move it (drop the right anchor)
+    const r = strip.getBoundingClientRect();
+    strip.style.left = r.left + 'px';
+    strip.style.top = r.top + 'px';
+    strip.style.right = 'auto';
+    dx = e.clientX - r.left;
+    dy = e.clientY - r.top;
+    handle.setPointerCapture(e.pointerId);
+  }
+  function onPointerMove(e) {
+    if (!dragging) return;
+    const w = strip.offsetWidth;
+    const h = strip.offsetHeight;
+    let x = e.clientX - dx;
+    let y = e.clientY - dy;
+    // Clamp within viewport with 8px inset
+    x = Math.max(8, Math.min(window.innerWidth - w - 8, x));
+    y = Math.max(8, Math.min(window.innerHeight - h - 8, y));
+    strip.style.left = x + 'px';
+    strip.style.top = y + 'px';
+  }
+  function onPointerUp() {
+    if (!dragging) return;
+    dragging = false;
+    strip.classList.remove('dragging');
+  }
+  handle.addEventListener('pointerdown', onPointerDown);
+  window.addEventListener('pointermove', onPointerMove);
+  window.addEventListener('pointerup', onPointerUp);
+})();
+
+// Boot
+renderStateButtons();
+render();
+</script>
+
+</body>
+</html>

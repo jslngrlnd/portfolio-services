@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Admissions Copilot — Case study | John Blanco-Slingerland</title>
+<meta name="description" content="Case study: Admissions Copilot. UX architecture, brand and product design by John Blanco-Slingerland.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Chakra+Petch:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: #F1EFEE; color: #120A08; font-family: 'Chakra Petch', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, h4, h5, p, figure, blockquote, dl, dd { margin: 0; }
+  ul, ol { margin: 0; padding: 0; list-style: none; }
+  img, video { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.25em; }
+  a:hover { color: #F4290C; }
+  ::selection { background: #F4290C; color: #FFFFFF; }
+  :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+</style>
+<script src="gate.js"></script>
+  <script src="lazy-media.js"></script>
+<script src="nav-autohide.js"></script>
+<script src="parallax-fx.js"></script>
+</helmet>
+
+<div style="background:#F1EFEE;color:#120A08;font-family:'Chakra Petch',system-ui,sans-serif;overflow-x:clip">
+
+  <header id="jsl-nav" style="position:sticky;top:0;z-index:40;background:#F4290C;color:#FFFFFF;transition:transform 260ms cubic-bezier(0.4,0,0.2,1),background 220ms ease;will-change:transform">
+    <nav aria-label="Primary" style="max-width:1680px;margin:0 auto;padding:18px clamp(20px,4vw,56px) 0;display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px clamp(20px,4vw,64px)">
+      <a href="John Slingerland Services.dc.html" style="text-decoration:none;font-family:Anton,Impact,sans-serif;font-size:clamp(1rem,1.5vw,1.35rem);letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px;flex:0 0 auto">// John Blanco-Slingerland</a>
+      <ul style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px clamp(18px,3vw,56px);margin-left:auto;font:500 0.84rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">
+        <li style="flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px"><a href="John Slingerland Services.dc.html#services" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px" style-hover="color:#FFE9DB"><span aria-hidden="true" style="width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:inline-block"></span>Services</a></li>
+        <li style="flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px"><a href="John Slingerland Services.dc.html#work" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px" style-hover="color:#FFE9DB"><span aria-hidden="true" style="width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:inline-block"></span>Work</a></li>
+        <li style="flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px"><a href="John Slingerland Services.dc.html#process" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px" style-hover="color:#FFE9DB"><span aria-hidden="true" style="width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:inline-block"></span>Process</a></li>
+        <li style="flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px"><a href="John Slingerland Services.dc.html#engage" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px" style-hover="color:#FFE9DB"><span aria-hidden="true" style="width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:inline-block"></span>Pricing</a></li>
+        <li style="flex:0 0 auto;padding-bottom:4px"><a href="John Slingerland Services.dc.html#contact" style="text-decoration:none;display:inline-flex;align-items:center;min-height:40px;padding:0 20px;border-radius:999px;background:#FFFFFF;color:#120A08;font-family:Anton,Impact,sans-serif;font-size:0.84rem;letter-spacing:0.1em" style-hover="background:#FFE9DB;color:#120A08">Start a project</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+
+  <section data-screen-label="Hero" style="position:relative;isolation:isolate;min-height:calc(100vh - 60px);display:flex;align-items:flex-end;background:#120A08;color:#F1EFEE;padding:clamp(48px,10vh,120px) clamp(20px,4vw,56px) clamp(36px,7vh,80px)">
+    <div aria-hidden="true" style="position:absolute;inset:0;z-index:-1;overflow:hidden;background:#120A08 url('assets/poster-care-team.jpg') center/cover no-repeat">
+      <sc-if value="{{ motionOk }}" hint-placeholder-val="{{ false }}">
+        <video src="uploads/care team.mp4" poster="assets/poster-care-team.jpg" preload="none" autoPlay="{{ true }}" loop="{{ true }}" muted="{{ true }}" playsInline="{{ true }}" onError="{{ hideSelf }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></video>
+      </sc-if>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,10,8,0.8) 0%,rgba(18,10,8,0.62) 40%,rgba(18,10,8,0.92) 100%)"></div>
+    </div>
+    <div data-fx-rise="120" style="width:100%;max-width:1680px;margin:0 auto;will-change:transform">
+      <ul style="display:flex;flex-wrap:wrap;gap:10px">
+        <li style="border:1.5px solid rgba(241,239,238,0.7);border-radius:999px;padding:9px 20px;font:600 0.72rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase">AI product design</li>
+        <li style="border:1.5px solid rgba(241,239,238,0.7);border-radius:999px;padding:9px 20px;font:600 0.72rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase">Workflow automation</li>
+        <li style="border:1.5px solid rgba(241,239,238,0.7);border-radius:999px;padding:9px 20px;font:600 0.72rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase">Healthcare operations</li>
+      </ul>
+      <h1 style="margin-top:clamp(20px,3vh,36px);font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(2.4rem,6.2vw,5.6rem);line-height:0.94;letter-spacing:-0.005em;text-transform:uppercase;max-width:16ch;text-wrap:balance">Giving bandwidth to understaffed care teams</h1>
+      <p style="margin-top:clamp(18px,2.6vh,30px);max-width:56ch;font:400 clamp(1.05rem,1.4vw,1.35rem)/1.5 'Chakra Petch',sans-serif;text-wrap:pretty">An AI assistant to help care teams coordinate care from hospital to clinic. It reads hospital feeds, faxes and call notes, prepares the follow-up work, and leaves every decision with the care team.</p>
+      <dl style="margin-top:clamp(28px,5vh,52px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,10rem),1fr));gap:clamp(18px,2.5vw,32px);border-top:1.5px solid rgba(241,239,238,0.3);padding-top:clamp(18px,3vh,28px);max-width:1180px">
+        <div>
+          <dt style="font:700 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Client</dt>
+          <dd style="margin-top:10px;font:400 1rem/1.45 'Chakra Petch',sans-serif">One Medical Admissions Board</dd>
+        </div>
+        <div>
+          <dt style="font:700 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Delivered</dt>
+          <dd style="margin-top:10px;font:400 1rem/1.45 'Chakra Petch',sans-serif">AI audit, copilot UX, autonomy model, pilot plan</dd>
+        </div>
+        <div>
+          <dt style="font:700 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Status</dt>
+          <dd style="margin-top:10px;font:400 1rem/1.45 'Chakra Petch',sans-serif">Concept; the board it extends shipped</dd>
+        </div>
+      </dl>
+      <div style="margin-top:clamp(28px,4.5vh,48px);display:flex;flex-wrap:wrap;gap:12px 16px">
+        <a href="John Slingerland Services.dc.html#contact" style="text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#FFFFFF;background:#F4290C;border:1.5px solid #F4290C;border-radius:999px;padding:0 32px;min-height:58px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#FFFFFF;border-color:#FFFFFF;color:#120A08"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>Start a similar project</a>
+        <a href="#copilot" style="text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#F1EFEE;border:1.5px solid rgba(241,239,238,0.7);border-radius:999px;padding:0 32px;min-height:58px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#F1EFEE;color:#120A08">See the copilot</a>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="Deliverables" style="background:#120A08;color:#F1EFEE;padding:clamp(56px,10vh,120px) clamp(20px,4vw,56px);border-top:1.5px solid rgba(241,239,238,0.12)">
+    <div style="max-width:1680px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(28px,5vh,56px)">
+      <h2 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.8rem,3.6vw,3.2rem);line-height:0.98;text-transform:uppercase;max-width:22ch;text-wrap:balance">ADDING AI AUTOMATION TO A TOOL PEOPLE RELY ON</h2>
+      <p style="margin-top:calc(clamp(28px,5vh,56px) * -0.5);display:flex;gap:12px;align-items:baseline;max-width:72ch;font:400 0.95rem/1.55 'Chakra Petch',sans-serif;color:rgba(241,239,238,0.85);text-wrap:pretty"><span style="flex:none;padding:6px 10px;border-radius:999px;background:#F4290C;color:#FFFFFF;font:600 0.66rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Process</span><span>Start from the workflow, not the model. I went back through the research to find which updates people typed by hand, then designed AI only where the data already existed.</span></p>
+      <ol style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:0;border-top:1.5px solid rgba(241,239,238,0.25)">
+        <li style="display:flex;flex-direction:column;gap:14px;padding:clamp(22px,3vh,32px) clamp(0px,2vw,28px) clamp(22px,3vh,32px) 0;border-bottom:1.5px solid rgba(241,239,238,0.25)">
+          <span style="font:600 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;color:#F4290C">01</span>
+          <h3 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.3rem,2vw,1.8rem);text-transform:uppercase;letter-spacing:0.02em">AI opportunity audit</h3>
+          <p style="font:400 1rem/1.6 'Chakra Petch',sans-serif;color:rgba(241,239,238,0.78);max-width:40ch;text-wrap:pretty">Every manual step on the board, was mapped to a system or process where automation made sense.</p>
+        </li>
+        <li style="display:flex;flex-direction:column;gap:14px;padding:clamp(22px,3vh,32px) clamp(0px,2vw,28px) clamp(22px,3vh,32px) 0;border-bottom:1.5px solid rgba(241,239,238,0.25)">
+          <span style="font:600 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;color:#F4290C">02</span>
+          <h3 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.3rem,2vw,1.8rem);text-transform:uppercase;letter-spacing:0.02em">Copilot UX</h3>
+          <p style="font:400 1rem/1.6 'Chakra Petch',sans-serif;color:rgba(241,239,238,0.78);max-width:40ch;text-wrap:pretty">A working prototype: the review queue, source evidence on every card, patient view, activity log.</p>
+        </li>
+        <li style="display:flex;flex-direction:column;gap:14px;padding:clamp(22px,3vh,32px) clamp(0px,2vw,28px) clamp(22px,3vh,32px) 0;border-bottom:1.5px solid rgba(241,239,238,0.25)">
+          <span style="font:600 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;color:#F4290C">03</span>
+          <h3 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.3rem,2vw,1.8rem);text-transform:uppercase;letter-spacing:0.02em">Autonomy model</h3>
+          <p style="font:400 1rem/1.6 'Chakra Petch',sans-serif;color:rgba(241,239,238,0.78);max-width:40ch;text-wrap:pretty">Suggest, Draft or Auto for each kind of work, with clinical decisions to keep the human in the loop.</p>
+        </li>
+        <li style="display:flex;flex-direction:column;gap:14px;padding:clamp(22px,3vh,32px) clamp(0px,2vw,28px) clamp(22px,3vh,32px) 0;border-bottom:1.5px solid rgba(241,239,238,0.25)">
+          <span style="font:600 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;color:#F4290C">04</span>
+          <h3 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.3rem,2vw,1.8rem);text-transform:uppercase;letter-spacing:0.02em">Pilot plan</h3>
+          <p style="font:400 1rem/1.6 'Chakra Petch',sans-serif;color:rgba(241,239,238,0.78);max-width:40ch;text-wrap:pretty">A low-risk first rollout, and the measures that decide how far it expands.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section data-screen-label="Starting point" style="max-width:1680px;margin:0 auto;padding:clamp(56px,10vh,140px) clamp(20px,4vw,56px) clamp(56px,9vh,120px);display:flex;flex-direction:column;gap:clamp(28px,5vh,56px)">
+    <div style="display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+      <h2 style="flex:0 1 min(100%,20rem);min-width:0;font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">The starting point</h2>
+      <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:64ch">
+        <p style="font:400 clamp(1.05rem,1.5vw,1.5rem)/1.45 'Chakra Petch',sans-serif;text-wrap:pretty">The admissions board replaced a spreadsheet that seven teams had to keep current by hand. It gave everyone one place to see who was in the hospital, who owned them, and what had to happen before they went home.</p>
+        <p style="margin-top:clamp(16px,2.4vh,28px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">But the way people used it didn't change much. Someone still had to notice an admission, type it in, chase the discharge summary, and write the next step.</p>
+        <p style="margin-top:clamp(18px,2.6vh,28px);display:flex;gap:12px;align-items:baseline;font:400 0.95rem/1.55 'Chakra Petch',sans-serif;text-wrap:pretty"><span style="flex:none;padding:6px 10px;border-radius:999px;background:#120A08;color:#FFFFFF;font:600 0.66rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Strategy</span><span>Structure first. The shipped board gave every admission clean fields, owners and service standards, which is what an AI layer needs to act on.</span></p>
+      </div>
+    </div>
+    <div style="display:grid;gap:clamp(24px,3vw,44px);grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));align-items:start">
+      <figure style="margin:0;display:grid;gap:18px;min-width:0">
+        <img src="uploads/images/01-problem-context/legacy-admissions-tracking-spreadsheet.png" alt="The shared spreadsheet Health Navigators used to track admissions." style="display:block;width:100%;height:auto;border-radius:clamp(12px,1.4vw,22px);border:1px solid rgba(18,10,8,0.14);background:#FFFFFF;box-shadow:0 26px 60px -34px rgba(18,10,8,0.55)">
+        <figcaption style="border-top:1.5px solid rgba(18,10,8,0.25);padding-top:14px">
+          <p style="font:700 0.78rem/1.3 'Chakra Petch',sans-serif;letter-spacing:0.13em;text-transform:uppercase">Before · A shared spreadsheet</p>
+          <p style="margin-top:10px;font:400 clamp(0.9rem,1vw,1rem)/1.6 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">Admissions copied and pasted out of the chart, one handoff at a time.</p>
+        </figcaption>
+      </figure>
+      <figure style="margin:0;display:grid;gap:18px;min-width:0">
+        <img src="uploads/images/06-final-design/admissions-board-redesign.png" alt="The shipped Admissions board." style="display:block;width:100%;height:auto;border-radius:clamp(12px,1.4vw,22px);border:1px solid rgba(18,10,8,0.14);background:#FFFFFF;box-shadow:0 26px 60px -34px rgba(18,10,8,0.55)">
+        <figcaption style="border-top:1.5px solid rgba(18,10,8,0.25);padding-top:14px">
+          <p style="font:700 0.78rem/1.3 'Chakra Petch',sans-serif;letter-spacing:0.13em;text-transform:uppercase">Shipped · The admissions board</p>
+          <p style="margin-top:10px;font:400 clamp(0.9rem,1vw,1rem)/1.6 'Chakra Petch',sans-serif;opacity:0.78;text-wrap:pretty">Built into the EHR, with owners, next steps and service standards on every admission.</p>
+        </figcaption>
+      </figure>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center">
+      
+    </div>
+  </section>
+
+  <section data-screen-label="The insight" style="background:#FFE9DB;padding:clamp(56px,10vh,140px) clamp(20px,4vw,56px)">
+    <div style="max-width:1680px;margin:0 auto;display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+      <h2 style="flex:0 1 min(100%,20rem);min-width:0;font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">Most of the updates already exist somewhere else</h2>
+      <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:64ch">
+        <p style="font:400 clamp(1.05rem,1.5vw,1.5rem)/1.45 'Chakra Petch',sans-serif;text-wrap:pretty">When I went through the research, most of the updates people typed into the board were already sitting in another system.</p>
+        <ul style="margin-top:clamp(18px,2.6vh,28px);display:grid;border-top:1.5px solid rgba(18,10,8,0.25)">
+          <li style="display:grid;grid-template-columns:minmax(8rem,12rem) minmax(0,1fr);gap:16px;padding:12px 0;border-bottom:1.5px solid rgba(18,10,8,0.25);font:400 clamp(0.92rem,1vw,1.02rem)/1.55 'Chakra Petch',sans-serif"><strong style="font-weight:700">ADT feeds</strong><span>Hospitals send admission and transfer updates.</span></li>
+          <li style="display:grid;grid-template-columns:minmax(8rem,12rem) minmax(0,1fr);gap:16px;padding:12px 0;border-bottom:1.5px solid rgba(18,10,8,0.25);font:400 clamp(0.92rem,1vw,1.02rem)/1.55 'Chakra Petch',sans-serif"><strong style="font-weight:700">Faxes</strong><span>Discharge summaries arrive by fax.</span></li>
+          <li style="display:grid;grid-template-columns:minmax(8rem,12rem) minmax(0,1fr);gap:16px;padding:12px 0;border-bottom:1.5px solid rgba(18,10,8,0.25);font:400 clamp(0.92rem,1vw,1.02rem)/1.55 'Chakra Petch',sans-serif"><strong style="font-weight:700">Call notes</strong><span>Nurses log every call.</span></li>
+        </ul>
+        
+        <p style="margin-top:clamp(18px,2.6vh,28px);display:flex;gap:12px;align-items:baseline;font:400 0.95rem/1.55 'Chakra Petch',sans-serif;text-wrap:pretty"><span style="flex:none;padding:6px 10px;border-radius:999px;background:#120A08;color:#FFFFFF;font:600 0.66rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Strategy</span><span>Change the core object. The board transitions from a list of patients and becomes a tool for decision support.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="copilot" data-screen-label="The copilot" style="background:#120A08;color:#F1EFEE;padding:clamp(56px,10vh,120px) clamp(20px,4vw,56px) 0">
+    <div style="max-width:1680px;margin:0 auto;display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+      <h2 style="flex:0 1 min(100%,20rem);min-width:0;font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">The copilot</h2>
+      <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:64ch">
+        <p style="font:400 clamp(1.05rem,1.5vw,1.5rem)/1.45 'Chakra Petch',sans-serif;text-wrap:pretty">Every morning the copilot shows what changed overnight and what it has already prepared.</p>
+        <p style="margin-top:clamp(16px,2.4vh,28px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;color:rgba(241,239,238,0.72);text-wrap:pretty">Keep scrolling to move through the working prototype.</p>
+        <p style="margin-top:clamp(18px,2.6vh,28px);display:flex;gap:12px;align-items:baseline;font:400 0.95rem/1.55 'Chakra Petch',sans-serif;text-wrap:pretty"><span style="flex:none;padding:6px 10px;border-radius:999px;background:#F4290C;color:#FFFFFF;font:600 0.66rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Strategy</span><span>Open on the work, not the data. The first screen is a queue of prepared actions, so the team starts the day approving instead of searching.</span></p>
+        <a href="uploads/copilot/AI.dc.html" target="_blank" rel="noopener" style="margin-top:clamp(20px,3vh,32px);text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#F1EFEE;border:1.5px solid rgba(241,239,238,0.6);border-radius:999px;padding:0 28px;min-height:52px;font-family:Anton,Impact,sans-serif;font-size:0.9rem;letter-spacing:0.09em;text-transform:uppercase" style-hover="background:#F1EFEE;border-color:#F1EFEE;color:#120A08">Open the prototype<span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+    <div style="max-width:1680px;margin:clamp(24px,4vh,48px) auto 0">
+      <dc-import name="Parallax Device" src="uploads/copilot/AI.dc.html" init="{{ copilotInit }}" beats="{{ copilotBeats }}" label-color="rgba(241,239,238,0.75)" spin="16" hint-size="100%,420vh"></dc-import>
+    </div>
+  </section>
+
+  <section data-screen-label="How it works" style="max-width:1680px;margin:0 auto;padding:clamp(56px,10vh,140px) clamp(20px,4vw,56px) clamp(40px,7vh,88px);display:flex;flex-direction:column;gap:clamp(56px,10vh,120px)">
+    <div style="display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+      <div style="flex:0 1 min(100%,20rem);min-width:0;display:flex;flex-direction:column;gap:14px">
+        <span style="font:600 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:#F4290C">01 · Review queue</span>
+        <h3 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;text-transform:uppercase;text-wrap:balance">A queue of work that's ready to approve</h3>
+      </div>
+      <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:64ch">
+        <ul style="display:grid;border-top:1.5px solid rgba(18,10,8,0.2)">
+          <li style="border-bottom:1.5px solid rgba(18,10,8,0.2);padding:12px 0;font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">Admissions and transfers from ADT feeds move patients between the ER, observation, inpatient and skilled nursing stages on their own.</li>
+          <li style="border-bottom:1.5px solid rgba(18,10,8,0.2);padding:12px 0;font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">Discharge summaries get read when the fax lands. Medication changes that don't match the chart are flagged for a nurse.</li>
+          <li style="border-bottom:1.5px solid rgba(18,10,8,0.2);padding:12px 0;font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">Follow-ups are drafted to meet the service standards: a visit booked inside the 7-day window, or a text to a caregiver in their preferred language at the time they actually answer.</li>
+          <li style="border-bottom:1.5px solid rgba(18,10,8,0.2);padding:12px 0;font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">Next steps get rewritten from a teammate's call note, ready for approval.</li>
+        </ul>
+        <p style="margin-top:clamp(18px,2.6vh,28px);display:flex;gap:12px;align-items:baseline;font:400 0.92rem/1.55 'Chakra Petch',sans-serif;text-wrap:pretty"><span style="flex:none;padding:6px 10px;border-radius:999px;border:1.5px solid #120A08;font:600 0.66rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Why</span><span>Each item maps to a service standard the team is already measured on, so the AI works toward goals they recognize.</span></p>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+      <div style="flex:0 1 min(100%,20rem);min-width:0;display:flex;flex-direction:column;gap:14px">
+        <span style="font:600 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:#F4290C">02 · Evidence</span>
+        <h3 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;text-transform:uppercase;text-wrap:balance">Every card shows its source</h3>
+      </div>
+      <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:64ch">
+        <p style="font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">Each card explains why it's there and links to the source: the fax line, the call note, the feed event. You approve in one click, edit the draft, or dismiss it. Everything can be undone, and every action goes into an activity log.</p>
+        <p style="margin-top:clamp(18px,2.6vh,28px);display:flex;gap:12px;align-items:baseline;font:400 0.92rem/1.55 'Chakra Petch',sans-serif;text-wrap:pretty"><span style="flex:none;padding:6px 10px;border-radius:999px;border:1.5px solid #120A08;font:600 0.66rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Why</span><span>People approve faster when they can check the AI's work in one glance instead of reopening the chart.</span></p>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+      <div style="flex:0 1 min(100%,20rem);min-width:0;display:flex;flex-direction:column;gap:14px">
+        <span style="font:600 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:#F4290C">03 · Autonomy</span>
+        <h3 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;text-transform:uppercase;text-wrap:balance">Autonomy is a setting, not a leap of faith</h3>
+      </div>
+      <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:64ch">
+        <p style="font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">Teams decide how much the AI does, one kind of work at a time.</p>
+        <ul style="margin-top:clamp(16px,2.4vh,24px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr));gap:clamp(12px,1.4vw,20px)">
+          <li style="border-radius:clamp(12px,1.4vw,18px);background:#FFFFFF;border:1.5px solid rgba(18,10,8,0.1);padding:18px;display:flex;flex-direction:column;gap:8px"><strong style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:1.3rem;text-transform:uppercase;letter-spacing:0.02em">Suggest</strong><span style="font:400 0.92rem/1.5 'Chakra Petch',sans-serif;opacity:0.78">It recommends, you act.</span></li>
+          <li style="border-radius:clamp(12px,1.4vw,18px);background:#FFFFFF;border:1.5px solid rgba(18,10,8,0.1);padding:18px;display:flex;flex-direction:column;gap:8px"><strong style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:1.3rem;text-transform:uppercase;letter-spacing:0.02em">Draft</strong><span style="font:400 0.92rem/1.5 'Chakra Petch',sans-serif;opacity:0.78">It prepares everything, you approve.</span></li>
+          <li style="border-radius:clamp(12px,1.4vw,18px);background:#FFFFFF;border:1.5px solid rgba(18,10,8,0.1);padding:18px;display:flex;flex-direction:column;gap:8px"><strong style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:1.3rem;text-transform:uppercase;letter-spacing:0.02em">Auto</strong><span style="font:400 0.92rem/1.5 'Chakra Petch',sans-serif;opacity:0.78">It acts and tells you.</span></li>
+        </ul>
+        <p style="margin-top:clamp(16px,2.4vh,24px);font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">A team might put records requests on Auto in week one and keep scheduling on Draft until they trust it. Clinical escalations and medication changes are locked. A person always decides those.</p>
+        <p style="margin-top:clamp(18px,2.6vh,28px);display:flex;gap:12px;align-items:baseline;font:400 0.92rem/1.55 'Chakra Petch',sans-serif;text-wrap:pretty"><span style="flex:none;padding:6px 10px;border-radius:999px;border:1.5px solid #120A08;font:600 0.66rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Why</span><span>Trust in a clinical setting gets earned one task at a time.</span></p>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+      <div style="flex:0 1 min(100%,20rem);min-width:0;display:flex;flex-direction:column;gap:14px">
+        <span style="font:600 0.74rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:#F4290C">04 · After discharge</span>
+        <h3 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;text-transform:uppercase;text-wrap:balance">Closing the loop after discharge</h3>
+      </div>
+      <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:64ch">
+        <p style="font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">Patients at highest risk in the first week at home, when most readmissions start. The copilot makes an automated check-in call around day seven. If a patient mentions new swelling or weight gain, it escalates to a nurse the same day and shows the exact words the patient used.</p>
+        <p style="margin-top:clamp(18px,2.6vh,28px);display:flex;gap:12px;align-items:baseline;font:400 0.92rem/1.55 'Chakra Petch',sans-serif;text-wrap:pretty"><span style="flex:none;padding:6px 10px;border-radius:999px;border:1.5px solid #120A08;font:600 0.66rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">Why</span><span>Point the AI at the moment with the most cost and risk, not the task that's easiest to automate.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="Validation" style="max-width:1680px;margin:0 auto;padding:clamp(40px,7vh,88px) clamp(20px,4vw,56px) clamp(56px,10vh,140px);display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,88px)">
+    <div style="flex:0 1 min(100%,20rem);min-width:0;border-top:1.5px solid rgba(18,10,8,0.2);padding-top:clamp(28px,5vh,56px)">
+      <h2 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">VALIDATION</h2>
+    </div>
+    <div style="flex:1 1 min(100%,24rem);min-width:0;max-width:64ch;border-top:1.5px solid rgba(18,10,8,0.2);padding-top:clamp(28px,5vh,56px)">
+      <p style="font:400 clamp(1.05rem,1.5vw,1.5rem)/1.45 'Chakra Petch',sans-serif;text-wrap:pretty">The testing plan:</p>
+      <dl style="margin-top:clamp(18px,2.6vh,28px);display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px 20px;font:400 clamp(0.92rem,1vw,1.02rem)/1.55 'Chakra Petch',sans-serif">
+        <dt style="font-weight:700;letter-spacing:0.1em;text-transform:uppercase;font-size:0.74rem;padding-top:3px">EVALUATE</dt><dd style="opacity:0.8;text-wrap:pretty">Run the copilot next to the current board for two weeks and compare what it drafts with what the team actually did.</dd>
+        <dt style="font-weight:700;letter-spacing:0.1em;text-transform:uppercase;font-size:0.74rem;padding-top:3px">Pilot</dt><dd style="opacity:0.8;text-wrap:pretty">Start with the lowest-risk work. Pilot Auto on records requests and ADT status updates only, then track how often people undo those actions.</dd>
+        <dt style="font-weight:700;letter-spacing:0.1em;text-transform:uppercase;font-size:0.74rem;padding-top:3px">Measure</dt><dd style="opacity:0.8;text-wrap:pretty">Reviews completed on time, the share of patients who meet all three service standards, and time from discharge to first touchpoint.</dd>
+      </dl>
+      <p style="margin-top:clamp(18px,2.6vh,28px);font:400 clamp(0.92rem,1vw,1.02rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">If those numbers move and the undo rate stays low, we expand. If they don't, the queue still gives us a clear record of where the AI and the care team disagree. That's the next round of research.</p>
+      <p style="margin-top:clamp(24px,3.6vh,40px);font:500 0.74rem/1.5 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:rgba(18,10,8,0.6)">All patient data shown is fictionalized for demonstration.</p>
+    </div>
+  </section>
+
+  <section style="background:#FFE9DB;padding:clamp(48px,9vh,120px) clamp(20px,4vw,56px)">
+    <div style="max-width:1680px;margin:0 auto;display:flex;flex-wrap:wrap;gap:clamp(28px,5vw,88px);align-items:start">
+      <div style="flex:1 1 min(100%,20rem);min-width:0;max-width:56ch">
+        <h2 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.8rem,3.6vw,3.2rem);line-height:0.98;text-transform:uppercase;text-wrap:balance">Adding AI to your product?</h2>
+        <p style="margin-top:clamp(16px,2.4vh,28px);font:400 clamp(0.95rem,1.1vw,1.1rem)/1.65 'Chakra Petch',sans-serif;text-wrap:pretty">I can find the manual work in your tool, design where AI takes it on, and set the controls that let your team trust it. You get a working prototype and a plan to pilot it safely.</p>
+      </div>
+      <div style="flex:1 1 min(100%,20rem);min-width:0;max-width:52ch">
+        <h2 style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase">Services on this project</h2>
+        <ul style="margin-top:clamp(16px,2.5vh,28px);display:flex;flex-direction:column;border-top:1.5px solid rgba(18,10,8,0.28)">
+          <li style="display:flex;gap:12px;padding:14px 0;border-bottom:1.5px solid rgba(18,10,8,0.28);font-family:Anton,Impact,sans-serif;font-size:clamp(1.1rem,1.6vw,1.4rem);letter-spacing:0.02em;text-transform:uppercase"><span aria-hidden="true" style="color:#F4290C">+</span>AI product design</li>
+          <li style="display:flex;gap:12px;padding:14px 0;border-bottom:1.5px solid rgba(18,10,8,0.28);font-family:Anton,Impact,sans-serif;font-size:clamp(1.1rem,1.6vw,1.4rem);letter-spacing:0.02em;text-transform:uppercase"><span aria-hidden="true" style="color:#F4290C">+</span>UX strategy</li>
+          <li style="display:flex;gap:12px;padding:14px 0;border-bottom:1.5px solid rgba(18,10,8,0.28);font-family:Anton,Impact,sans-serif;font-size:clamp(1.1rem,1.6vw,1.4rem);letter-spacing:0.02em;text-transform:uppercase"><span aria-hidden="true" style="color:#F4290C">+</span>Dashboard &amp; workflow design</li>
+          <li style="display:flex;gap:12px;padding:14px 0;border-bottom:1.5px solid rgba(18,10,8,0.28);font-family:Anton,Impact,sans-serif;font-size:clamp(1.1rem,1.6vw,1.4rem);letter-spacing:0.02em;text-transform:uppercase"><span aria-hidden="true" style="color:#F4290C">+</span>Prototyping &amp; validation</li>
+        </ul>
+        <div style="margin-top:clamp(26px,4vh,48px);display:flex;flex-wrap:wrap;gap:12px 16px">
+          <a href="John Slingerland Services.dc.html#contact" style="text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#120A08;border:1.5px solid #120A08;border-radius:999px;padding:0 32px;min-height:58px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#120A08;color:#FFE9DB"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>Start a project</a>
+          <a href="John Slingerland Services.dc.html#work" style="text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#120A08;border:1.5px solid #120A08;border-radius:999px;padding:0 32px;min-height:58px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#120A08;color:#FFE9DB"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>Back to work</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { motionOk: false };
+  componentDidMount() {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const c = navigator.connection;
+    const slow = c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''));
+    if (!reduce && !slow) this.setState({ motionOk: true });
+  }
+  renderVals() {
+    const W = 1280, H = 800;
+    const reset = "tab:'queue',qf:'all',qpid:null,answer:null,autoOpen:false,items:s.items.map(function(x,i){return Object.assign({},x,{showEvidence:EV})})";
+    const beat = (extra, ev) => "__go(function(s){return Object.assign({" + reset.replace('EV', ev ? 'i===0' : 'false') + "}," + (extra || '{}') + ")})";
+    return {
+      motionOk: this.state.motionOk,
+      hideSelf: e => { e.currentTarget.style.display = 'none'; },
+      copilotInit: "window.__C=function(){var els=document.querySelectorAll('body *');for(var i=0;i<els.length;i++){var el=els[i];var k=Object.keys(el).find(function(k){return k.indexOf('__reactFiber')===0});if(!k)continue;var f=el[k];while(f){var n=f.stateNode;if(n&&typeof n.closeItems==='function')return n;if(n&&n.logic&&typeof n.logic.closeItems==='function')return n.logic;f=f.return;}}return null};" +
+        "window.scrollTo=function(){};window.scroll=function(){};Element.prototype.scrollIntoView=function(){};Element.prototype.scrollTo=function(){};" +
+        "window.__go=function(fn){var t=0;(function r(){var c=__C();if(c){var P=window.parent,x=P.scrollX,y=P.scrollY;c.setState(fn(c.st()));if(P.scrollY!==y)P.scrollTo(x,y);}else if(t++<60)setTimeout(r,150)})()};",
+      copilotBeats: [
+        { at: 0, w: W, h: H, label: 'Ready for you · the overnight summary and review queue', js: beat() },
+        { at: 0.17, w: W, h: H, label: 'Urgent clinical items first', js: beat("{qf:'urgent'}") },
+        { at: 0.34, w: W, h: H, label: 'Each card shows its source', js: beat(null, true) },
+        { at: 0.5, w: W, h: H, label: 'Autonomy settings · Suggest, Draft, Auto', js: beat("{autoOpen:true}") },
+        { at: 0.67, w: W, h: H, label: 'Patients · who has actions waiting', js: beat("{tab:'patients'}") },
+        { at: 0.84, w: W, h: H, label: 'Activity log · every action can be undone', js: beat("{tab:'log'}") }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

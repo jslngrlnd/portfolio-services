@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="display:flex;justify-content:center;perspective:1400px;perspective-origin:50% 50%">
+  <div ref="{{ phoneRef }}" style="position:relative;transform-style:preserve-3d;will-change:transform;width:{{ frameWidth }};padding:11px;border-radius:52px;background:#120A08;box-shadow:0 30px 70px -30px rgba(18,10,8,0.5),inset 0 0 0 1.5px rgba(241,239,238,0.12)">
+    <div aria-hidden="true" style="position:absolute;left:-2.5px;top:23%;width:2.5px;height:34px;border-radius:3px 0 0 3px;background:rgba(18,10,8,0.85)"></div>
+    <div aria-hidden="true" style="position:absolute;left:-2.5px;top:33%;width:2.5px;height:58px;border-radius:3px 0 0 3px;background:rgba(18,10,8,0.85)"></div>
+    <div aria-hidden="true" style="position:absolute;right:-2.5px;top:30%;width:2.5px;height:76px;border-radius:0 3px 3px 0;background:rgba(18,10,8,0.85)"></div>
+    <div style="position:relative;border-radius:42px;overflow:hidden;background:#F1EFEE">
+      <video ref="{{ videoRef }}" autoPlay="{{ true }}" loop="{{ true }}" muted="{{ true }}" playsInline="{{ true }}" style="display:{{ videoDisplay }};width:100%;height:auto"></video>
+      <img src="{{ src }}" alt="{{ alt }}" style="display:{{ sizerDisplay }};width:100%;height:auto;visibility:hidden">
+      <sc-for list="{{ frames }}" as="frame" hint-placeholder-count="1">
+        <img src="{{ frame.src }}" alt="{{ frame.alt }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;opacity:{{ frame.opacity }};transition:opacity 520ms ease">
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:420,&quot;height&quot;:800},&quot;src&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;uploads/vision-p7-0.png&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;srcs&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string[]&quot;},&quot;video&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;frameWidth&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;min(100%,340px)&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;interval&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:2600,&quot;min&quot;:800,&quot;max&quot;:8000,&quot;step&quot;:100,&quot;unit&quot;:&quot;ms&quot;,&quot;tsType&quot;:&quot;number&quot;},&quot;alt&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;spin&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:34,&quot;min&quot;:0,&quot;max&quot;:70,&quot;step&quot;:1,&quot;unit&quot;:&quot;deg&quot;,&quot;tsType&quot;:&quot;number&quot;},&quot;direction&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;right&quot;,&quot;left&quot;],&quot;default&quot;:&quot;right&quot;,&quot;tsType&quot;:&quot;'right' | 'left'&quot;}}">
+class Component extends DCLogic {
+  phoneRef = React.createRef();
+  videoRef = React.createRef();
+
+  state = { i: 0 };
+
+  componentDidMount() {
+    if (this.props.video && this.videoRef.current) this.videoRef.current.src = this.props.video;
+    const seq = this.props.srcs;
+    if (Array.isArray(seq) && seq.length > 1) {
+      this.timer = setInterval(
+        () => this.setState(s => ({ i: (s.i + 1) % seq.length })),
+        this.props.interval ?? 2600
+      );
+    }
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    this.onScroll = () => {
+      if (this.raf) return;
+      this.raf = requestAnimationFrame(() => {
+        this.raf = null;
+        const el = this.phoneRef.current;
+        if (!el) return;
+        const spinMax = this.props.spin ?? 34;
+        const dir = this.props.direction === 'left' ? -1 : 1;
+        const rise = this.props.rise ?? 26;
+        const r = el.getBoundingClientRect();
+        const vh = window.innerHeight || 1;
+        // p: +1 when the phone sits well below the fold, -1 once it has scrolled above
+        const p = Math.max(-1, Math.min(1, ((r.top + r.height / 2) - vh / 2) / (vh * 0.9)));
+        el.style.transform =
+          'translateY(' + (p * rise).toFixed(2) + 'px) rotateX(' + (-p * (spinMax * 0.32)).toFixed(2) +
+          'deg) rotateY(' + (p * spinMax * dir).toFixed(2) + 'deg) rotateZ(' + (-p * (spinMax * 0.15) * dir).toFixed(2) +
+          'deg) scale(' + (1 - Math.abs(p) * 0.045).toFixed(3) + ')';
+      });
+    };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('resize', this.onScroll);
+    this.onScroll();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('resize', this.onScroll);
+    if (this.raf) cancelAnimationFrame(this.raf);
+    clearInterval(this.timer);
+  }
+
+  renderVals() {
+    const src = this.props.src ?? 'uploads/vision-p7-0.png';
+    const alt = this.props.alt ?? '';
+    const seq = Array.isArray(this.props.srcs) && this.props.srcs.length ? this.props.srcs : [src];
+    const isVideo = !!this.props.video;
+    return {
+      phoneRef: this.phoneRef,
+      videoRef: this.videoRef,
+      videoDisplay: isVideo ? 'block' : 'none',
+      sizerDisplay: isVideo ? 'none' : 'block',
+      frameWidth: this.props.frameWidth ?? 'min(100%,340px)',
+      src: seq[0],
+      alt,
+      frames: isVideo ? [] : seq.map((s, k) => ({ src: s, alt: k === this.state.i ? alt : '', opacity: k === this.state.i ? 1 : 0 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

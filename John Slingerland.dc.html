@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>John Blanco-Slingerland — immersive experience design</title>
+<meta name="description" content="Narrative, identity, sound, motion, and interface, built as one package. For bands, venues, promoters, podcasts, games, and health-tech teams.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Chakra+Petch:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: #F4290C; color: #FFFFFF;
+         font-family: 'Chakra Petch', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, h4, h5, p, figure, blockquote, dl, dd { margin: 0; }
+  ul, ol { margin: 0; padding: 0; list-style: none; }
+  img, video { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.25em; }
+  a:hover { color: #FFD9CF; }
+  ::selection { background: #120A08; color: #F4290C; }
+  :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+</style>
+  <script src="gate.js"></script>
+  <script src="nav-autohide.js"></script>
+  <script src="parallax-fx.js"></script>
+</helmet>
+<template id="__bundler_thumbnail" data-bg-color="#F4290C"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#F4290C"></rect><text x="50" y="62" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="30" fill="#FFFFFF" letter-spacing="1">JBS</text></svg></template>
+
+<div style="background:#F4290C;color:#FFFFFF;font-family:'Chakra Petch',system-ui,sans-serif;overflow-x:clip">
+
+  <a href="#top" style="position:absolute;left:-9999px;top:0;padding:12px 18px;background:#120A08;color:#FFFFFF;font:600 0.8rem/1 'Chakra Petch',sans-serif;letter-spacing:0.12em;text-transform:uppercase;z-index:100" style-focus="left:12px;top:12px">Skip to content</a>
+
+  <!-- ─────────── NAV ─────────── -->
+  <header id="jsl-nav" style="position:sticky;top:0;z-index:40;background:#F4290C;color:#FFFFFF;transition:transform 260ms cubic-bezier(0.4,0,0.2,1),background 220ms ease;will-change:transform">
+    <nav aria-label="Primary" style="max-width:1680px;margin:0 auto;padding:18px clamp(20px,4vw,56px) 0;display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px clamp(20px,4vw,64px)">
+      <!-- [DOMAIN] name mark — swap for wordmark / final domain treatment -->
+      <a href="#top" style="text-decoration:none;font-family:Anton,Impact,sans-serif;font-size:clamp(1rem,1.5vw,1.35rem);letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px;flex:0 0 auto">// John Blanco-Slingerland</a>
+      <ul style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px clamp(18px,3vw,56px);margin-left:auto;font:500 0.84rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase">
+        <li style="flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px"><a href="#work" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px" style-hover="color:#FFE9DB"><span aria-hidden="true" style="width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:inline-block"></span>Work</a></li>
+        <li style="flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px"><a href="#skills" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px" style-hover="color:#FFE9DB"><span aria-hidden="true" style="width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:inline-block"></span>Skills</a></li>
+        <li style="flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px"><a href="#background" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px" style-hover="color:#FFE9DB"><span aria-hidden="true" style="width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:inline-block"></span>Background</a></li>
+        <li style="flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.55);padding-bottom:10px"><a href="#contact" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px" style-hover="color:#FFE9DB"><span aria-hidden="true" style="width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:inline-block"></span>Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="top">
+  <div style="background:linear-gradient(180deg,#F4290C 0%,#FA4A0B 42%,#FF6A10 78%,#FF7A18 100%)">
+
+  <!-- ─────────── 1. OPENING ─────────── -->
+  <section style="max-width:1680px;margin:0 auto;padding:clamp(40px,7vh,88px) clamp(20px,4vw,56px) clamp(48px,8vh,104px)">
+    <p style="font:600 0.8rem/1.4 'Chakra Petch',sans-serif;letter-spacing:0.22em;text-transform:uppercase;margin-bottom:clamp(24px,4vh,44px)">San Francisco/Bay area</p>
+
+    <h1 id="jsl-name" style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:clamp(2.6rem,8.4vw,8.5rem);line-height:0.9;letter-spacing:-0.005em;text-transform:uppercase;margin-left:-0.02em;text-wrap:balance;transform:scaleY(2.6);transform-origin:left top;margin-bottom:clamp(74px,13vw,290px)"><span data-name-part="left" style="display:inline-block;will-change:transform">John</span> <span data-name-part="up" style="display:inline-block;will-change:transform,opacity">Blanco-</span><span data-name-part="right" style="display:inline-block;will-change:transform">Slingerland</span></h1>
+
+    <div style="margin-top:clamp(20px,3.5vh,44px);overflow:hidden">
+      <h2 id="jsl-tagline" style="font-family: Anton,Impact,sans-serif; font-size: clamp(0.85rem,2.95vw,3.05rem); line-height: 1.05; letter-spacing: 0.12em; text-transform: uppercase; color: #FFFFFF99; white-space: nowrap; will-change: letter-spacing">Product, UX design, BRAND strategy</h2>
+    </div>
+
+
+
+    
+
+
+    <div style="margin-top:clamp(40px,9vh,110px);display:flex;flex-wrap:wrap;gap:clamp(24px,4vw,72px);align-items:flex-start;justify-content:space-between;position:relative;z-index:0">
+      <img src="uploads/hand-transparent.webp" alt="A hand holding a phone, lit red." id="jsl-hand" style="flex:0 1 clamp(200px,34vw,520px);min-width:0;height:auto;align-self:flex-start;margin-top:-13vh;margin-bottom:-20vh;position:relative;z-index:0;will-change:transform">
+      <p id="jsl-intro" style="flex:1 1 min(100%,18rem);max-width:34rem;min-width:0;font:500 clamp(0.94rem,1.1vw,1.08rem)/1.6 'Chakra Petch',sans-serif;letter-spacing:0.02em;max-width:56ch;text-wrap:pretty;will-change:transform">Seventeen years of product and UX design — Counterpart Health, Amazon One Medical, Cisco AppDynamics, Capital One; seven of them leading design teams. I work where interface design meets complex workflows, and platforms where multiple teams have to ship something coherent. Strong engineering partnership, research-driven.</p>
+    </div>
+  </section>
+
+  <!-- ─────────── 1b. STATEMENT CARD ─────────── -->
+  <section style="position:relative;z-index:2;max-width:1680px;margin:0 auto;padding:0 clamp(20px,4vw,56px) clamp(48px,8vh,104px)">
+    <div style="background:#FFFFFF;color:#120A08;border-radius:clamp(20px,2.4vw,34px);padding:clamp(28px,4.5vw,68px);display:flex;flex-wrap:wrap;gap:clamp(28px,4vw,64px);align-items:center">
+      <div style="flex:3 1 min(100%,20rem);min-width:0">
+        <p style="display:flex;align-items:center;gap:14px;font:700 clamp(1.05rem,1.6vw,1.45rem)/1.2 'Chakra Petch',sans-serif;letter-spacing:-0.01em"><span aria-hidden="true" style="width:clamp(16px,1.6vw,22px);height:clamp(16px,1.6vw,22px);border-radius:50%;background:#120A08;display:inline-block;flex:0 0 auto"></span>Inside <em style="font-style:italic;font-weight:500">(the)</em> practice</p>
+
+        <h2 style="margin-top:clamp(22px,3.5vh,44px);font-family:Anton,Impact,sans-serif;font-size:clamp(1.9rem,4.6vw,4.2rem);line-height:0.94;letter-spacing:0.005em;text-transform:uppercase;text-wrap:balance" id="jsl-practice"><span data-fade="" style="color:rgba(18,10,8,0.2)">I</span> <span data-fade="" style="color:rgba(18,10,8,0.2)">help</span> <span data-fade="" style="color:rgba(18,10,8,0.2)">companies</span> <span data-fade="" style="color:rgba(18,10,8,0.2)">deliver</span> <span data-fade="" style="color:rgba(18,10,8,0.2)">AI-enabled</span> <span data-fade="" style="color:rgba(18,10,8,0.2)">workflows</span> <span data-fade="" style="color:rgba(18,10,8,0.2)">designed</span> <span data-fade="" style="color:rgba(18,10,8,0.2)">for</span> <span data-fade="" style="color:rgba(18,10,8,0.2)">humans,</span> <i style="font-style:normal"><span data-fade="" data-fade-accent="" style="color:rgba(244,41,12,0.2)">when</span> <span data-fade="" data-fade-accent="" style="color:rgba(244,41,12,0.2)">it</span> <span data-fade="" data-fade-accent="" style="color:rgba(244,41,12,0.2)">really</span> <span data-fade="" data-fade-accent="" style="color:rgba(244,41,12,0.2)">matters.</span></i></h2>
+
+        <a href="#work" style="margin-top:clamp(26px,4vh,48px);text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#120A08;border:1.5px solid #120A08;border-radius:999px;padding:0 34px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;min-height:60px;transition:background 160ms ease,color 160ms ease" style-hover="background:#120A08;color:#FFFFFF"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>See the work</a>
+      </div>
+
+      <!-- decorative four-petal mark, rotated 45° -->
+      <div data-fx-drift="0.6" style="flex:2 1 min(100%,16rem);min-width:0;position:relative;overflow:hidden;aspect-ratio:4/3;border-radius:clamp(12px,1.6vw,22px)">
+        <img src="uploads/studio-bw.webp" alt="Three colleagues reviewing work together at a studio desk." style="position:absolute;left:0;top:0;width:100%;height:165%;object-fit:cover;will-change:transform">
+      </div>
+
+    <section id="background" style="flex:1 1 100%;min-width:0;scroll-margin-top:92px;margin-top:clamp(20px,3vh,40px)">
+        <div style="border-top:2px solid #120A08;padding-top:16px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:12px 24px">
+          <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(1rem,1.4vw,1.25rem);letter-spacing:0.14em;text-transform:uppercase;color:#120A08">01 — Background</h2>
+          <p style="font:500 0.78rem/1 'Chakra Petch',sans-serif;letter-spacing:0.18em;text-transform:uppercase">A BRIEF HISTORY</p>
+        </div>
+    
+        <div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between">
+          <img src="uploads/worker-in-red.webp" alt="A designer holding books, paper samples and a ruler, lit red." style="flex:0 1 clamp(170px,26vw,380px);min-width:0;height:auto;position:relative;z-index:0;margin-right:clamp(-170px,-10vw,-40px);margin-top:21px;margin-bottom:-287px">
+          <div id="jsl-bg-line" style="flex: 1 1 min(100%,20rem); min-width: 0; position: relative; z-index: 1; padding-left: clamp(16px,2vw,32px); background-color: #FFFFFF00; margin-left: 10px; will-change: transform">
+        <p style="margin-top:clamp(24px,4vh,48px);font-family:Anton,Impact,sans-serif;font-size:clamp(1.6rem,3vw,2.6rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase;max-width:26ch"><span style="display:block">Seventeen years in product design.</span><span style="display:block">SEVEN OF THEM LEADING THE TEAM.</span></p>
+        <p style="margin-top:14px;font:500 0.76rem/1.5 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:#120A08">Scroll — the roles run right</p>
+          </div>
+          
+        </div>
+        <div>
+          <!-- [VERIFY] dates and scope pulled from your LinkedIn export — check the Counterpart line,
+               it is the one I had least detail for. Deliberately left out: the coaching practice
+               (Minimum Viable Progress / ESVP) and the education entries — say the word and they go in. -->
+          <div id="jsl-pin" style="position:relative;z-index:2;margin-top:calc(-50vh + 170px)">
+            <div style="position:sticky;top:0;height:100vh;display:flex;align-items:center;overflow:hidden">
+              <ul id="jsl-rail" style="display:flex;align-items:stretch;gap:clamp(16px,2vw,28px);overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;width:100%;padding:4px 0">
+                <li style="flex:0 0 min(86vw,23rem);display:flex"><article style="flex:1;background:#F4F2F1;border-radius:clamp(16px,1.6vw,24px);padding:clamp(20px,2.4vw,32px);display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">
+            <span style="display:flex;align-items:center;gap:16px;align-self:stretch;font-family:Anton,Impact,sans-serif;font-size:clamp(3.4rem,6vw,5.4rem);line-height:0.86;letter-spacing:-0.01em">2025<span aria-hidden="true" style="flex:1;height:6px;background:#120A08;border-radius:3px"></span></span>
+            
+            <span style="transform:rotate(-5deg);margin-left:clamp(8px,1.2vw,18px);align-self:flex-start;order:-1;background:#FF9E7A;color:#120A08;padding:7px 14px;font-family:Anton,Impact,sans-serif;font-size:clamp(0.78rem,1.1vw,1.05rem);letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;box-shadow:0 2px 0 rgba(18,10,8,0.12)">Counterpart Health</span>
+          </div>
+          <p style="font:500 0.76rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:rgba(18,10,8,0.6);border-top:1px solid rgba(18,10,8,0.28);padding-top:14px">2025 — 2026</p>
+          <p style="font:400 clamp(0.94rem,1.05vw,1.05rem)/1.6 'Chakra Petch',sans-serif;letter-spacing:0.01em;text-wrap:pretty">Staff UX designer. Clinical software for AI-assisted care, built for clinicians at the point of care.</p>
+                </article></li>
+                <li style="flex:0 0 min(86vw,23rem);display:flex"><article style="flex:1;background:#F4F2F1;border-radius:clamp(16px,1.6vw,24px);padding:clamp(20px,2.4vw,32px);display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">
+            <span style="display:flex;align-items:center;gap:16px;align-self:stretch;font-family:Anton,Impact,sans-serif;font-size:clamp(3.4rem,6vw,5.4rem);line-height:0.86;letter-spacing:-0.01em">2022<span aria-hidden="true" style="flex:1;height:6px;background:#120A08;border-radius:3px"></span></span>
+            
+            <span style="transform:rotate(5deg);margin-left:clamp(8px,1.2vw,18px);align-self:flex-start;order:-1;background:#FF9E7A;color:#120A08;padding:7px 14px;font-family:Anton,Impact,sans-serif;font-size:clamp(0.78rem,1.1vw,1.05rem);letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;box-shadow:0 2px 0 rgba(18,10,8,0.12)">Amazon One Medical</span>
+          </div>
+          <p style="font:500 0.76rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:rgba(18,10,8,0.6);border-top:1px solid rgba(18,10,8,0.28);padding-top:14px">2022 — 2024</p>
+          <p style="font:400 clamp(0.94rem,1.05vw,1.05rem)/1.6 'Chakra Petch',sans-serif;letter-spacing:0.01em;text-wrap:pretty">Senior design manager. Led the provider and care-team redesign. Five designers on my team made senior.</p>
+                </article></li>
+                <li style="flex:0 0 min(86vw,23rem);display:flex"><article style="flex:1;background:#F4F2F1;border-radius:clamp(16px,1.6vw,24px);padding:clamp(20px,2.4vw,32px);display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">
+            <span style="display:flex;align-items:center;gap:16px;align-self:stretch;font-family:Anton,Impact,sans-serif;font-size:clamp(3.4rem,6vw,5.4rem);line-height:0.86;letter-spacing:-0.01em">2017<span aria-hidden="true" style="flex:1;height:6px;background:#120A08;border-radius:3px"></span></span>
+            
+            <span style="transform:rotate(-5deg);margin-left:clamp(8px,1.2vw,18px);align-self:flex-start;order:-1;background:#FF9E7A;color:#120A08;padding:7px 14px;font-family:Anton,Impact,sans-serif;font-size:clamp(0.78rem,1.1vw,1.05rem);letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;box-shadow:0 2px 0 rgba(18,10,8,0.12)">Cisco AppDynamics</span>
+          </div>
+          <p style="font:500 0.76rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:rgba(18,10,8,0.6);border-top:1px solid rgba(18,10,8,0.28);padding-top:14px">2017 — 2022</p>
+          <p style="font:400 clamp(0.94rem,1.05vw,1.05rem)/1.6 'Chakra Petch',sans-serif;letter-spacing:0.01em;text-wrap:pretty">Senior designer, then design manager, then chief of staff for product design. Process and standards across global teams.</p>
+                </article></li>
+                <li style="flex:0 0 min(86vw,23rem);display:flex"><article style="flex:1;background:#F4F2F1;border-radius:clamp(16px,1.6vw,24px);padding:clamp(20px,2.4vw,32px);display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">
+            <span style="display:flex;align-items:center;gap:16px;align-self:stretch;font-family:Anton,Impact,sans-serif;font-size:clamp(3.4rem,6vw,5.4rem);line-height:0.86;letter-spacing:-0.01em">2016<span aria-hidden="true" style="flex:1;height:6px;background:#120A08;border-radius:3px"></span></span>
+            
+            <span style="transform:rotate(5deg);margin-left:clamp(8px,1.2vw,18px);align-self:flex-start;order:-1;background:#FF9E7A;color:#120A08;padding:7px 14px;font-family:Anton,Impact,sans-serif;font-size:clamp(0.78rem,1.1vw,1.05rem);letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;box-shadow:0 2px 0 rgba(18,10,8,0.12)">Capital One</span>
+          </div>
+          <p style="font:500 0.76rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:rgba(18,10,8,0.6);border-top:1px solid rgba(18,10,8,0.28);padding-top:14px">2016 — 2017</p>
+          <p style="font:400 clamp(0.94rem,1.05vw,1.05rem)/1.6 'Chakra Petch',sans-serif;letter-spacing:0.01em;text-wrap:pretty">Spend Analytics — a data visualization tool used by 155+ retailers. I built the HTML and CSS prototypes myself.</p>
+                </article></li>
+                <li style="flex:0 0 min(86vw,23rem);display:flex"><article style="flex:1;background:#F4F2F1;border-radius:clamp(16px,1.6vw,24px);padding:clamp(20px,2.4vw,32px);display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">
+            <span style="display:flex;align-items:center;gap:16px;align-self:stretch;font-family:Anton,Impact,sans-serif;font-size:clamp(3.4rem,6vw,5.4rem);line-height:0.86;letter-spacing:-0.01em">2015<span aria-hidden="true" style="flex:1;height:6px;background:#120A08;border-radius:3px"></span></span>
+            
+            <span style="transform:rotate(-5deg);margin-left:clamp(8px,1.2vw,18px);align-self:flex-start;order:-1;background:#FF9E7A;color:#120A08;padding:7px 14px;font-family:Anton,Impact,sans-serif;font-size:clamp(0.78rem,1.1vw,1.05rem);letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;box-shadow:0 2px 0 rgba(18,10,8,0.12)">Womply</span>
+          </div>
+          <p style="font:500 0.76rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:rgba(18,10,8,0.6);border-top:1px solid rgba(18,10,8,0.28);padding-top:14px">2015 — 2016</p>
+          <p style="font:400 clamp(0.94rem,1.05vw,1.05rem)/1.6 'Chakra Petch',sans-serif;letter-spacing:0.01em;text-wrap:pretty">Nine shipped features, including a messenger for restaurant and retail staff, and a design system across iOS, Android, and desktop.</p>
+                </article></li>
+                <li style="flex:0 0 min(86vw,23rem);display:flex"><article style="flex:1;background:#F4F2F1;border-radius:clamp(16px,1.6vw,24px);padding:clamp(20px,2.4vw,32px);display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">
+            <span style="display:flex;align-items:center;gap:16px;align-self:stretch;font-family:Anton,Impact,sans-serif;font-size:clamp(3.4rem,6vw,5.4rem);line-height:0.86;letter-spacing:-0.01em">2010<span aria-hidden="true" style="flex:1;height:6px;background:#120A08;border-radius:3px"></span></span>
+            
+            <span style="transform:rotate(5deg);margin-left:clamp(8px,1.2vw,18px);align-self:flex-start;order:-1;background:#FF9E7A;color:#120A08;padding:7px 14px;font-family:Anton,Impact,sans-serif;font-size:clamp(0.78rem,1.1vw,1.05rem);letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;box-shadow:0 2px 0 rgba(18,10,8,0.12)">Mule Design · Digital Gear</span>
+          </div>
+          <p style="font:500 0.76rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:rgba(18,10,8,0.6);border-top:1px solid rgba(18,10,8,0.28);padding-top:14px">2010 — 2015</p>
+          <p style="font:400 clamp(0.94rem,1.05vw,1.05rem)/1.6 'Chakra Petch',sans-serif;letter-spacing:0.01em;text-wrap:pretty">Visual design, art direction, research, client presentations, and prototypes in hand-written HTML and CSS.</p>
+                </article></li>
+                <li style="flex:0 0 min(86vw,23rem);display:flex"><article style="flex:1;background:#F4F2F1;border-radius:clamp(16px,1.6vw,24px);padding:clamp(20px,2.4vw,32px);display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">
+            <span style="display:flex;align-items:center;gap:16px;align-self:stretch;font-family:Anton,Impact,sans-serif;font-size:clamp(3.4rem,6vw,5.4rem);line-height:0.86;letter-spacing:-0.01em">2009<span aria-hidden="true" style="flex:1;height:6px;background:#120A08;border-radius:3px"></span></span>
+            
+            <span style="transform:rotate(-5deg);margin-left:clamp(8px,1.2vw,18px);align-self:flex-start;order:-1;background:#FF9E7A;color:#120A08;padding:7px 14px;font-family:Anton,Impact,sans-serif;font-size:clamp(0.78rem,1.1vw,1.05rem);letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;box-shadow:0 2px 0 rgba(18,10,8,0.12)">Banter Media</span>
+          </div>
+          <p style="font:500 0.76rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:rgba(18,10,8,0.6);border-top:1px solid rgba(18,10,8,0.28);padding-top:14px">2009 — 2012</p>
+          <p style="font:400 clamp(0.94rem,1.05vw,1.05rem)/1.6 'Chakra Petch',sans-serif;letter-spacing:0.01em;text-wrap:pretty">Sites for record labels, micro-sites for bands, flyers and album art. The music work is where I started.</p>
+                </article></li>
+                <li style="flex:0 0 min(86vw,23rem);display:flex"><article style="flex:1;background:#120A08;color:#FFFFFF;border-radius:clamp(16px,1.6vw,24px);padding:clamp(20px,2.4vw,32px);display:flex;flex-direction:column;gap:18px">
+                  <p style="font:500 0.76rem/1 'Chakra Petch',sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:#FF9E7A">The paperwork</p>
+                  <p style="font-family:Anton,Impact,sans-serif;font-size:clamp(1.5rem,2.6vw,2.2rem);line-height:0.98;letter-spacing:0.01em;text-transform:uppercase;max-width:18ch">Seventeen years, on one page</p>
+                  <div style="margin-top:auto;display:flex;flex-direction:column;align-items:flex-start;gap:10px">
+                    
+                    <a href="Resume.dc.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:14px;color:#FFFFFF;border:1.5px solid #FFFFFF;border-radius:999px;padding:0 26px;min-height:54px;font-family:Anton,Impact,sans-serif;font-size:0.9rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#FFFFFF;color:#120A08"><span aria-hidden="true" style="width:22px;height:1.5px;background:currentColor;display:inline-block"></span>Résumé (PDF)</a>
+                    <a href="https://www.linkedin.com/in/johnslingerland" style="display:inline-flex;align-items:center;gap:10px;min-height:46px;font:500 0.82rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:#FFFFFF">LinkedIn <span aria-hidden="true">↗</span></a>
+                  </div>
+                </article></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  </div>
+
+  <!-- ─────────── 2. FEATURED WORKS ─────────── -->
+  <section id="work" style="scroll-margin-top:92px;background:#FFFFFF;color:#120A08;padding:clamp(44px,7vh,96px) 0 clamp(48px,8vh,104px)">
+    <div style="max-width:1680px;margin:0 auto;padding:0 clamp(20px,4vw,56px)">
+      <div style="border-top:2px solid #120A08;padding-top:16px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:12px 24px">
+        <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(1rem,1.4vw,1.25rem);letter-spacing:0.14em;text-transform:uppercase">Work</h2>
+        
+      </div>
+
+      <div style="position:relative;margin-top:clamp(24px,4vh,48px)">
+        <p style="font-family:Anton,Impact,sans-serif;font-size:clamp(3rem,11vw,10rem);line-height:0.86;letter-spacing:-0.01em;text-transform:uppercase;margin-left:-0.03em">Featured works</p>
+        <span style="display:inline-block;transform:rotate(-5deg);margin-top:clamp(10px,1.4vh,18px);background:#DFFF4F;color:#120A08;padding:9px 18px;font-family:Anton,Impact,sans-serif;font-size:clamp(0.85rem,1.3vw,1.15rem);letter-spacing:0.05em;text-transform:uppercase;box-shadow:0 2px 0 rgba(18,10,8,0.12)">Clinical AI · platform architecture · shipped features</span>
+      </div>
+
+      <div style="margin-top:clamp(32px,5vh,64px);display:flex;flex-direction:column;gap:70vh">
+        <article style="position:sticky;top:72px;z-index:1;border-radius:clamp(20px,2.4vw,34px);overflow:hidden;display:flex;flex-wrap:wrap;min-height:clamp(440px,66vh,760px);box-shadow:0 -14px 40px rgba(18,10,8,0.18)">
+        <div style="background:#DCDBE8;color:#120A08;flex:1 1 40%;min-width:min(100%,17rem);padding:clamp(28px,4vw,64px);display:flex;flex-direction:column;justify-content:center">
+          <p style="font:500 0.76rem/1 'Chakra Petch',sans-serif;letter-spacing:0.18em;text-transform:uppercase;opacity:0.7">01 — Flagship / platform</p>
+          <h3 style="margin-top:clamp(16px,2.5vh,28px);font-family:Anton,Impact,sans-serif;font-size:clamp(1.8rem,3.6vw,3.2rem);line-height:0.96;letter-spacing:0.01em;text-transform:uppercase;max-width:20ch">From admin checklist to point of care assistant</h3>
+          <p style="margin-top:clamp(32px,7vh,76px);font:400 clamp(0.96rem,1.1vw,1.1rem)/1.6 'Chakra Petch',sans-serif;letter-spacing:0.01em;max-width:46ch;text-wrap:pretty">A clinical assistant used by primary care physicians had grown into four disconnected experiences and feature bloat. I led the visioning for its redesign — workshops, an end-to-end vision prototype, then the roadmap, team structure and architecture that carried it to a shipped MVP.</p>
+          <a href="Case Study - A Day Not A Dashboard.dc.html" style="margin-top:clamp(22px,3.5vh,40px);text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#120A08;border:1.5px solid #120A08;border-radius:999px;padding:0 32px;min-height:58px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#120A08;color:#FFFFFF"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>See the case study</a>
+        </div>
+        <div style="background:#2E3178;color:#FFFFFF;flex:1 1 60%;min-width:min(100%,17rem);position:relative;overflow:hidden;padding:0;display:flex;align-items:center;justify-content:center;min-height:clamp(260px,40vh,460px)">
+          <video src="uploads/Copy of portfolio videos-2ea8335d.mp4" autoPlay="{{ true }}" loop="{{ true }}" muted="{{ true }}" playsInline="{{ true }}" aria-label="Walkthrough of the point of care assistant." data-card-img="1" style="position:absolute;left:0;top:0;width:100%;height:124%;object-fit:cover;display:block;will-change:transform"></video>
+        </div>
+        </article>
+        <article hidden="" style="display:none;position:sticky;top:98px;z-index:2;border-radius:clamp(20px,2.4vw,34px);overflow:hidden;flex-wrap:wrap;min-height:clamp(440px,66vh,760px);box-shadow:0 -14px 40px rgba(18,10,8,0.18)">
+        <div style="background:#F1EFEE;color:#120A08;flex:1 1 40%;min-width:min(100%,17rem);padding:clamp(28px,4vw,64px);display:flex;flex-direction:column;justify-content:center">
+          <p style="font:500 0.76rem/1 'Chakra Petch',sans-serif;letter-spacing:0.18em;text-transform:uppercase;opacity:0.7">02 — Feature</p>
+          <h3 style="margin-top:clamp(16px,2.5vh,28px);font-family:Anton,Impact,sans-serif;font-size:clamp(1.8rem,3.6vw,3.2rem);line-height:0.96;letter-spacing:0.01em;text-transform:uppercase;max-width:20ch">Ninety seconds before the exam room</h3>
+          <p style="margin-top:clamp(32px,7vh,76px);font:400 clamp(0.96rem,1.1vw,1.1rem)/1.6 'Chakra Petch',sans-serif;letter-spacing:0.01em;max-width:46ch;text-wrap:pretty">Helping Physicians with back to back patient encounters gain context when time is precious. I designed a briefing they could scan, what happened, what needs attention today, and what the model wasn’t sure about.</p>
+          <a href="Case Study - Ninety Seconds.dc.html" style="margin-top:clamp(22px,3.5vh,40px);text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#120A08;border:1.5px solid #120A08;border-radius:999px;padding:0 32px;min-height:58px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#120A08;color:#FFFFFF"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>See the case study</a>
+        </div>
+        <div style="background:#120A08;color:#FFFFFF;flex:1 1 60%;min-width:min(100%,17rem);position:relative;overflow:hidden;padding:0;display:flex;align-items:center;justify-content:center;min-height:clamp(260px,40vh,460px)">
+          <video src="uploads/doctor walking patient into exam room.mp4" autoPlay="{{ true }}" loop="{{ true }}" muted="{{ true }}" playsInline="{{ true }}" aria-label="A physician walking a patient into the exam room." data-card-img="1" style="position:absolute;left:0;top:0;width:100%;height:124%;object-fit:cover;display:block;will-change:transform"></video>
+        </div>
+        </article>
+        <article style="position:sticky;top:124px;z-index:3;border-radius:clamp(20px,2.4vw,34px);overflow:hidden;display:flex;flex-wrap:wrap;min-height:clamp(440px,66vh,760px);box-shadow:0 -14px 40px rgba(18,10,8,0.18)">
+        <div style="background:#2E3178;color:#FFFFFF;flex:1 1 40%;min-width:min(100%,17rem);padding:clamp(28px,4vw,64px);display:flex;flex-direction:column;justify-content:center">
+          <p style="font:500 0.76rem/1 'Chakra Petch',sans-serif;letter-spacing:0.18em;text-transform:uppercase;opacity:0.75">02 — Feature</p>
+          <h3 style="margin-top:clamp(16px,2.5vh,28px);font-family:Anton,Impact,sans-serif;font-size:clamp(1.8rem,3.6vw,3.2rem);line-height:0.96;letter-spacing:0.01em;text-transform:uppercase;max-width:20ch">Helping physicians gain context when time is precious</h3>
+          <p style="margin-top:clamp(32px,7vh,76px);font:400 clamp(0.96rem,1.1vw,1.1rem)/1.6 'Chakra Petch',sans-serif;letter-spacing:0.01em;max-width:46ch;text-wrap:pretty">The pre-visit brief was working as a concept and failing as a page — clinicians were being asked to read where they needed to scan. I ran design experiments, studied how mature products in adjacent industries solve the same problem, and shipped three information-architecture improvements into the alpha build.</p>
+          <a href="Case Study - The Shape-Adaptive Brief.dc.html" style="margin-top:clamp(22px,3.5vh,40px);text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#FFFFFF;border:1.5px solid rgba(255,255,255,0.7);border-radius:999px;padding:0 32px;min-height:58px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#FFFFFF;color:#2E3178"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>See the case study</a>
+        </div>
+        <div style="background:#FF7A18;flex:1 1 60%;min-width:min(100%,17rem);position:relative;overflow:hidden;padding:0;display:flex;align-items:center;justify-content:center;min-height:clamp(260px,40vh,460px)">
+          <video src="uploads/doctor walking patient into exam room.mp4" autoPlay="{{ true }}" loop="{{ true }}" muted="{{ true }}" playsInline="{{ true }}" aria-label="A physician walking a patient into the exam room." data-card-img="1" style="position:absolute;left:0;top:0;width:100%;height:124%;object-fit:cover;display:block;will-change:transform"></video>
+        </div>
+        </article>
+        <article style="position:sticky;top:150px;z-index:4;border-radius:clamp(20px,2.4vw,34px);overflow:hidden;display:flex;flex-wrap:wrap;min-height:clamp(440px,66vh,760px);box-shadow:0 -14px 40px rgba(18,10,8,0.18)">
+        <div style="background:#FFE9DB;color:#120A08;flex:1 1 40%;min-width:min(100%,17rem);padding:clamp(28px,4vw,64px);display:flex;flex-direction:column;justify-content:center">
+          <p style="font:500 0.76rem/1 'Chakra Petch',sans-serif;letter-spacing:0.18em;text-transform:uppercase;opacity:0.7">03 — Care coordination</p>
+          <h3 style="margin-top:clamp(16px,2.5vh,28px);font-family:Anton,Impact,sans-serif;font-size:clamp(1.8rem,3.6vw,3.2rem);line-height:0.96;letter-spacing:0.01em;text-transform:uppercase;max-width:20ch">Improving the care for hospitalized patients</h3>
+          <p style="margin-top:clamp(32px,7vh,76px);font:400 clamp(0.96rem,1.1vw,1.1rem)/1.6 'Chakra Petch',sans-serif;letter-spacing:0.01em;max-width:46ch;text-wrap:pretty">Health Navigators were tracking hospital admissions for One Medical's highest-risk patients in a copy-paste spreadsheet. I led the design of an Admissions Board built into the EHR, aligning multiple teams on where it should live and what care teams needed at a glance: clear ownership, service standards and next steps.</p>
+          <a href="Case Study - Admissions Board.dc.html" style="margin-top:clamp(22px,3.5vh,40px);text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#120A08;border:1.5px solid #120A08;border-radius:999px;padding:0 32px;min-height:58px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#120A08;color:#FFFFFF"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>See the case study</a>
+        </div>
+        <div style="background:#FFFFFF;flex:1 1 60%;min-width:min(100%,17rem);position:relative;overflow:hidden;padding:0;display:flex;align-items:center;justify-content:center;min-height:clamp(260px,40vh,460px)">
+          <img src="uploads/images/06-final-design/admissions-board-redesign.png" alt="The redesigned Admissions board." data-card-img="1" style="position:absolute;left:0;top:0;width:100%;height:124%;object-fit:cover;object-position:top left;display:block;will-change:transform">
+        </div>
+        </article>
+        <article hidden="" style="display:none;position:sticky;top:150px;z-index:4;border-radius:clamp(20px,2.4vw,34px);overflow:hidden;flex-wrap:wrap;min-height:clamp(440px,66vh,760px);box-shadow:0 -14px 40px rgba(18,10,8,0.18)">
+        <div style="background:#DFFF4F;color:#120A08;flex:1 1 40%;min-width:min(100%,17rem);padding:clamp(28px,4vw,64px);display:flex;flex-direction:column;justify-content:center">
+          <p style="font:500 0.76rem/1 'Chakra Petch',sans-serif;letter-spacing:0.18em;text-transform:uppercase;opacity:0.7">03 — Enterprise UX</p>
+          <h3 style="margin-top:clamp(16px,2.5vh,28px);font-family:Anton,Impact,sans-serif;font-size:clamp(1.8rem,3.6vw,3.2rem);line-height:0.96;letter-spacing:0.01em;text-transform:uppercase;max-width:20ch">We lost real money because our software was too hard to turn on</h3>
+          <p style="margin-top:clamp(32px,7vh,76px);font:400 clamp(0.96rem,1.1vw,1.1rem)/1.6 'Chakra Petch',sans-serif;letter-spacing:0.01em;max-width:46ch;text-wrap:pretty">Installing AppDynamics agents took hundreds of steps and a company-wide naming scheme invented up front. An engineer reframed it for me as a grouping problem the software could solve itself. We shipped it as two commands and three steps.</p>
+          <a href="Case Study - Simplified Agent Install.dc.html" style="margin-top:clamp(22px,3.5vh,40px);text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#120A08;border:1.5px solid #120A08;border-radius:999px;padding:0 32px;min-height:58px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#120A08;color:#DFFF4F"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>See the case study</a>
+        </div>
+        <div style="background:#120A08;flex:1 1 60%;min-width:min(100%,17rem);position:relative;overflow:hidden;padding:0;display:flex;align-items:center;justify-content:center;min-height:clamp(260px,40vh,460px)">
+          <img src="assets/image-6-1.webp" alt="The AppDynamics Agent Installer asking which platform to instrument first, listing AWS, Containers, Google Cloud, Kubernetes, Azure, Linux, Red Hat and Serverless." data-card-img="1" style="position:absolute;left:0;top:0;width:100%;height:124%;object-fit:cover;display:block;will-change:transform">
+        </div>
+        </article>
+        <article hidden="" style="display:none;position:sticky;top:176px;z-index:5;border-radius:clamp(20px,2.4vw,34px);overflow:hidden;flex-wrap:wrap;min-height:clamp(440px,66vh,760px);box-shadow:0 -14px 40px rgba(18,10,8,0.18)">
+        <div style="background:#2E3178;color:#FFFFFF;flex:1 1 40%;min-width:min(100%,17rem);padding:clamp(28px,4vw,64px);display:flex;flex-direction:column;justify-content:center">
+          <p style="font:500 0.76rem/1 'Chakra Petch',sans-serif;letter-spacing:0.18em;text-transform:uppercase;opacity:0.75">04 — Enterprise UX</p>
+          <h3 style="margin-top:clamp(16px,2.5vh,28px);font-family:Anton,Impact,sans-serif;font-size:clamp(1.8rem,3.6vw,3.2rem);line-height:0.96;letter-spacing:0.01em;text-transform:uppercase;max-width:20ch">Fifteen screens and a box of ticks to grant one person access</h3>
+          <p style="margin-top:clamp(32px,7vh,76px);font:400 clamp(0.96rem,1.1vw,1.1rem)/1.6 'Chakra Petch',sans-serif;letter-spacing:0.01em;max-width:46ch;text-wrap:pretty">Rigid role-based permissions were costing AppDynamics admins time and creating security risk — and nobody could see what they’d actually granted. We replaced ticking boxes with writing rules: an entity-based access model with attributes, tagging and inheritance, validated through research, prototyping and iterative testing.</p>
+          <a href="Case Study - Access Management.dc.html" style="margin-top:clamp(22px,3.5vh,40px);text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#FFFFFF;border:1.5px solid rgba(255,255,255,0.7);border-radius:999px;padding:0 32px;min-height:58px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;transition:background 160ms ease,color 160ms ease" style-hover="background:#FFFFFF;color:#2E3178"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>See the case study</a>
+        </div>
+        <div style="background:#120A08;flex:1 1 60%;min-width:min(100%,17rem);position:relative;overflow:hidden;padding:0;display:flex;align-items:center;justify-content:center;min-height:clamp(260px,40vh,460px)">
+          <img src="assets/am-image-7-1.webp" alt="AppDynamics Admin Tools user list showing 1,547 active users out of 2,008, with mostly empty roles, groups and tags columns." data-card-img="1" style="position:absolute;left:0;top:0;width:100%;height:124%;object-fit:cover;display:block;will-change:transform">
+        </div>
+        </article>
+        <div aria-hidden="true" style="flex:0 0 auto;height:70vh"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── 3. SKILLS ─────────── -->
+  <section id="skills" style="scroll-margin-top:92px;background:#120A08;color:#FFFFFF">
+    <div style="max-width:1680px;margin:0 auto;padding:clamp(48px,9vh,110px) clamp(20px,4vw,56px) 0">
+      <div style="border-top:2px solid rgba(255,255,255,0.5);padding-top:16px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:12px 24px">
+        <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(1rem,1.4vw,1.25rem);letter-spacing:0.14em;text-transform:uppercase">03 — Skills</h2>
+        <p style="font:500 0.78rem/1 'Chakra Petch',sans-serif;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.75)">What I actually do</p>
+      </div>
+    </div>
+
+    <div style="max-width:1680px;margin:clamp(28px,5vh,56px) auto 0">
+      <ol style="display:flex;flex-direction:column">
+        <li style="position:sticky;top:72px;z-index:1;background:#120A08;border-top:1px solid rgba(255,255,255,0.22);padding:clamp(20px,3vh,30px) clamp(20px,4vw,56px) clamp(34px,6vh,72px)">
+          <div style="max-width:1568px;margin:0 auto">
+            <div style="display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-start;justify-content:space-between">
+              <h3 style="flex:1 1 min(100%,18rem);min-width:0;font-family:Anton,Impact,sans-serif;font-size:clamp(1.7rem,4.4vw,3.6rem);line-height:0.94;letter-spacing:0.005em;text-transform:uppercase;color:#FFFFFF">Product &amp; UX design</h3>
+              <span aria-hidden="true" style="flex:0 0 auto;font:300 clamp(1.6rem,2.6vw,2.4rem)/1 'Chakra Petch',sans-serif;color:#FFFFFF">+</span>
+            </div>
+            <p style="margin-top:clamp(16px,2.6vh,28px);font:400 clamp(0.95rem,1.1vw,1.1rem)/1.55 'Chakra Petch',sans-serif;color:rgba(255,255,255,0.86);max-width:58ch;text-wrap:pretty">UX architecture, research with real users, and prototypes that survive contact with engineering.</p>
+            <ul style="margin-top:clamp(16px,2.6vh,26px);display:flex;flex-wrap:wrap;gap:12px clamp(20px,2.6vw,40px)">
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>User research</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Information architecture</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Prototyping</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Design systems</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Front-end build</li>
+            </ul>
+          </div>
+        </li>
+
+        <li style="position:sticky;top:136px;z-index:2;background:#120A08;border-top:1px solid rgba(255,255,255,0.22);padding:clamp(20px,3vh,30px) clamp(20px,4vw,56px) clamp(34px,6vh,72px)">
+          <div style="max-width:1568px;margin:0 auto">
+            <div style="display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-start;justify-content:space-between">
+              <h3 style="flex:1 1 min(100%,18rem);min-width:0;font-family:Anton,Impact,sans-serif;font-size:clamp(1.7rem,4.4vw,3.6rem);line-height:0.94;letter-spacing:0.005em;text-transform:uppercase;color:#FFFFFF">Brand &amp; identity</h3>
+              <span aria-hidden="true" style="flex:0 0 auto;font:300 clamp(1.6rem,2.6vw,2.4rem)/1 'Chakra Petch',sans-serif;color:#FFFFFF">+</span>
+            </div>
+            <p style="margin-top:clamp(16px,2.6vh,28px);font:400 clamp(0.95rem,1.1vw,1.1rem)/1.55 'Chakra Petch',sans-serif;color:rgba(255,255,255,0.86);max-width:58ch;text-wrap:pretty">Type, palette and layout, plus the constraints that keep it consistent.</p>
+            <ul style="margin-top:clamp(16px,2.6vh,26px);display:flex;flex-wrap:wrap;gap:12px clamp(20px,2.6vw,40px)">
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Typography &amp; color systems</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Art direction</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Release art</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Brand guidelines</li>
+            </ul>
+          </div>
+        </li>
+
+        <li hidden="" style="display:none;position:sticky;top:200px;z-index:3;background:#120A08;border-top:1px solid rgba(255,255,255,0.22);padding:clamp(20px,3vh,30px) clamp(20px,4vw,56px) clamp(34px,6vh,72px)">
+          <div style="max-width:1568px;margin:0 auto">
+            <div style="display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-start;justify-content:space-between">
+              <h3 style="flex:1 1 min(100%,18rem);min-width:0;font-family:Anton,Impact,sans-serif;font-size:clamp(1.7rem,4.4vw,3.6rem);line-height:0.94;letter-spacing:0.005em;text-transform:uppercase;color:#FFFFFF">Narrative &amp; world</h3>
+              <span aria-hidden="true" style="flex:0 0 auto;font:300 clamp(1.6rem,2.6vw,2.4rem)/1 'Chakra Petch',sans-serif;color:#FFFFFF">+</span>
+            </div>
+            <p style="margin-top:clamp(16px,2.6vh,28px);font:400 clamp(0.95rem,1.1vw,1.1rem)/1.55 'Chakra Petch',sans-serif;color:rgba(255,255,255,0.86);max-width:58ch;text-wrap:pretty">The canon a project writes against, so everyone downstream stops guessing.</p>
+            <ul style="margin-top:clamp(16px,2.6vh,26px);display:flex;flex-wrap:wrap;gap:12px clamp(20px,2.6vw,40px)">
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Story architecture</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Canon &amp; timeline</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Naming systems</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Copy &amp; register</li>
+            </ul>
+          </div>
+        </li>
+
+
+        <li style="position:sticky;top:200px;z-index:4;background:#120A08;border-top:1px solid rgba(255,255,255,0.22);padding:clamp(20px,3vh,30px) clamp(20px,4vw,56px) clamp(34px,6vh,72px)">
+          <div style="max-width:1568px;margin:0 auto">
+            <div style="display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-start;justify-content:space-between">
+              <h3 style="flex:1 1 min(100%,18rem);min-width:0;font-family:Anton,Impact,sans-serif;font-size:clamp(1.7rem,4.4vw,3.6rem);line-height:0.94;letter-spacing:0.005em;text-transform:uppercase;color:#FFFFFF">User Research &amp; Testing</h3>
+              <span aria-hidden="true" style="flex:0 0 auto;font:300 clamp(1.6rem,2.6vw,2.4rem)/1 'Chakra Petch',sans-serif;color:#FFFFFF">+</span>
+            </div>
+            <ul style="margin-top:clamp(16px,2.6vh,26px);display:flex;flex-wrap:wrap;gap:12px clamp(20px,2.6vw,40px)">
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Usability testing</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>A/B testing</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Customer interviews</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Survey design</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>User intent analysis</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Competitive analysis</li>
+            </ul>
+          </div>
+        </li>
+
+        <li style="position:sticky;top:264px;z-index:5;background:#120A08;border-top:1px solid rgba(255,255,255,0.22);padding:clamp(20px,3vh,30px) clamp(20px,4vw,56px) clamp(34px,6vh,72px)">
+          <div style="max-width:1568px;margin:0 auto">
+            <div style="display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-start;justify-content:space-between">
+              <h3 style="flex:1 1 min(100%,18rem);min-width:0;font-family:Anton,Impact,sans-serif;font-size:clamp(1.7rem,4.4vw,3.6rem);line-height:0.94;letter-spacing:0.005em;text-transform:uppercase;color:#FFFFFF">Data Visualization &amp; Information Architecture</h3>
+              <span aria-hidden="true" style="flex:0 0 auto;font:300 clamp(1.6rem,2.6vw,2.4rem)/1 'Chakra Petch',sans-serif;color:#FFFFFF">+</span>
+            </div>
+            <ul style="margin-top:clamp(16px,2.6vh,26px);display:flex;flex-wrap:wrap;gap:12px clamp(20px,2.6vw,40px)">
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Data visualization principles</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Information hierarchy</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Dashboard design</li>
+              <li style="display:inline-flex;align-items:center;gap:10px;font:500 clamp(0.92rem,1.05vw,1.05rem)/1.4 'Chakra Petch',sans-serif;color:#FFFFFF"><span aria-hidden="true" style="font-weight:400;color:#F4290C">+</span>Visual language systems</li>
+            </ul>
+          </div>
+        </li>
+
+                <li aria-hidden="true" style="height:70vh"></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ─────────── 5. CONTACT ─────────── -->
+  <section id="contact" style="scroll-margin-top:92px;max-width:1680px;margin:clamp(56px,10vh,120px) auto 0;padding:0 clamp(20px,4vw,56px)">
+    <div style="border-top:2px solid #120A08;padding-top:16px">
+      <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(1rem,1.4vw,1.25rem);letter-spacing:0.14em;text-transform:uppercase;color:#120A08">04 — Contact</h2>
+    </div>
+    <div style="padding:clamp(36px,6vh,80px) 0 clamp(44px,7vh,96px);display:flex;flex-wrap:wrap;gap:clamp(24px,4vw,64px);align-items:flex-end">
+      <div style="flex:1.2 1 min(100%,18rem);min-width:0">
+        <p style="font-family:Anton,Impact,sans-serif;font-size:clamp(2.4rem,6.4vw,6rem);line-height:0.9;letter-spacing:0.005em;text-transform:uppercase"><span style="display:block">HAVE AN IDEA IN MIND?</span><span style="display:block">LET'S CONNECT AND</span><em style="display:block;font-style:normal;color:#120A08">BRING IT TO LIFE.</em></p>
+        <!-- [CONTACT] currently the personal gmail from your profile. If the practice gets its own
+             domain, swap both the href and the visible text — they must stay in sync. -->
+        <a href="mailto:blancoslingerland@gmail.com?subject=Project%20inquiry" style="margin-top:clamp(24px,4vh,40px);display:inline-block;font-family:Anton,Impact,sans-serif;font-size:clamp(1.3rem,3vw,2.4rem);letter-spacing:0.02em;text-transform:uppercase;text-decoration:none;border-bottom:2px solid #120A08;padding-bottom:6px;transition:color 160ms ease,border-color 160ms ease" style-hover="color:#FFE9DB">blancoslingerland@gmail.com</a>
+      </div>
+      <p style="flex:0.8 1 min(100%,16rem);min-width:0;font:400 0.94rem/1.6 'Chakra Petch',sans-serif;letter-spacing:0.05em;text-transform:uppercase;max-width:44ch;text-wrap:pretty">BACKED BY RESEARCH, DESIGNED TO SCALE, HUMAN CENTERED.</p>
+    </div>
+  </section>
+  </main>
+
+  <footer style="background:#120A08;color:#FFFFFF">
+    <div style="max-width:1680px;margin:0 auto;padding:28px clamp(20px,4vw,56px) 40px;display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;align-items:baseline;font:500 0.76rem/1.6 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.8)">
+      <!-- [DOMAIN] footer name / domain treatment -->
+      <span>John Blanco-Slingerland — Product, UX, strategy<br></span>
+      
+      <span>© 2026</span>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  componentDidMount() {
+    // Pinned horizontal rail: page scroll drives the rail's scrollLeft. The rail is a real
+    // overflow-x scroller, so it stays usable (drag / trackpad / keyboard) if JS is off.
+    this.onScroll = () => { this.syncRail(); this.syncNav(); this.syncName(); this.syncHero(); this.syncPractice(); this.syncCardImages(); this.syncBgLine(); };
+    this.syncNav();
+    this.syncName();
+    this.syncHero();
+    this.syncPractice();
+    this.syncCardImages();
+    this.syncBgLine();
+    this.onResize = () => { this.measureRail(); this.syncRail(); };
+    this.measureRail();
+    this.syncRail();
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('resize', this.onResize);
+    if (window.ResizeObserver) {
+      this.ro = new ResizeObserver(this.onResize);
+      const rail = document.getElementById('jsl-rail');
+      if (rail) this.ro.observe(rail);
+    }
+    // fonts land late and change card heights — remeasure once they do
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => { this.measureRail(); this.syncRail(); });
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('resize', this.onResize);
+    if (this.ro) this.ro.disconnect();
+  }
+
+  measureRail() {
+    const pin = document.getElementById('jsl-pin');
+    const rail = document.getElementById('jsl-rail');
+    if (!pin || !rail) return;
+    const max = Math.max(0, rail.scrollWidth - rail.clientWidth);
+    this.railMax = max;
+    // pin lasts exactly as long as the horizontal distance to travel
+    pin.style.height = max > 0 ? (window.innerHeight + max) + 'px' : 'auto';
+  }
+
+  syncRail() {
+    const pin = document.getElementById('jsl-pin');
+    const rail = document.getElementById('jsl-rail');
+    if (!pin || !rail || !this.railMax) return;
+    const top = pin.getBoundingClientRect().top;
+    const p = Math.min(1, Math.max(0, -top / this.railMax));
+    rail.scrollLeft = p * this.railMax;
+  }
+
+  // Name parallax: on scroll the wordmark comes apart — John drifts left, Slingerland
+  // right, Blanco lifts up and fades. Driven by the hero's own scroll progress.
+  syncName() {
+    const name = document.getElementById('jsl-name');
+    if (!name) return;
+    if (!this.nameParts) this.nameParts = name.querySelectorAll('[data-name-part]');
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const p = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 0.8)));
+    const e = p * p;
+    this.nameParts.forEach(el => {
+      const dir = el.dataset.namePart;
+      if (dir === 'left') el.style.transform = 'translate3d(' + (-e * 46) + 'vw,0,0)';
+      else if (dir === 'right') el.style.transform = 'translate3d(' + (e * 46) + 'vw,0,0)';
+      else { el.style.transform = 'translate3d(0,' + (-e * 42) + 'vh,0)'; el.style.opacity = String(1 - e * 1.15); }
+    });
+  }
+
+  // Hero parallax: the tagline tracks out and off the edges while the intro paragraph
+  // slides down and passes behind the white statement card.
+  syncHero() {
+    const tag = document.getElementById('jsl-tagline');
+    const intro = document.getElementById('jsl-intro');
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const p = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 0.8)));
+    const e = p * p;
+    if (tag) { tag.style.letterSpacing = (0.12 + e * 1.3).toFixed(3) + 'em'; tag.style.opacity = String(1 - e * 0.9); }
+    if (intro) intro.style.transform = 'translate3d(0,' + (e * 34) + 'vh,0)';
+    const hand = document.getElementById('jsl-hand');
+    if (hand) hand.style.transform = 'translate3d(0,' + (e * 22) + 'vh,0)';
+  }
+
+  // Case-study cards: each image is taller than its frame and drifts inside it on scroll.
+  syncCardImages() {
+    if (!this.cardImgs) this.cardImgs = document.querySelectorAll('[data-card-img]');
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const vh = window.innerHeight;
+    this.cardImgs.forEach(im => {
+      const f = im.parentElement.getBoundingClientRect();
+      if (f.bottom < -200 || f.top > vh + 200) return;
+      const p = Math.min(1, Math.max(0, (vh - f.top) / (vh + f.height)));
+      im.style.transform = 'translate3d(0,' + (-(p * 0.19) * 100).toFixed(2) + '%,0)';
+    });
+  }
+
+  // Background heading: drifts gently down its own column as the section passes through.
+  syncBgLine() {
+    const el = document.getElementById('jsl-bg-line');
+    if (!el) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const vh = window.innerHeight;
+    const r = el.getBoundingClientRect();
+    if (r.bottom < -300 || r.top > vh + 300) return;
+    const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
+    el.style.transform = 'translate3d(0,' + ((p - 0.5) * 84).toFixed(2) + 'px,0)';
+  }
+
+  // Practice line: words darken from gray to ink as the card moves up the viewport.
+  syncPractice() {
+    const el = document.getElementById('jsl-practice');
+    if (!el) return;
+    if (!this.practiceWords) this.practiceWords = el.querySelectorAll('[data-fade]');
+    const n = this.practiceWords.length;
+    if (!n) return;
+    const r = el.getBoundingClientRect();
+    const start = window.innerHeight * 0.92, end = window.innerHeight * 0.32;
+    const p = Math.min(1, Math.max(0, (start - r.top) / (start - end)));
+    this.practiceWords.forEach((w, k) => {
+      const local = Math.min(1, Math.max(0, (p * (n + 6) - k) / 6));
+      const a = 0.2 + local * 0.8;
+      w.style.color = (w.hasAttribute('data-fade-accent') ? 'rgba(244,41,12,' : 'rgba(18,10,8,') + a.toFixed(3) + ')';
+    });
+  }
+
+  // The page behind the nav graduates red -> orange and then goes white, so a flat red bar
+  // would seam. Ink ground once scrolled keeps it legible over every section.
+  syncNav() {
+    const nav = document.getElementById('jsl-nav');
+    if (!nav) return;
+    nav.style.background = window.scrollY > 40 ? '#120A08' : '#F4290C';
+  }
+
+  componentDidUpdate() {
+    this.syncNav();
+    this.syncName();
+    this.syncHero();
+    this.syncPractice();
+    this.syncCardImages();
+    this.syncBgLine();
+  }
+
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
