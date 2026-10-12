@@ -6,7 +6,7 @@
 //                   Until a domain is verified in Resend, the default test sender
 //                   only delivers to the email address on your Resend account.
 
-const TO = process.env.CONTACT_TO || 'blancoslingerland@gmail.com';
+const TO = process.env.CONTACT_TO || 'john@blancoslinger.land';
 const FROM = process.env.CONTACT_FROM || 'Website inquiry <onboarding@resend.dev>';
 
 const LIMITS = { name: 120, email: 200, company: 160, service: 60, budget: 60, timeline: 60, message: 5000, source: 200 };
@@ -44,7 +44,7 @@ module.exports = async (req, res) => {
 
   if (!process.env.RESEND_API_KEY) {
     console.error('RESEND_API_KEY is not set');
-    return res.status(500).json({ error: 'The form isn’t set up yet. Please email blancoslingerland@gmail.com.' });
+    return res.status(500).json({ error: 'The form isn’t set up yet. Please email john@blancoslinger.land.' });
   }
 
   const rows = [

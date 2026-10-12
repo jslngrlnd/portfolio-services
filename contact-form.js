@@ -56,10 +56,10 @@
           form.reset();
           say('Thanks, your message is on its way. I’ll be in touch soon.', true);
         } else {
-          say(res.j.error || 'Something went wrong. Please email blancoslingerland@gmail.com.', false);
+          say(res.j.error || 'Something went wrong. Please email john@blancoslinger.land.', false);
         }
       })
-      .catch(function () { say('Something went wrong. Please email blancoslingerland@gmail.com.', false); })
+      .catch(function () { say('Something went wrong. Please email john@blancoslinger.land.', false); })
       .then(function () { button.disabled = false; button.style.opacity = ''; });
   });
 })();
