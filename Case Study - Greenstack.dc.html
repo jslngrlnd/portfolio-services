@@ -81,7 +81,7 @@
       </div>
     </div>
     <div style="min-width:0;display:flex;flex-direction:column;align-items:center;gap:clamp(16px,2.5vh,28px)">
-      <dc-import name="Parallax Phone" srcs="{{ heroFrames }}" index="{{ heroIndex }}" src="greenstack/assets/site/home.png" frameWidth="{{ heroPhoneW }}" spin="18" interval="{{ 2600 }}" alt="{{ heroAlt }}" hint-size="340px,720px"></dc-import>
+      <dc-import name="Parallax Phone" srcs="{{ heroFrames }}" index="{{ heroIndex }}" src="greenstack/assets/site/home.png?v=2" frameWidth="{{ heroPhoneW }}" spin="18" interval="{{ 2600 }}" alt="{{ heroAlt }}" hint-size="340px,720px"></dc-import>
       <ol aria-label="App sections" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px">
         <sc-for list="{{ heroSteps }}" as="st" hint-placeholder-count="5">
           <li style="padding:8px 14px;border-radius:999px;border:1.5px solid {{ st.border }};background:{{ st.bg }};color:{{ st.ink }};font:600 0.7rem/1 'Chakra Petch',sans-serif;letter-spacing:0.14em;text-transform:uppercase;transition:background 240ms ease,color 240ms ease">{{ st.label }}</li>
