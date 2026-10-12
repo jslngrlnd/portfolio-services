@@ -27,6 +27,29 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Chakra+Petch:wght@400;500;600;700&amp;family=Ibarra+Real+Nova:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet">
 <style>
+  /* Contact form */
+  .jsl-form { display:flex; flex-direction:column; gap:22px; color:#FFFFFF; font-family:'Chakra Petch',sans-serif; }
+  .jsl-row { display:flex; flex-wrap:wrap; gap:22px; }
+  .jsl-row > * { flex:1 1 14rem; min-width:0; }
+  .jsl-field { display:flex; flex-direction:column; gap:8px; }
+  .jsl-field > span, .jsl-group > legend { font:600 0.78rem/1.3 'Chakra Petch',sans-serif; letter-spacing:0.14em; text-transform:uppercase; }
+  .jsl-field input, .jsl-field textarea { width:100%; min-height:54px; padding:14px 20px; border-radius:16px; border:1.5px solid rgba(255,255,255,0.7); background:transparent; color:#FFFFFF; font:500 1rem/1.4 'Chakra Petch',sans-serif; outline:none; transition:background 160ms ease,border-color 160ms ease; }
+  .jsl-field textarea { resize:vertical; min-height:140px; }
+  .jsl-field input:focus, .jsl-field textarea:focus { background:rgba(255,255,255,0.12); border-color:#FFFFFF; }
+  .jsl-group { border:0; padding:0; margin:0; min-width:0; }
+  .jsl-group > legend { padding:0; margin-bottom:10px; }
+  .jsl-group > div { display:flex; flex-wrap:wrap; gap:10px; }
+  .jsl-chip { position:relative; cursor:pointer; }
+  .jsl-chip input { position:absolute; opacity:0; inset:0; margin:0; cursor:pointer; }
+  .jsl-chip span { display:inline-flex; align-items:center; min-height:42px; padding:0 18px; border-radius:999px; border:1.5px solid rgba(255,255,255,0.7); font:500 0.86rem/1 'Chakra Petch',sans-serif; letter-spacing:0.06em; transition:background 160ms ease,color 160ms ease; }
+  .jsl-chip:hover span { border-color:#FFFFFF; background:rgba(255,255,255,0.12); }
+  .jsl-chip input:checked + span { background:#FFFFFF; color:#F4290C; border-color:#FFFFFF; }
+  .jsl-chip input:focus-visible + span { outline:2px solid #FFFFFF; outline-offset:3px; }
+  .jsl-hp { position:absolute !important; left:-9999px; width:1px; height:1px; overflow:hidden; }
+  .jsl-actions { display:flex; flex-wrap:wrap; align-items:center; gap:14px 24px; margin-top:6px; }
+  .jsl-actions button { min-height:60px; padding:0 34px; border-radius:999px; border:1.5px solid #120A08; background:#120A08; color:#FFFFFF; font-family:Anton,Impact,sans-serif; font-size:0.95rem; letter-spacing:0.09em; text-transform:uppercase; cursor:pointer; transition:background 160ms ease,color 160ms ease,border-color 160ms ease; }
+  .jsl-actions button:hover { background:#FFFFFF; color:#120A08; border-color:#FFFFFF; }
+  .jsl-actions p { margin:0; flex:1 1 14rem; font:500 0.92rem/1.5 'Chakra Petch',sans-serif; }
   *, *::before, *::after { box-sizing: border-box; }
   @media (max-width: 760px) { #jsl-screens { min-height: 0 !important; justify-content: flex-start !important; } #jsl-hero-inner { padding-top: 14px !important; }
     #work article { --h: clamp(500px, calc(100svh - 150px), 720px); top: calc((100svh - var(--h)) / 2) !important; min-height: var(--h) !important; }
@@ -51,6 +74,7 @@
 </style>
   <script src="nav-autohide.js"></script>
   <script src="parallax-fx.js"></script>
+  <script src="contact-form.js" defer></script>
   <script src="image-slot.js"></script>
 </helmet>
 <template id="__bundler_thumbnail" data-bg-color="#F4290C"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#F4290C"></rect><text x="50" y="62" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="30" fill="#FFFFFF" letter-spacing="1">JBS</text></svg></template>
@@ -554,7 +578,7 @@
     <div style="border-top:2px solid #120A08;padding-top:16px">
       <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(1rem,1.4vw,1.25rem);letter-spacing:0.14em;text-transform:uppercase;color:#120A08">Contact</h2>
     </div>
-    <div style="padding:clamp(36px,6vh,80px) 0 clamp(44px,7vh,96px);display:flex;flex-wrap:wrap;gap:clamp(24px,4vw,64px);align-items:flex-end">
+    <div style="padding:clamp(36px,6vh,80px) 0 clamp(44px,7vh,96px);display:flex;flex-wrap:wrap;gap:clamp(24px,4vw,64px);align-items:flex-start">
       <div style="flex:1.2 1 min(100%,18rem);min-width:0">
         <p style="font-family:Anton,Impact,sans-serif;font-size:clamp(2.4rem,6.4vw,6rem);line-height:0.9;letter-spacing:0.005em;text-transform:uppercase"><span style="display:block">HAVE A PROJECT IN MIND?</span><span style="display:block">LET'S TALK SCOPE,</span><em style="display:block;font-style:normal;color:#120A08">TIMELINE AND BUDGET.</em></p>
         <div style="margin-top:clamp(24px,4vh,40px);display:flex;flex-wrap:wrap;gap:16px 24px;align-items:center">
@@ -562,8 +586,24 @@
           <a href="#" style="text-decoration:none;display:inline-flex;align-items:center;gap:16px;color:#FFFFFF;background:#120A08;border:1.5px solid #120A08;border-radius:999px;padding:0 34px;font-family:Anton,Impact,sans-serif;font-size:0.95rem;letter-spacing:0.09em;text-transform:uppercase;min-height:60px;transition:background 160ms ease,color 160ms ease" style-hover="background:#F4290C;border-color:#F4290C;color:#FFFFFF"><span aria-hidden="true" style="width:26px;height:1.5px;background:currentColor;display:inline-block"></span>Book a 30-minute call</a>
           <a href="mailto:blancoslingerland@gmail.com?subject=Project%20inquiry" style="display:inline-block;font-family:Anton,Impact,sans-serif;font-size:clamp(1.1rem,2.2vw,1.8rem);letter-spacing:0.02em;text-transform:uppercase;text-decoration:none;border-bottom:2px solid #120A08;padding-bottom:6px;transition:color 160ms ease" style-hover="color:#FFE9DB">blancoslingerland@gmail.com</a>
         </div>
+        <p style="margin-top:clamp(28px,5vh,48px);font:400 0.94rem/1.6 'Chakra Petch',sans-serif;letter-spacing:0.05em;text-transform:uppercase;max-width:44ch;text-wrap:pretty">BACKED BY RESEARCH, DESIGNED TO SCALE, HUMAN CENTERED.</p>
       </div>
-      <p style="flex:0.8 1 min(100%,16rem);min-width:0;font:400 0.94rem/1.6 'Chakra Petch',sans-serif;letter-spacing:0.05em;text-transform:uppercase;max-width:44ch;text-wrap:pretty"><span style="caret-color: rgb(255, 255, 255); letter-spacing: 0.752px;">BACKED BY RESEARCH, DESIGNED TO SCALE, HUMAN CENTERED.</span></p>
+      <form id="jsl-contact-form" class="jsl-form" novalidate style="flex:1 1 min(100%,30rem);min-width:0">
+        <div class="jsl-row">
+          <label class="jsl-field"><span>Name *</span><input name="name" type="text" autocomplete="name" required maxlength="120"></label>
+          <label class="jsl-field"><span>Email *</span><input name="email" type="email" autocomplete="email" required maxlength="200"></label>
+        </div>
+        <label class="jsl-field"><span>Company</span><input name="company" type="text" autocomplete="organization" maxlength="160"></label>
+        <fieldset class="jsl-group"><legend>Project type</legend><div><label class="jsl-chip"><input type="radio" name="service" value="UX"><span>UX</span></label><label class="jsl-chip"><input type="radio" name="service" value="Brand"><span>Brand</span></label><label class="jsl-chip"><input type="radio" name="service" value="Strategy"><span>Strategy</span></label><label class="jsl-chip"><input type="radio" name="service" value="Web"><span>Web</span></label><label class="jsl-chip"><input type="radio" name="service" value="App"><span>App</span></label><label class="jsl-chip"><input type="radio" name="service" value="Not sure yet"><span>Not sure yet</span></label></div></fieldset>
+        <fieldset class="jsl-group"><legend>Budget</legend><div><label class="jsl-chip"><input type="radio" name="budget" value="Under $10k"><span>Under $10k</span></label><label class="jsl-chip"><input type="radio" name="budget" value="$10–25k"><span>$10–25k</span></label><label class="jsl-chip"><input type="radio" name="budget" value="$25–50k"><span>$25–50k</span></label><label class="jsl-chip"><input type="radio" name="budget" value="$50k+"><span>$50k+</span></label><label class="jsl-chip"><input type="radio" name="budget" value="Not sure yet"><span>Not sure yet</span></label></div></fieldset>
+        <fieldset class="jsl-group"><legend>Timeline</legend><div><label class="jsl-chip"><input type="radio" name="timeline" value="ASAP"><span>ASAP</span></label><label class="jsl-chip"><input type="radio" name="timeline" value="1–3 months"><span>1–3 months</span></label><label class="jsl-chip"><input type="radio" name="timeline" value="3–6 months"><span>3–6 months</span></label><label class="jsl-chip"><input type="radio" name="timeline" value="Flexible"><span>Flexible</span></label></div></fieldset>
+        <label class="jsl-field"><span>Tell me about the project *</span><textarea name="message" rows="5" required maxlength="5000"></textarea></label>
+        <label class="jsl-hp" aria-hidden="true">Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label>
+        <div class="jsl-actions">
+          <button type="submit">Send inquiry</button>
+          <p data-form-status role="status" aria-live="polite"></p>
+        </div>
+      </form>
     </div>
   </section>
     </main>
