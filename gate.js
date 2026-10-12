@@ -25,7 +25,7 @@
       '</div>' +
       '<p id="jsl-gate-err" aria-live="polite" style="margin:0;min-height:1.4em;font:500 0.9rem/1.4 \'Chakra Petch\',sans-serif"></p>' +
     '</form>' +
-    '<p style="margin:0;font:500 0.74rem/1.5 \'Chakra Petch\',sans-serif;letter-spacing:0.14em;text-transform:uppercase;opacity:0.85">Need access? <a href="mailto:blancoslingerland@gmail.com" style="color:#FFFFFF">Get in touch</a></p>';
+    '<p style="margin:0;font:500 0.74rem/1.5 \'Chakra Petch\',sans-serif;letter-spacing:0.14em;text-transform:uppercase;opacity:0.85">Need access? <a href="mailto:john@blancoslinger.land" style="color:#FFFFFF">Get in touch</a></p>';
   function mount() {
     document.body.appendChild(g);
     var input = g.querySelector('input'), err = g.querySelector('#jsl-gate-err');

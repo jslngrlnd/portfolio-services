@@ -74,11 +74,11 @@ module.exports = async (req, res) => {
     });
     if (!r.ok) {
       console.error('Resend error', r.status, await r.text());
-      return res.status(502).json({ error: 'Your message couldn’t be sent. Please try again or email blancoslingerland@gmail.com.' });
+      return res.status(502).json({ error: 'Your message couldn’t be sent. Please try again or email john@blancoslinger.land.' });
     }
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error('Resend request failed', err);
-    return res.status(502).json({ error: 'Your message couldn’t be sent. Please try again or email blancoslingerland@gmail.com.' });
+    return res.status(502).json({ error: 'Your message couldn’t be sent. Please try again or email john@blancoslinger.land.' });
   }
 };
